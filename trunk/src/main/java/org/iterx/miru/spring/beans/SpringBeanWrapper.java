@@ -30,6 +30,7 @@ public class SpringBeanWrapper implements org.iterx.miru.beans.BeanWrapper {
     private BeanWrapper wrapper;
 
     public SpringBeanWrapper(BeanWrapper wrapper) {
+
 	if(wrapper == null) 
 	    throw new IllegalArgumentException("wrapper == null");
 
