@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<project>
+  <pomVersion>3</pomVersion>
+  <id>miru</id>
+  <groupId>miru</groupId>
+  <name>miru</name>
+  <currentVersion>SNAPSHOT</currentVersion>
+
+  <organization>
+    <name>iterx.org</name>
+    <url>http://iterx.org/</url>
+  </organization>
+  <inceptionYear>2004</inceptionYear>      
+
+  <dependencies>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.3</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>geronimo-spec</groupId>
+      <artifactId>geronimo-spec-servlet</artifactId>
+      <version>2.4-rc1</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>geronimo-spec</groupId>
+      <artifactId>geronimo-spec-j2ee-connector</artifactId>
+      <version>1.5-rc2</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>1.1.4</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>1.1.4</version>
+      <type>jar</type>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+    <unitTestSourceDirectory>${basedir}/src/test/java</unitTestSourceDirectory>
+    
+    <unitTest>
+      <includes>
+	<include>**/Test*.java</include>
+      </includes>
+    </unitTest>
+  </build>
+</project>

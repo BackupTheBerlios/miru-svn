@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<project    
+  default="dist"
+  xmlns:ant="jelly:ant">
+
+  <ant:property environment="env"/>
+  
+  <goal name="bootstrap"/>
+
+  <goal name="dist">
+    <attainGoal name="jar:jar"/>
+  </goal>
+
+  <goal name="test">
+    <attainGoal name="test:test"/>
+  </goal>
+  
+</project>
+
