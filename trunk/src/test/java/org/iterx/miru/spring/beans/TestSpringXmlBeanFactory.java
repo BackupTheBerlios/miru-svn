@@ -41,7 +41,6 @@ public class TestSpringXmlBeanFactory extends TestCase {
 
     private MockResource resource;
 
-
     protected void setUp() throws URISyntaxException {
 	byte[] data;
 

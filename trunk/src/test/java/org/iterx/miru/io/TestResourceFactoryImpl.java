@@ -28,7 +28,7 @@ import java.net.URISyntaxException;
 import junit.framework.TestCase;
 
 import org.iterx.miru.io.Resource;
-import org.iterx.miru.io.MockResource;
+import org.iterx.miru.io.resource.MockResource;
 import org.iterx.miru.io.ResourceFactoryImpl;
 
 import org.iterx.miru.resolver.ResourceResolver;

@@ -150,6 +150,17 @@ public class UriResource implements Resource {
 	_connection = null;
     }
 
+    public int hashCode() {
+	
+	return uri.hashCode();
+    }
+
+    public boolean equals(Object object) {
+
+	return ((this == object) ||
+		((object instanceof UriResource) &&
+		 uri.equals(((UriResource) object).uri)));
+    }
 
     public String toString() {
 	StringBuffer buffer;
