@@ -172,7 +172,8 @@ public class UriResource implements Resource {
 		_connection = null;
 		if(logger.isDebugEnabled())
 		    logger.warn("Connection failed [" + uri + "]", e);
-		throw new RuntimeException("Invalid resource");
+		throw new RuntimeException("Invalid resource [" + 
+					   uri + "]");
 	    }	
 	}
     }
