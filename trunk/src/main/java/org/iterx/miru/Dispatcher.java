@@ -82,7 +82,8 @@ public class Dispatcher implements ApplicationContextAware {
 	status = DECLINE;
 	if((chains = ((handlerResolver == null)? 
 		      handlerMapping.getHandlers() :
-		      handlerResolver.resolve(processingContext))) != null) {
+		      handlerResolver.resolve(handlerMapping,
+					      processingContext))) != null) {
 	    while(chains.hasNext()) {
 		HandlerInterceptor[] interceptors;
 		HandlerChain chain;

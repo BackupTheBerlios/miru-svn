@@ -23,10 +23,12 @@ package org.iterx.miru.resolver;
 
 import java.util.Iterator;
 
+import org.iterx.miru.handler.HandlerMapping;
 import org.iterx.miru.context.ProcessingContext;
 
 public interface HandlerResolver {
 
-    public Iterator resolve(ProcessingContext processingContext);
+    public Iterator resolve(HandlerMapping handlerMapping,
+			    ProcessingContext processingContext);
 
 }
