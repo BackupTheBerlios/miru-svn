@@ -19,7 +19,7 @@
   All Rights Reserved.  
 */
 
-package org.iterx.miru.io;
+package org.iterx.miru.io.resource;
 
 import java.io.Reader;
 import java.io.InputStream;

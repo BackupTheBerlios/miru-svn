@@ -152,8 +152,17 @@ public class UriResource implements Resource {
 
 
     public String toString() {
+	StringBuffer buffer;
+        String cls;
 
-	return uri.toString();
+        buffer = new StringBuffer();
+	cls = (getClass().getName());
+        buffer.append(cls.substring(1 + cls.lastIndexOf('.')));
+	buffer.append('[');
+        buffer.append("uri=[");
+	buffer.append(uri);
+	buffer.append("]]");
+	return buffer.toString();
     }
 
     protected void init() {
@@ -171,7 +180,7 @@ public class UriResource implements Resource {
 	    catch(Exception e){
 		_connection = null;
 		if(logger.isDebugEnabled())
-		    logger.warn("Connection failed [" + uri + "]", e);
+		    logger.debug("Connection failed [" + uri + "]", e);
 		throw new RuntimeException("Invalid resource [" + 
 					   uri + "]");
 	    }	
