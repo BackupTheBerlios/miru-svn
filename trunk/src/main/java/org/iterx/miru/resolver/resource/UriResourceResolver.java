@@ -21,6 +21,7 @@
 
 package org.iterx.miru.resolver.resource;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -30,15 +31,14 @@ import org.iterx.miru.resolver.ResourceResolver;
 
 public class UriResourceResolver implements ResourceResolver {
 
-    protected static final String BASE_URI = "file:///";
-
+    protected static final URI BASE_URI =
+	(new File(System.getProperty("user.dir"))).toURI();
+    
     protected URI base;
 
     public UriResourceResolver() {
-	try {
-	    base = new URI(BASE_URI);
-	}
-	catch(URISyntaxException e){}
+
+	base = BASE_URI;
     }
 
     public UriResourceResolver(URI base) {
@@ -65,7 +65,6 @@ public class UriResourceResolver implements ResourceResolver {
 	Resource resource;
 
 	if(uri.getScheme() == null) uri = base.resolve(uri);
-	
 	resource = new UriResource(uri);
 	return (resource.exists())? resource : null;
     }

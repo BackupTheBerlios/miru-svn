@@ -85,7 +85,7 @@ public class TestUriResourceResolver extends TestCase {
 	resourceResolver = new UriResourceResolver();
 
 	assertEquals(UriResourceResolver.BASE_URI,
-		     (resourceResolver.getBase()).toString());
+		     resourceResolver.getBase());
 	
 	resourceResolver.setBase(base);
 	assertEquals(base,
@@ -111,7 +111,6 @@ public class TestUriResourceResolver extends TestCase {
 
 	assertNotNull(resourceResolver.resolve(absoluteUri));
 	assertNull(resourceResolver.resolve(relativeUri));
-	System.out.println("base="+base+ " "+absoluteUri+" "+relativeUri);
 	resourceResolver.setBase(base);
 	assertNotNull((resourceA = resourceResolver.resolve(absoluteUri)));
 	assertNotNull((resourceB = resourceResolver.resolve(relativeUri)));
