@@ -25,6 +25,9 @@ import java.io.Writer;
 import java.io.OutputStream;
 import java.io.IOException;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,6 +35,7 @@ import org.iterx.miru.context.ResponseContext;
 
 public final class ServletResponseContext implements ResponseContext {
 
+    private Map properties;
     private ServletResponse response;
     private int length, status;
 
@@ -41,6 +45,7 @@ public final class ServletResponseContext implements ResponseContext {
     }
     public ServletResponseContext(ServletResponse response) {
 	
+        properties = new HashMap();
 	this.response = response;
     }
     
@@ -55,6 +60,19 @@ public final class ServletResponseContext implements ResponseContext {
 	    ((HttpServletResponse) response).setStatus(status);
 	this.status = status;
     }  
+
+    public String getProperty(String name) {
+
+        return (String) properties.get(name);
+    }
+
+    public void setProperty(String name, String value) {
+
+        if(response instanceof HttpServletResponse) 
+	    ((HttpServletResponse) response).setHeader(name, value);
+        properties.put(name, value);
+    }
+
 
     public ServletResponse getServletResponse() {
 

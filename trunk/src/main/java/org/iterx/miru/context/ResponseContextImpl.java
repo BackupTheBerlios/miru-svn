@@ -21,6 +21,9 @@
 
 package org.iterx.miru.context;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import java.io.Writer;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -30,6 +33,7 @@ import org.iterx.miru.context.ResponseContext;
 
 public class ResponseContextImpl implements ResponseContext {
 
+    protected Map properties;
     protected boolean _mutable;
 
     private Writer writer;
@@ -59,6 +63,7 @@ public class ResponseContextImpl implements ResponseContext {
 
     public ResponseContextImpl(OutputStream out, String encoding) {
 
+	properties = new HashMap();
 	this.out = out;
 	this.encoding = encoding;
     }
@@ -69,6 +74,7 @@ public class ResponseContextImpl implements ResponseContext {
 	   writer instanceof OutputStreamWriter)
 	    encoding = ((OutputStreamWriter) writer).getEncoding();
 
+	properties = new HashMap();
 	this.writer = writer;
 	this.encoding = encoding;
     }    
@@ -83,6 +89,16 @@ public class ResponseContextImpl implements ResponseContext {
 
 	this.status = status;
     }  
+
+    public String getProperty(String name) {
+
+        return (String) properties.get(name);
+    }
+
+    public void setProperty(String name, String value) {
+
+        properties.put(name, value);
+    }
 
     public String getCharacterEncoding() {
 	
