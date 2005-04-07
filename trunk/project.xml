@@ -1,58 +1,33 @@
-<?xml version="1.0"?>
-<project>
-  <pomVersion>3</pomVersion>
-  <id>miru</id>
-  <groupId>miru</groupId>
-  <name>miru</name>
-  <currentVersion>SNAPSHOT</currentVersion>
+<ivy-module version="1.0">
+  <info
+    organisation="iterx"
+    revision="SNAPSHOT"
+    module="miru"/>
 
-  <organization>
-    <name>iterx.org</name>
-    <url>http://iterx.org/</url>
-  </organization>
-  <inceptionYear>2004</inceptionYear>      
+  <publications>
+    <artifact name="miru" type="jar"/>
+  </publications>
 
   <dependencies>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.0.3</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>geronimo-spec</groupId>
-      <artifactId>geronimo-spec-servlet</artifactId>
-      <version>2.4-rc1</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>geronimo-spec</groupId>
-      <artifactId>geronimo-spec-j2ee-connector</artifactId>
-      <version>1.5-rc2</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>1.1.4</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>1.1.4</version>
-      <type>jar</type>
-    </dependency>
+    <dependency
+      org="commons-logging"
+      name="commons-logging"
+      rev="1.0.4"/>
+    <dependency
+      org="springframework"
+      name="spring-core"
+      rev="1.1.4"/>
+    <dependency
+      org="springframework"
+      name="spring-context"
+      rev="1.1.4"/>
+    <dependency
+      org="geronimo-spec"
+      name="geronimo-spec-servlet"
+      rev="2.4-rc1"/>
+    <dependency
+      org="geronimo-spec"
+      name="geronimo-spec-j2ee-connector"
+      rev="1.5-rc2"/>
   </dependencies>
-
-  <build>
-    <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
-    <unitTestSourceDirectory>${basedir}/src/test/java</unitTestSourceDirectory>
-    
-    <unitTest>
-      <includes>
-	<include>**/Test*.java</include>
-      </includes>
-    </unitTest>
-  </build>
-</project>
+</ivy-module>
