@@ -1,4 +1,6 @@
-<project name="miru">
+<project 
+  name="miru"
+   xmlns:ivy="antlib:fr.jayasoft.ivy.ant">
   <description>
 <![CDATA[
     Miru
@@ -6,7 +8,7 @@
 ]]>
   </description>
 
-  <property name="version" value="0.1-SNAPSHOT"/>
+  <property name="version" value="0.1.0"/>
 
   <property name="debug" value="off"/>
   <property name="optimize" value="on"/>
@@ -26,7 +28,19 @@
 
   <target 
     name="init">
+    <property name="ivy.file" value="${basedir}/project.xml"/>
+
+    
+    <ivy:configure/>    
+    <ivy:resolve
+      file="${ivy.file}"
+      showprogress="false"
+      haltonfailure="true"/>
     <mkdir dir="${library.dir}"/>
+
+    <ivy:retrieve
+      pattern="${library.dir}/${artifact}-${revision}.${type}"
+      haltonfailure="true"/>
 
   </target>
 

@@ -1,7 +1,7 @@
 <ivy-module version="1.0">
   <info
     organisation="iterx"
-    revision="SNAPSHOT"
+    revision="0.1.0"
     module="miru"/>
 
   <publications>
@@ -24,10 +24,7 @@
     <dependency
       org="geronimo-spec"
       name="geronimo-spec-servlet"
-      rev="2.4-rc1"/>
-    <dependency
-      org="geronimo-spec"
-      name="geronimo-spec-j2ee-connector"
-      rev="1.5-rc2"/>
+      rev="2.4-rc1"/>   
   </dependencies>
+
 </ivy-module>
