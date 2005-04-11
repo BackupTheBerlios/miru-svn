@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.TestRequestContextImpl
+  org.iterx.miru.context.TestWebRequestContextImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -31,33 +31,33 @@ import java.net.URISyntaxException;
 
 import junit.framework.TestCase;
 
-import org.iterx.miru.context.RequestContextImpl;
+import org.iterx.miru.context.WebRequestContextImpl;
 
-public class TestRequestContextImpl extends TestCase {
+public class TestWebRequestContextImpl extends TestCase {
     
     private static final String ENCODING = System.getProperty("file.encoding");
   
     public void testConstructors() throws IOException {
-	RequestContextImpl request;
+	WebRequestContextImpl request;
 	Reader reader;
 	
-	request = new RequestContextImpl(System.in);
+	request = new WebRequestContextImpl(System.in);
 	assertNotNull(request);
 	assertEquals(System.in, request.getInputStream());
 	assertEquals(null, request.getCharacterEncoding());
 
-	request = new RequestContextImpl(System.in, ENCODING);
+	request = new WebRequestContextImpl(System.in, ENCODING);
 	assertNotNull(request);
 	assertEquals(System.in, request.getInputStream());
 	assertTrue(encodingEquals(ENCODING, request.getCharacterEncoding()));
 
-	request = new RequestContextImpl((reader = new InputStreamReader(System.in)));
+	request = new WebRequestContextImpl((reader = new InputStreamReader(System.in)));
 	assertNotNull(request);
 	assertEquals(reader, request.getReader());
 
 	assertTrue(encodingEquals(ENCODING, request.getCharacterEncoding()));
 	
-	request = new RequestContextImpl
+	request = new WebRequestContextImpl
 	    ((reader = new InputStreamReader(System.in, ENCODING)));
 	assertNotNull(request);
 	assertEquals(reader, request.getReader());
@@ -65,12 +65,12 @@ public class TestRequestContextImpl extends TestCase {
     }
 
     public void testURIAccessors() throws URISyntaxException {
-	RequestContextImpl request;
+	WebRequestContextImpl request;
 	URI uri;
 
 	uri = new URI("/dev/null");
 
-	request = new RequestContextImpl(System.in);
+	request = new WebRequestContextImpl(System.in);
 	assertNull(request.getURI());
 
 	request.setURI(uri);
@@ -81,10 +81,10 @@ public class TestRequestContextImpl extends TestCase {
     }
 
     public void testPropertyAccessors() {
-	RequestContextImpl request;
+	WebRequestContextImpl request;
 	String value;
 
-	request = new RequestContextImpl(System.in);
+	request = new WebRequestContextImpl(System.in);
 	assertNull(request.getProperty("key"));
 
 	request.setProperty("key", (value = "value"));
@@ -102,11 +102,11 @@ public class TestRequestContextImpl extends TestCase {
     }
 
     public void testParameterAccessors() {
-	RequestContextImpl request;
+	WebRequestContextImpl request;
 	String[] values;
 	String value;
 
-	request = new RequestContextImpl(System.in);
+	request = new WebRequestContextImpl(System.in);
 	assertEquals(0, (request.getParameterNames()).length);
 	assertNull(request.getParameter("a"));
 
@@ -135,17 +135,17 @@ public class TestRequestContextImpl extends TestCase {
     }
 
     public void testContentLengthAccessors() {
-	RequestContextImpl request;
+	WebRequestContextImpl request;
 
-	request = new RequestContextImpl(System.in);
+	request = new WebRequestContextImpl(System.in);
 	assertEquals(-1, request.getContentLength());
     }
 
     public void testContentTypeAccessors() {
-	RequestContextImpl request;
+	WebRequestContextImpl request;
 	String value;
 
-	request = new RequestContextImpl(System.in);
+	request = new WebRequestContextImpl(System.in);
 	assertNull(request.getContentType());
 
 	request.setContentType((value = "text/xml"));
@@ -156,22 +156,22 @@ public class TestRequestContextImpl extends TestCase {
     }
 
     public void testCharacterEncodingAccessors() {
-	RequestContextImpl request;
+	WebRequestContextImpl request;
 
-	request = new RequestContextImpl(System.in);
+	request = new WebRequestContextImpl(System.in);
 	assertNull(request.getCharacterEncoding());
     }
 
     public void testInputStream() throws IOException {
-	RequestContextImpl request;
+	WebRequestContextImpl request;
 	Reader reader;
 
-	request = new RequestContextImpl(System.in);
+	request = new WebRequestContextImpl(System.in);
 	assertEquals(System.in, request.getInputStream());
 	assertNull(request.getReader());
 
 
-	request = new RequestContextImpl
+	request = new WebRequestContextImpl
 	    ((reader = new InputStreamReader(System.in)));
 	assertNull(request.getInputStream());
 	assertEquals(reader, request.getReader());
@@ -179,16 +179,16 @@ public class TestRequestContextImpl extends TestCase {
     }
 
     public void testReader() throws IOException {
-	RequestContextImpl request;
+	WebRequestContextImpl request;
 	Reader reader;
 
-	request = new RequestContextImpl
+	request = new WebRequestContextImpl
 	    ((reader = new InputStreamReader(System.in)));
 	assertNull(request.getInputStream());
 	assertEquals(reader, request.getReader());
 	assertNull(request.getInputStream());
 
-	request = new RequestContextImpl(System.in);
+	request = new WebRequestContextImpl(System.in);
 	assertNotNull(request.getReader());
 	assertNull(request.getInputStream());
     }

@@ -24,8 +24,8 @@ package org.iterx.miru.context;
 import junit.framework.TestCase;
 
 import org.iterx.miru.context.ProcessingContext;
-import org.iterx.miru.context.MockRequestContext;
-import org.iterx.miru.context.MockResponseContext;
+import org.iterx.miru.context.MockWebRequestContext;
+import org.iterx.miru.context.MockWebResponseContext;
 
 public class TestProcessingContext extends TestCase {
     
@@ -33,8 +33,8 @@ public class TestProcessingContext extends TestCase {
 
     protected void setUp() {
 	
-	processingContext = new ProcessingContext(new MockRequestContext("/"),
-						  new MockResponseContext());
+	processingContext = new ProcessingContext(new MockWebRequestContext("/"),
+						  new MockWebResponseContext());
     }
 
     protected void tearDown() {
@@ -45,8 +45,8 @@ public class TestProcessingContext extends TestCase {
     public void testConstructors() {
 	ProcessingContext clone;
 
-	processingContext = new ProcessingContext(new MockRequestContext("/"),
-						  new MockResponseContext());
+	processingContext = new ProcessingContext(new MockWebRequestContext("/"),
+						  new MockWebResponseContext());
 	assertNotNull(processingContext);
 
 	clone = new ProcessingContext(processingContext);
@@ -62,13 +62,13 @@ public class TestProcessingContext extends TestCase {
 	}
 	catch(IllegalArgumentException e) {}
 	try {
-	    new ProcessingContext(null, new MockResponseContext());
+	    new ProcessingContext(null, new MockWebResponseContext());
 	    fail("ProcessingContext initialised with null arguments");
 	}
 	catch(IllegalArgumentException e) {}
 
 	try {
-	    new ProcessingContext(new MockRequestContext("/"), null);
+	    new ProcessingContext(new MockWebRequestContext("/"), null);
 	    fail("ProcessingContext initialised with null arguments");
 	}
 	catch(IllegalArgumentException e) {}
@@ -83,7 +83,7 @@ public class TestProcessingContext extends TestCase {
     public void testRequestContextAccessors() {
 	RequestContext request;
 
-	request = new MockRequestContext("/");
+	request = new MockWebRequestContext("/");
 	processingContext.setRequestContext(request);
 	assertEquals(request, processingContext.getRequestContext());
 
@@ -97,7 +97,7 @@ public class TestProcessingContext extends TestCase {
     public void testResponseContextAccessors() {
 	ResponseContext response;
 
-	response = new MockResponseContext();
+	response = new MockWebResponseContext();
 	processingContext.setResponseContext(response);
 	assertEquals(response, processingContext.getResponseContext());
 
