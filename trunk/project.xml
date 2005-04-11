@@ -1,7 +1,7 @@
 <ivy-module version="1.0">
   <info
     organisation="iterx"
-    revision="0.1.0"
+    revision="0.1.1-SNAPSHOT"
     module="miru"/>
 
   <publications>
