@@ -23,6 +23,7 @@ package org.iterx.util;
 
 import junit.framework.TestCase;
 
+import org.iterx.util.Arrays;
 
 public class TestArrays extends TestCase {
 
