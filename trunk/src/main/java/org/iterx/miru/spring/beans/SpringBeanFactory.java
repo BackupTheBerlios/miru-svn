@@ -63,12 +63,12 @@ public class SpringBeanFactory implements BeanFactory, BeanWrapperSupport {
     }
 
     public SpringBeanFactory
-	(org.springframework.beans.factory.BeanFactory parent)  {
+	(org.springframework.beans.factory.BeanFactory beanFactory)  {
 	
-	if(parent == null) 
-	    throw new IllegalArgumentException("parent == null");
+	if(beanFactory == null) 
+	    throw new IllegalArgumentException("beanFactory == null");
 
-	factory = new SpringDefaultListableBeanFactoryProxy(parent);
+	factory = new SpringDefaultListableBeanFactoryProxy(beanFactory);
     }
 
     public Object getBean(String name) {
