@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.DefaultResponseContext
+  org.iterx.miru.context.WebRequestContext
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -21,30 +21,20 @@
 
 package org.iterx.miru.context;
 
-import org.iterx.miru.context.ResponseContext;
+import java.net.URI;
 
-public interface DefaultResponseContext extends ResponseContext {
+import org.iterx.miru.context.RequestContext;
 
-    public static final int OK                    = 200;
+public interface WebRequestContext extends RequestContext {
     
-    public static final int REDIRECT              = 302;
-
-    public static final int BAD_REQUEST           = 400;
-    public static final int UNAUTHORISED          = 401;
-    public static final int FORBIDDEN             = 403;
-    public static final int NOT_FOUND             = 404;
-
-    public static final int SERVER_ERROR          = 500;
-    public static final int NOT_IMPLEMENTED       = 501;
-    public static final int SERVICE_UNAVAILABLE   = 503;
-
-    public int getStatus();
-
-    public void setStatus(int status);
+    public URI getURI();
 
     public String getProperty(String name);
 
-    public void setProperty(String name, String value);
+    public String getParameter(String name);
 
+    public String[] getParameterValues(String name);
 
+    public String[] getParameterNames();
+    
 }

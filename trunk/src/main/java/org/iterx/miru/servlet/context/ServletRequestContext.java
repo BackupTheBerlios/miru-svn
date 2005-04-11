@@ -32,9 +32,9 @@ import java.io.IOException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
-import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.WebRequestContext;
 
-public final class ServletRequestContext implements RequestContext {
+public final class ServletRequestContext implements WebRequestContext {
 
     private ServletRequest request;
     private URI uri;

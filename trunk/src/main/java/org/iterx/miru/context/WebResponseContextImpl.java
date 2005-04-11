@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.DefaultResponseContextImpl
+  org.iterx.miru.context.WebResponseContextImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -29,9 +29,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.IOException;
 
-import org.iterx.miru.context.DefaultResponseContext;
+import org.iterx.miru.context.WebResponseContext;
 
-public class DefaultResponseContextImpl implements DefaultResponseContext {
+public class WebResponseContextImpl implements WebResponseContext {
 
     protected Map properties;
     protected boolean _mutable;
@@ -49,26 +49,26 @@ public class DefaultResponseContextImpl implements DefaultResponseContext {
 	status = OK;
 	length = -1;
     }
-    protected DefaultResponseContextImpl() {}
+    protected WebResponseContextImpl() {}
 
-    public DefaultResponseContextImpl(OutputStream out) {
+    public WebResponseContextImpl(OutputStream out) {
 	
 	this(out, null);
     }
 
-    public DefaultResponseContextImpl(Writer writer) {
+    public WebResponseContextImpl(Writer writer) {
 	
 	this(writer, null);
     }
 
-    public DefaultResponseContextImpl(OutputStream out, String encoding) {
+    public WebResponseContextImpl(OutputStream out, String encoding) {
 
 	properties = new HashMap();
 	this.out = out;
 	this.encoding = encoding;
     }
     
-    public DefaultResponseContextImpl(Writer writer, String encoding) {
+    public WebResponseContextImpl(Writer writer, String encoding) {
 
 	if(encoding == null && 
 	   writer instanceof OutputStreamWriter)

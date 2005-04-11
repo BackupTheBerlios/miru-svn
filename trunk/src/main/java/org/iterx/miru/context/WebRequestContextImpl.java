@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.DefaultRequestContextImpl
+  org.iterx.miru.context.WebRequestContextImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -32,9 +32,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
 
-import org.iterx.miru.context.DefaultRequestContext;
+import org.iterx.miru.context.WebRequestContext;
 
-public class DefaultRequestContextImpl implements DefaultRequestContext {
+public class WebRequestContextImpl implements WebRequestContext {
 
     protected Map parameters, properties;
     protected URI uri;
@@ -49,19 +49,19 @@ public class DefaultRequestContextImpl implements DefaultRequestContext {
     {
 	_mutable = true;
     }
-    protected DefaultRequestContextImpl() {}
+    protected WebRequestContextImpl() {}
 
-    public DefaultRequestContextImpl(InputStream in) {
+    public WebRequestContextImpl(InputStream in) {
 	
 	this(in, null);
     }
 
-    public DefaultRequestContextImpl(Reader reader) {
+    public WebRequestContextImpl(Reader reader) {
 
 	this(reader, null);
     }
 
-    public DefaultRequestContextImpl(InputStream in, String encoding) {
+    public WebRequestContextImpl(InputStream in, String encoding) {
 	
 	parameters = new HashMap();
 	properties = new HashMap();
@@ -70,7 +70,7 @@ public class DefaultRequestContextImpl implements DefaultRequestContext {
 
     }
 
-    public DefaultRequestContextImpl(Reader reader , String encoding) {
+    public WebRequestContextImpl(Reader reader , String encoding) {
 	
 	if(encoding == null && 
 	   reader instanceof InputStreamReader)

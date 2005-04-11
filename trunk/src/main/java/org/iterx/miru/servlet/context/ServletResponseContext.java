@@ -31,9 +31,9 @@ import java.util.HashMap;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.context.WebResponseContext;
 
-public final class ServletResponseContext implements ResponseContext {
+public final class ServletResponseContext implements WebResponseContext {
 
     private Map properties;
     private ServletResponse response;
