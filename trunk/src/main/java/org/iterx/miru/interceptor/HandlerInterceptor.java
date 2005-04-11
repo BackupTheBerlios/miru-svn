@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.interceptor.HandlerInterceptor;
+  org.iterx.miru.interceptor.HandlerInterceptor
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
