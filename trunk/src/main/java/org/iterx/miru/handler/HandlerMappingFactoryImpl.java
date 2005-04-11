@@ -29,13 +29,22 @@ import org.iterx.miru.handler.HandlerMappingFactory;
 public class HandlerMappingFactoryImpl implements HandlerMappingFactory {
     
     protected HandlerMapping handlerMapping;
-    
+
+    public HandlerMappingFactoryImpl() {
+
+        this(new HandlerMappingImpl());
+    }
+
+    public HandlerMappingFactoryImpl(HandlerMapping handlerMapping) {
+
+	if(handlerMapping == null) 
+	    throw new IllegalArgumentException("handlerMapping == null");
+
+	this.handlerMapping = handlerMapping;
+    }
     
     public HandlerMapping getHandlerMapping() {
 
-	if(handlerMapping == null) 
-	    handlerMapping = new HandlerMappingImpl();
-	    
 	return handlerMapping;
     }
 

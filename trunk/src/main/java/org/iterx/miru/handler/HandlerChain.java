@@ -28,14 +28,14 @@ import org.iterx.miru.interceptor.HandlerInterceptor;
 public class HandlerChain {
 
     private HandlerInterceptor[] handlerInterceptors;
-    private Handler handler;    
+    private Object handler;    
 
-    public HandlerChain(Handler handler) {
+    public HandlerChain(Object handler) {
 
 	this(handler, null);
     }
 
-    public HandlerChain(Handler handler, 
+    public HandlerChain(Object handler, 
 			HandlerInterceptor[] handlerInterceptors) {
 	if(handler == null)
 	    throw new IllegalArgumentException("handler == null");
@@ -44,7 +44,7 @@ public class HandlerChain {
 	this.handlerInterceptors = handlerInterceptors;
     }
 
-    public Handler getHandler() {
+    public Object getHandler() {
 
 	return handler;
     }
