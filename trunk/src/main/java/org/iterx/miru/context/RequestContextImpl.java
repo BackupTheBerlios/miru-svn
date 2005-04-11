@@ -88,7 +88,7 @@ public class RequestContextImpl implements RequestContext {
     }
 
     public void setURI(URI uri) {
-	assert (_mutable) : "immutable";
+	assert (_mutable) : "Immutable.";
 
 	this.uri = uri;
     }
@@ -123,7 +123,7 @@ public class RequestContextImpl implements RequestContext {
     }
 
     public void setParameterValues(String name, String[] value) {
-	assert (_mutable) : "immutable";
+	assert (_mutable) : "Immutable.";
 
 	if(value == null) parameters.remove(name);
 	else parameters.put(name, value);
@@ -148,7 +148,7 @@ public class RequestContextImpl implements RequestContext {
     }
 
     public void setContentType(String type) {
-	assert (_mutable) : "immutable";
+	assert (_mutable) : "Immutable.";
 
 	this.type = type;
     }
@@ -180,7 +180,7 @@ public class RequestContextImpl implements RequestContext {
 	return reader;
     }
 
-    private class CaseInsensitiveKey {
+    private final class CaseInsensitiveKey {
 	
 	private String value;
 

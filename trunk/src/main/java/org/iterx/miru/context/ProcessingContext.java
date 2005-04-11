@@ -49,7 +49,6 @@ public class ProcessingContext {
 
 	attributes = new HashMap();
     }
-
     
     public ProcessingContext(ProcessingContext processingContext) {
 

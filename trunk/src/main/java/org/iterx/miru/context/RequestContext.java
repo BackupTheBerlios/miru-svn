@@ -29,6 +29,8 @@ public interface RequestContext extends StreamSource {
     
     public URI getURI();
 
+    public String getProperty(String name);
+
     public String getParameter(String name);
 
     public String[] getParameterValues(String name);

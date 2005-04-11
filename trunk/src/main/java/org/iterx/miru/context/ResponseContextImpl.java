@@ -90,14 +90,16 @@ public class ResponseContextImpl implements ResponseContext {
 	this.status = status;
     }  
 
+
     public String getProperty(String name) {
 
-        return (String) properties.get(name);
+	return (String) properties.get(new CaseInsensitiveKey(name));
     }
 
     public void setProperty(String name, String value) {
-
-        properties.put(name, value);
+	
+	if(value == null) properties.remove(new CaseInsensitiveKey(name));
+	else properties.put(new CaseInsensitiveKey(name), value);
     }
 
     public String getCharacterEncoding() {
@@ -106,7 +108,7 @@ public class ResponseContextImpl implements ResponseContext {
     }
     
     public void setCharacterEncoding(String encoding) {
-	assert (_mutable) : "immutable";
+	assert (_mutable) : "Immutable.";
 
 	this.encoding = encoding;
     }
@@ -117,7 +119,7 @@ public class ResponseContextImpl implements ResponseContext {
     }
 
     public void setContentType(String type) {
-	assert (_mutable) : "immutable";
+	assert (_mutable) : "Immutable.";
 
 	this.type = type;
     }
@@ -128,8 +130,8 @@ public class ResponseContextImpl implements ResponseContext {
     }
 
     public void setContentLength(int length) {
-	assert (_mutable) : "immutable";
-	assert (length >= -1) : "invalid length";
+	assert (_mutable) : "Immutable.";
+	assert (length >= -1) : "Invalid length.";
 
 	this.length = length;
     }
@@ -154,5 +156,30 @@ public class ResponseContextImpl implements ResponseContext {
 	    out = null;
 	}
 	return writer;
+    }
+
+
+    private final class CaseInsensitiveKey {
+	
+	private String value;
+
+	private CaseInsensitiveKey(String key) {
+
+	    value = key.toLowerCase();
+	}
+
+	public int hashCode() {
+
+	    return value.hashCode();
+	}
+
+	public boolean equals(Object object) {
+	    String string;
+	    
+	    return (this == object ||
+		    (object instanceof CaseInsensitiveKey &&
+		     (((string = ((CaseInsensitiveKey) object).value) ==  value) ||
+		      value.equals(value))));
+	}
     }
 }

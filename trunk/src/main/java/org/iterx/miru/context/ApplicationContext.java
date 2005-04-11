@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.ApplicationContext;
+  org.iterx.miru.context.ApplicationContext
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -20,25 +20,14 @@
 */
 package org.iterx.miru.context;
 
-import org.iterx.miru.io.ResourceFactory;
 import org.iterx.miru.beans.BeanFactory;
+import org.iterx.miru.io.ResourceFactory;
 import org.iterx.miru.handler.HandlerMappingFactory;
 
-public interface ApplicationContext {
-
-    public static final String BEAN_FACTORY = 
-	"org.iterx.miru.beans.BeanFactory";
-
-    public static final String RESOURCE_FACTORY = 
-	"org.iterx.miru.io.ResourceFactory";
-
-    public static final String HANDLER_MAPPING_FACTORY = 
-	"org.iterx.miru.handler.HandlerMappingFactory";
+public interface ApplicationContext extends BeanFactory {
 
     public ApplicationContext getParent();
 
-    public BeanFactory getBeanFactory();
-    
     public ResourceFactory getResourceFactory();
 
     public HandlerMappingFactory getHandlerMappingFactory();
