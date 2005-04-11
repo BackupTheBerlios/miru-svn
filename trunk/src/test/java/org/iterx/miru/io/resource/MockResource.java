@@ -41,8 +41,7 @@ public class MockResource implements Resource {
 
     {
 	content = new byte[0];
-    }
-    
+    }    
     public MockResource() {
 
     }
@@ -70,8 +69,9 @@ public class MockResource implements Resource {
     public void setContent(byte[] content) {
 	if(content == null) 
 	    throw new IllegalArgumentException("content == null");
-	
+
 	this.content = content;
+        reset();
     }
 
 

@@ -74,6 +74,26 @@ public class TestResponseContextImpl extends TestCase {
 	assertEquals(ResponseContext.SERVER_ERROR, response.getStatus());
     }
 
+
+    public void testPropertyAccessors() {    
+        ResponseContextImpl response;
+        String value;
+
+	response = new ResponseContextImpl(System.out);
+        
+        assertNull(response.getProperty("a"));
+        response.setProperty("a", (value = "value"));
+        assertEquals(value, response.getProperty("a"));
+        response.setProperty("b", (value = "value"));
+        assertEquals(value, response.getProperty("b"));        
+        response.setProperty("b", (value = ""));
+        assertEquals(value, response.getProperty("b"));        
+        response.setProperty("a", null);
+        assertNull(response.getProperty("a"));
+        response.setProperty("b", null);
+        assertNull(response.getProperty("b"));
+    }
+
     public void testContentLengthAccessors() {
 	ResponseContextImpl response;
 	int status;

@@ -32,9 +32,21 @@ public class TestHandlerMappingFactoryImpl extends TestCase {
 
     public void testConstructors() {
 	HandlerMappingFactory handlerMappingFactory;
+        HandlerMapping handlerMapping;
 	
 	handlerMappingFactory = new HandlerMappingFactoryImpl();
-	assertNotNull(handlerMappingFactory);
+        assertNotNull(handlerMappingFactory.getHandlerMapping());
+
+	handlerMappingFactory = new HandlerMappingFactoryImpl
+            (handlerMapping = new HandlerMappingImpl());
+        assertEquals(handlerMapping,
+                     handlerMappingFactory.getHandlerMapping());
+
+	try {
+            handlerMappingFactory = new HandlerMappingFactoryImpl(null);
+	    fail("HandlerMappingFactoryImpl initialised with null arguments");
+	}
+	catch(IllegalArgumentException e) {}
     }
         
 
