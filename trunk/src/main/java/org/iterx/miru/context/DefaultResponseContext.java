@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.ResponseContext
+  org.iterx.miru.context.DefaultResponseContext
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -21,9 +21,9 @@
 
 package org.iterx.miru.context;
 
-import org.iterx.miru.io.StreamTarget;
+import org.iterx.miru.context.ResponseContext;
 
-public interface ResponseContext extends StreamTarget {
+public interface DefaultResponseContext extends ResponseContext {
 
     public static final int OK                    = 200;
     

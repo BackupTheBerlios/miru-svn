@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.RequestContextImpl
+  org.iterx.miru.context.DefaultRequestContextImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -32,9 +32,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
 
-import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.DefaultRequestContext;
 
-public class RequestContextImpl implements RequestContext {
+public class DefaultRequestContextImpl implements DefaultRequestContext {
 
     protected Map parameters, properties;
     protected URI uri;
@@ -49,19 +49,19 @@ public class RequestContextImpl implements RequestContext {
     {
 	_mutable = true;
     }
-    protected RequestContextImpl() {}
+    protected DefaultRequestContextImpl() {}
 
-    public RequestContextImpl(InputStream in) {
+    public DefaultRequestContextImpl(InputStream in) {
 	
 	this(in, null);
     }
 
-    public RequestContextImpl(Reader reader) {
+    public DefaultRequestContextImpl(Reader reader) {
 
 	this(reader, null);
     }
 
-    public RequestContextImpl(InputStream in, String encoding) {
+    public DefaultRequestContextImpl(InputStream in, String encoding) {
 	
 	parameters = new HashMap();
 	properties = new HashMap();
@@ -70,7 +70,7 @@ public class RequestContextImpl implements RequestContext {
 
     }
 
-    public RequestContextImpl(Reader reader , String encoding) {
+    public DefaultRequestContextImpl(Reader reader , String encoding) {
 	
 	if(encoding == null && 
 	   reader instanceof InputStreamReader)

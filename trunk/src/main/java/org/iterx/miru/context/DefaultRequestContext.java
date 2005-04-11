@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.RequestContext
+  org.iterx.miru.context.DefaultRequestContext
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -23,9 +23,9 @@ package org.iterx.miru.context;
 
 import java.net.URI;
 
-import org.iterx.miru.io.StreamSource;
+import org.iterx.miru.context.RequestContext;
 
-public interface RequestContext extends StreamSource {
+public interface DefaultRequestContext extends RequestContext {
     
     public URI getURI();
 
