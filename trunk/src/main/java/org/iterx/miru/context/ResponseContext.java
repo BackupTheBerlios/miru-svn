@@ -21,6 +21,5 @@
 
 package org.iterx.miru.context;
 
-import org.iterx.miru.io.StreamTarget;
 
-public interface ResponseContext extends StreamTarget {}
+public interface ResponseContext {}

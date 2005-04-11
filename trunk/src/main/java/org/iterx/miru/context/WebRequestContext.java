@@ -23,9 +23,10 @@ package org.iterx.miru.context;
 
 import java.net.URI;
 
+import org.iterx.miru.io.StreamSource;
 import org.iterx.miru.context.RequestContext;
 
-public interface WebRequestContext extends RequestContext {
+public interface WebRequestContext extends RequestContext, StreamSource {
     
     public URI getURI();
 

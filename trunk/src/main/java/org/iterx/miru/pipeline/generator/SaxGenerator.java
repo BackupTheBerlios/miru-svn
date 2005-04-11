@@ -75,7 +75,8 @@ public class SaxGenerator extends GeneratorImpl {
                 saxParser = saxParserFactory.newSAXParser();
                 xmlReader = saxParser.getXMLReader();                
 
-                streamSource = processingContext.getRequestContext();
+                streamSource = (StreamSource) 
+                    processingContext.getRequestContext();
                 if((in = streamSource.getInputStream()) != null) {
                     inputSource = new InputSource(in);
                     inputSource.setEncoding(streamSource.getCharacterEncoding());
