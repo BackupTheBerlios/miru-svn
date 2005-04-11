@@ -36,29 +36,31 @@ import org.iterx.miru.context.WebRequestContext;
 
 public final class ServletRequestContext implements WebRequestContext {
 
-    private ServletRequest request;
+    private ServletRequest servletRequest;
     private URI uri;
 
-    public ServletRequestContext(ServletRequest request) {
+    public ServletRequestContext(ServletRequest servletRequest) {
 
-	this.request = request;
+        if(servletRequest == null) 
+            throw new IllegalArgumentException("servletRequest == null");
+	this.servletRequest = servletRequest;
     }
 
     public ServletRequest getServletRequest() {
 	
-	return request;
+	return servletRequest;
     }
 
     public URI getURI() {
 
 	if(uri == null) {
 	    try {
-		if(request instanceof HttpServletRequest) {
+		if(servletRequest instanceof HttpServletRequest) {
 		    HttpServletRequest httpRequest;
 		    String scheme;
 		    int port;
 
-		    httpRequest = (HttpServletRequest) request;
+		    httpRequest = (HttpServletRequest) servletRequest;
 		    uri = new URI((scheme = httpRequest.getScheme()),
 				  null,
 				  httpRequest.getLocalName(),
@@ -71,10 +73,10 @@ public final class ServletRequestContext implements WebRequestContext {
 				  null);
 		}
 		else {
-		    uri = new URI(request.getScheme(),
+		    uri = new URI(servletRequest.getScheme(),
 				  null,
-				  request.getLocalName(), 
-				  request.getLocalPort(),
+				  servletRequest.getLocalName(), 
+				  servletRequest.getLocalPort(),
 				  null,
 				  null,
 				  null);
@@ -88,18 +90,18 @@ public final class ServletRequestContext implements WebRequestContext {
 
     public String getProperty(String key) {
 
-	return ((request instanceof HttpServletRequest)?
-		((HttpServletRequest) request).getHeader(key) : null);
+	return ((servletRequest instanceof HttpServletRequest)?
+		((HttpServletRequest) servletRequest).getHeader(key) : null);
     }
 
     public String getParameter(String name) {
 
-	return request.getParameter(name);
+	return servletRequest.getParameter(name);
     }
 
     public String[] getParameterValues(String name) {
 
-	return request.getParameterValues(name);
+	return servletRequest.getParameterValues(name);
     }
 
 
@@ -107,33 +109,33 @@ public final class ServletRequestContext implements WebRequestContext {
 	Set names;
 
 	return ((String[]) 
-		((names = (request.getParameterMap()).keySet()).toArray
+		((names = (servletRequest.getParameterMap()).keySet()).toArray
 		 ((Object[]) new String[names.size()])));
     }
 
     public String getContentType() {
 
-	return request.getContentType();
+	return servletRequest.getContentType();
     }
 
     public int getContentLength() {
 
-	return request.getContentLength();
+	return servletRequest.getContentLength();
     }
 
     public String getCharacterEncoding() {
 
-	return request.getCharacterEncoding();
+	return servletRequest.getCharacterEncoding();
     }
     
     public InputStream getInputStream() throws IOException {
 
-	return request.getInputStream();
+	return servletRequest.getInputStream();
     }
 
     public Reader getReader() throws IOException {
 
-	return request.getReader();
+	return servletRequest.getReader();
     }
 
 }

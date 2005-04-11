@@ -36,17 +36,20 @@ import org.iterx.miru.context.WebResponseContext;
 public final class ServletResponseContext implements WebResponseContext {
 
     private Map properties;
-    private ServletResponse response;
+    private ServletResponse servletResponse;
     private int length, status;
 
     {
 	status = OK;
 	length = -1;
     }
-    public ServletResponseContext(ServletResponse response) {
-	
+    public ServletResponseContext(ServletResponse servletResponse) {
+	        
+        if(servletResponse == null) 
+            throw new IllegalArgumentException("servletResponse == null");
+
         properties = new HashMap();
-	this.response = response;
+	this.servletResponse = servletResponse;
     }
     
     public int getStatus() {
@@ -56,8 +59,8 @@ public final class ServletResponseContext implements WebResponseContext {
 
     public void setStatus(int status) {
 	
-	if(response instanceof HttpServletResponse) 
-	    ((HttpServletResponse) response).setStatus(status);
+	if(servletResponse instanceof HttpServletResponse) 
+	    ((HttpServletResponse) servletResponse).setStatus(status);
 	this.status = status;
     }  
 
@@ -68,35 +71,35 @@ public final class ServletResponseContext implements WebResponseContext {
 
     public void setProperty(String name, String value) {
 
-        if(response instanceof HttpServletResponse) 
-	    ((HttpServletResponse) response).setHeader(name, value);
+        if(servletResponse instanceof HttpServletResponse) 
+	    ((HttpServletResponse) servletResponse).setHeader(name, value);
         properties.put(name, value);
     }
 
 
     public ServletResponse getServletResponse() {
 
-	return response;
+	return servletResponse;
     }
 
     public String getCharacterEncoding() {
 
-	return response.getCharacterEncoding();
+	return servletResponse.getCharacterEncoding();
     }
     
     public void setCharacterEncoding(String encoding) {
 
-	response.setCharacterEncoding(encoding);
+	servletResponse.setCharacterEncoding(encoding);
     }
 
     public String getContentType() {
 
-	return response.getContentType();
+	return servletResponse.getContentType();
     }
 
     public void setContentType(String type) {
 
-	response.setContentType(type);
+	servletResponse.setContentType(type);
     }
 
     public int getContentLength() {
@@ -106,18 +109,18 @@ public final class ServletResponseContext implements WebResponseContext {
 
     public void setContentLength(int length) {
 	
-	response.setContentLength(length);
+	servletResponse.setContentLength(length);
 	this.length = length;
     }
 
     public OutputStream getOutputStream() throws IOException {
 
-	return response.getOutputStream();
+	return servletResponse.getOutputStream();
     }
 
     public Writer getWriter() throws IOException {
 
-	return response.getWriter();
+	return servletResponse.getWriter();
     }
 
 }
