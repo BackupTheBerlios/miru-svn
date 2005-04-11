@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.pipeline.Stage
+  org.iterx.miru.pipeline.GeneratorImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -22,16 +22,42 @@ package org.iterx.miru.pipeline;
 
 import java.io.IOException;
 
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ext.LexicalHandler;
+
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.pipeline.Generator;
 
-public interface Stage  {
+public class GeneratorImpl implements Generator {
+
+    protected ContentHandler contentHandler;
+    protected LexicalHandler lexicalHandler;
     
-    public void init(ProcessingContext processingContext);
+    public GeneratorImpl() {}
 
-    public void execute() throws IOException;
+    public void setContentHandler(ContentHandler contentHandler) {
 
-    public void reset();
+        this.contentHandler = contentHandler;
+    }
 
-    public void destroy();
+    public void setLexicalHandler(LexicalHandler lexicalHandler) {
+        
+        this.lexicalHandler = lexicalHandler;
+    }
 
+    public void init(ProcessingContext processingContext) {}
+
+    public void execute() throws IOException {}
+
+    public void reset() {
+
+        lexicalHandler = null;
+	contentHandler = null;  
+    }
+
+    public void destroy() {
+
+        reset();
+    }
+    
 }

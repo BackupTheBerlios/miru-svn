@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.pipeline.Stage
+  org.iterx.miru.pipeline.serializer.SaxSerializer
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,20 +18,13 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.  
 */
-package org.iterx.miru.pipeline;
-
-import java.io.IOException;
+package org.iterx.miru.pipeline.serializer;
 
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.pipeline.SerializerImpl;
 
-public interface Stage  {
+public class SaxSerializer extends SerializerImpl {
+
     
-    public void init(ProcessingContext processingContext);
-
-    public void execute() throws IOException;
-
-    public void reset();
-
-    public void destroy();
-
+    
 }
