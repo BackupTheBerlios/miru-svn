@@ -13,7 +13,11 @@
       org="commons-logging"
       name="commons-logging"
       rev="1.0.4"/>
-    <!--dependency
+    <dependency
+      org="geronimo-spec"
+      name="geronimo-spec-servlet"
+      rev="2.4-rc1"/>   
+    <dependency
       org="springframework"
       name="spring-core"
       rev="1.2-rc1"/>
@@ -24,11 +28,7 @@
     <dependency
       org="springframework"
       name="spring-context"
-      rev="1.2-rc1"/-->
-    <dependency
-      org="geronimo-spec"
-      name="geronimo-spec-servlet"
-      rev="2.4-rc1"/>   
+      rev="1.2-rc1"/>
   </dependencies>
 
 </ivy-module>
