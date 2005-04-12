@@ -32,8 +32,6 @@ import org.iterx.miru.pipeline.Serializer;
 
 public class SerializerImpl implements Serializer {
 
-    protected ContentHandler contentHandler;
-    protected LexicalHandler lexicalHandler;
     protected XmlProducer parent;
     
     public SerializerImpl() {}
@@ -56,24 +54,10 @@ public class SerializerImpl implements Serializer {
 	this.parent = parent;
     }
 
-    public void setContentHandler(ContentHandler contentHandler) {
-
-        this.contentHandler = contentHandler;
-    }
-
-    public void setLexicalHandler(LexicalHandler lexicalHandler) {
-        
-        this.lexicalHandler = lexicalHandler;
-    }
 
     public void init(ProcessingContext processingContext) {
         assert (parent != null) : "parent == null";
         assert (processingContext != null) : "processingContext == null";
-
-	if(contentHandler != null)
-	    parent.setContentHandler(contentHandler);
-	if(lexicalHandler != null)
-	    parent.setLexicalHandler(lexicalHandler);
 
         if(parent instanceof Stage) 
             ((Stage) parent).init(processingContext);
@@ -87,10 +71,7 @@ public class SerializerImpl implements Serializer {
     public void reset() {
         if(parent != null &&
            parent instanceof Stage) ((Stage) parent).reset();
-                
-	parent = null;
-	lexicalHandler = null;
-	contentHandler = null;        
+        parent = null;
     }
 
     public void destroy() {
