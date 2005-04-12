@@ -70,12 +70,13 @@ public class SerializerImpl implements Serializer {
         assert (parent != null) : "parent == null";
         assert (processingContext != null) : "processingContext == null";
 
-        if(parent instanceof Stage) 
-            ((Stage) parent).init(processingContext);
 	if(contentHandler != null)
 	    parent.setContentHandler(contentHandler);
 	if(lexicalHandler != null)
 	    parent.setLexicalHandler(lexicalHandler);
+
+        if(parent instanceof Stage) 
+            ((Stage) parent).init(processingContext);
     }
 
     public void execute() throws IOException {

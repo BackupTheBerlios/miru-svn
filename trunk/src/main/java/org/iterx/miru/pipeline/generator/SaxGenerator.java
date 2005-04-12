@@ -36,6 +36,9 @@ import org.iterx.miru.pipeline.GeneratorImpl;
 
 public class SaxGenerator extends GeneratorImpl {
 
+    private static final String LEXICAL_HANDLER =
+        "http://xml.org/sax/properties/lexical-handler";
+
     protected static SAXParserFactory saxParserFactory;
     protected XMLReader xmlReader;
     
@@ -67,27 +70,41 @@ public class SaxGenerator extends GeneratorImpl {
     public void init(ProcessingContext processingContext) {
         if(xmlReader == null) {
             try {
-                StreamSource streamSource;
                 SAXParser saxParser;
-                InputStream in;
-
-
+                
                 saxParser = saxParserFactory.newSAXParser();
                 xmlReader = saxParser.getXMLReader();                
-
-                streamSource = (StreamSource) 
-                    processingContext.getRequestContext();
-                if((in = streamSource.getInputStream()) != null) {
-                    inputSource = new InputSource(in);
-                    inputSource.setEncoding(streamSource.getCharacterEncoding());
-                }
-                else inputSource = new InputSource(streamSource.getReader());
-	    }
+            }
             catch(Exception e) {
                 throw new RuntimeException
                     ("Failed to initialise Generator.", e);
             }
         }
+        try {
+            StreamSource streamSource;
+            InputStream in;
+        
+            streamSource = (StreamSource) 
+                processingContext.getRequestContext();
+            if((in = streamSource.getInputStream()) != null) {
+                inputSource = new InputSource(in);
+            inputSource.setEncoding(streamSource.getCharacterEncoding());
+            }
+            else inputSource = new InputSource(streamSource.getReader());
+        }
+        catch(Exception e) {
+            throw new RuntimeException
+                ("Failed to initialise stream source.", e);
+        }
+        if(contentHandler != null)
+            xmlReader.setContentHandler(contentHandler);
+        if(lexicalHandler != null) {
+            try {
+                xmlReader.setProperty(LEXICAL_HANDLER, lexicalHandler);
+            }
+            catch(SAXException e) {}
+        }
+
         super.init(processingContext);
     }
 
@@ -105,9 +122,16 @@ public class SaxGenerator extends GeneratorImpl {
     }
 
     public void reset() {
-
-        lexicalHandler = null;
-	contentHandler = null;  
+        
+        if(contentHandler != null)            
+            xmlReader.setContentHandler(null);
+        if(lexicalHandler != null) {
+            try {
+                xmlReader.setProperty(LEXICAL_HANDLER, null);
+            }
+            catch(SAXException e) {}
+        }
+        super.reset();
     }
 
     public void destroy() {
