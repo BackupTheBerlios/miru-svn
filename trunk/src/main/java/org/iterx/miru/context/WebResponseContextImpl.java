@@ -108,7 +108,7 @@ public class WebResponseContextImpl implements WebResponseContext {
     }
     
     public void setCharacterEncoding(String encoding) {
-	assert (_mutable) : "Immutable.";
+	assert (_mutable) : "Immutable object.";
 
 	this.encoding = encoding;
     }
@@ -119,7 +119,7 @@ public class WebResponseContextImpl implements WebResponseContext {
     }
 
     public void setContentType(String type) {
-	assert (_mutable) : "Immutable.";
+	assert (_mutable) : "Immutable object.";
 
 	this.type = type;
     }
@@ -130,7 +130,7 @@ public class WebResponseContextImpl implements WebResponseContext {
     }
 
     public void setContentLength(int length) {
-	assert (_mutable) : "Immutable.";
+	assert (_mutable) : "Immutable object.";
 	assert (length >= -1) : "Invalid length.";
 
 	this.length = length;

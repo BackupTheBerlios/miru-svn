@@ -42,7 +42,7 @@ public class Pipeline {
     private Stage pipeline;
 
     {
-        _mutable = false;
+        _mutable = true;
     }
     public Pipeline() {}
 
@@ -73,7 +73,7 @@ public class Pipeline {
 
 
     public void setGenerator(Generator generator) {
-        assert (_mutable) : "Immutable.";
+        assert (_mutable) : "Immutable object.";
 
         this.generator = generator;
     }
@@ -84,7 +84,7 @@ public class Pipeline {
     }
 
     public void addTransformer(Transformer transformer) {
-        assert (_mutable) : "Immutable.";
+        assert (_mutable) : "Immutable object.";
 
         transformers = ((transformers == null)?
                         new Transformer[] { transformer } :
@@ -92,7 +92,7 @@ public class Pipeline {
     }
 
     public void removeTransformer(Transformer transformer) {
-        assert (_mutable) : "Immutable.";
+        assert (_mutable) : "Immutable object.";
 
         transformers = 
             (Transformer[]) Arrays.remove(transformers, transformer);
@@ -106,7 +106,7 @@ public class Pipeline {
     }
 
     public void setSerializer(Serializer serializer) {
-        assert (_mutable) : "Immutable.";
+        assert (_mutable) : "Immutable object.";
 
         this.serializer = serializer;
     }

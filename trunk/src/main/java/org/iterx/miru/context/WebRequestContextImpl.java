@@ -88,7 +88,7 @@ public class WebRequestContextImpl implements WebRequestContext {
     }
 
     public void setURI(URI uri) {
-	assert (_mutable) : "Immutable.";
+	assert (_mutable) : "Immutable object.";
 
 	this.uri = uri;
     }
@@ -123,7 +123,7 @@ public class WebRequestContextImpl implements WebRequestContext {
     }
 
     public void setParameterValues(String name, String[] value) {
-	assert (_mutable) : "Immutable.";
+	assert (_mutable) : "Immutable object.";
 
 	if(value == null) parameters.remove(name);
 	else parameters.put(name, value);
@@ -148,7 +148,7 @@ public class WebRequestContextImpl implements WebRequestContext {
     }
 
     public void setContentType(String type) {
-	assert (_mutable) : "Immutable.";
+	assert (_mutable) : "Immutable object.";
 
 	this.type = type;
     }

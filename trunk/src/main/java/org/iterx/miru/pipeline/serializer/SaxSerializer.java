@@ -20,11 +20,32 @@
 */
 package org.iterx.miru.pipeline.serializer;
 
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ext.LexicalHandler;
+
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.pipeline.SerializerImpl;
 
 public class SaxSerializer extends SerializerImpl {
+    
+    public SaxSerializer(ContentHandler contentHandler) {
 
+        if(contentHandler == null) 
+            throw new IllegalArgumentException("contentHandler == null");
+        this.contentHandler = contentHandler;
+    }
+
+    public SaxSerializer(ContentHandler contentHandler,
+                         LexicalHandler lexicalHandler) {
+        
+        if(contentHandler == null) 
+            throw new IllegalArgumentException("contentHandler == null");
+        if(lexicalHandler == null) 
+            throw new IllegalArgumentException("lexicalHandler == null");
+        
+        this.contentHandler = contentHandler;
+        this.lexicalHandler = lexicalHandler;
+    }
     
     
 }

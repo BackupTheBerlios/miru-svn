@@ -96,7 +96,7 @@ public class SaxGenerator extends GeneratorImpl {
         assert (inputSource != null) : "Invalid source.";
 
         try {
-	    xmlReader.parse(inputSource) ;
+	    xmlReader.parse(inputSource);
 	}
 	catch(SAXException e) {	    
 	    throw new RuntimeException
