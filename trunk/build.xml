@@ -10,8 +10,8 @@
 
   <property name="version" value="0.1.1-SNAPSHOT"/>
 
-  <property name="debug" value="off"/>
-  <property name="optimize" value="on"/>
+  <property name="debug" value="on"/>
+  <property name="optimize" value="off"/>
 
 
   <property name="source.dir" value="${basedir}/src"/>
@@ -139,6 +139,9 @@
     <mkdir dir="${test.report.dir}"/>
     <junit printsummary="yes" haltonfailure="yes">
       <formatter type="plain"/>
+      <assertions>
+        <enable/>
+      </assertions>
       <classpath>
         <pathelement location="${test.target.dir}"/>
         <path refid="test.library.path"/>
@@ -156,7 +159,6 @@
   <target 
     name="clean" 
     description="Delete all project build files &amp; artifacts.">
-
     <delete dir="${target.dir}"/>
   </target>
   
