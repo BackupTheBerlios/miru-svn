@@ -51,10 +51,17 @@ public class Dispatcher implements ApplicationContextAware {
     private HandlerMapping handlerMapping;
     private HandlerAdapter[] handlerAdapters;
 
-
-    public Dispatcher() {
-
+    
+    {
         handlerAdapters = new HandlerAdapter[0];
+    }
+    public Dispatcher() {}
+
+    public Dispatcher(HandlerMapping handlerMapping) {
+
+        if(handlerMapping == null) 
+            throw new IllegalArgumentException("handlerMapping == null");
+        this.handlerMapping = handlerMapping;
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) {
@@ -63,6 +70,20 @@ public class Dispatcher implements ApplicationContextAware {
 
 	handlerMapping = 
 	    (applicationContext.getHandlerMappingFactory()).getHandlerMapping();
+    }
+
+    public HandlerMapping getHandlerMapping() {
+
+        return handlerMapping;
+    }
+
+    public void setHandlerMapping(HandlerMapping handlerMapping) {
+
+	if(logger.isDebugEnabled())
+	    logger.debug("Setting HandlerMapping [" + handlerMapping + "]");
+        if(handlerMapping == null) 
+            throw new IllegalArgumentException("handlerMapping == null");
+        this.handlerMapping = handlerMapping;
     }
 
     public HandlerResolver getHandlerResolver() {
@@ -80,6 +101,10 @@ public class Dispatcher implements ApplicationContextAware {
 
     public void addHandlerAdapter(HandlerAdapter handlerAdapter) {
 
+	if(logger.isDebugEnabled())
+	    logger.debug("Adding HandlerAdapter [" + handlerAdapter + "]");
+        if(handlerAdapter == null) 
+            throw new IllegalArgumentException("handlerAdapter == null");
         handlerAdapters = (HandlerAdapter[])
             Arrays.add(handlerAdapters, handlerAdapter);
     }
@@ -91,6 +116,8 @@ public class Dispatcher implements ApplicationContextAware {
 
     public void removeHandlerAdapter(HandlerAdapter handlerAdapter) {
 
+	if(logger.isDebugEnabled())
+	    logger.debug("Removing HandlerAdapter [" + handlerAdapter + "]");
         handlerAdapters = (HandlerAdapter[])
             Arrays.remove(handlerAdapters, handlerAdapter);
     }

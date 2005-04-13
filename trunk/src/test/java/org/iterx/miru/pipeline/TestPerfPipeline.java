@@ -83,7 +83,7 @@ public class TestPerfPipeline extends TestCase {
             System.gc();
             memory -= runtime.freeMemory();
 
-            System.out.println("Memory Usage = " + 
+            System.out.println("Memory: " + 
                                (memory / CONCURRENCY) +
                                " bytes/Pipeline");
             System.gc();
