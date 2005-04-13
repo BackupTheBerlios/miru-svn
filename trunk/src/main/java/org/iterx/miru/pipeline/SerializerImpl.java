@@ -71,12 +71,13 @@ public class SerializerImpl implements Serializer {
     public void reset() {
         if(parent != null &&
            parent instanceof Stage) ((Stage) parent).reset();
-        parent = null;
+        
     }
 
     public void destroy() {
 
         reset();
+        parent = null;
     }
     
 }

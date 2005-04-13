@@ -28,6 +28,13 @@
 
   <target 
     name="init">
+    <available file="lib" property="update.skip"/>
+    <antcall target="update"/>    
+  </target>
+
+  <target
+    name="update" unless="update.skip"
+    description="Update project dependencies.">
     <property name="ivy.file" value="${basedir}/project.xml"/>
 
     
@@ -43,6 +50,7 @@
       haltonfailure="true"/>
 
   </target>
+
 
   <target name="compile">
     <fail unless="java.source.dir">You must specify 'java.source.dir'.</fail>
@@ -105,11 +113,11 @@
 
   <target 
     name="test"
-    description="Test project artifacts."
-    depends="test-build, test-run"/>
+    description="Run all tests on project artifacts."
+    depends="test:build, test:unit, test:perf"/>
 
   <target
-    name="test-build"
+    name="test:build"
     depends="dist">
 
     <property name="test.source.dir" value="${source.dir}/test/java"/>
@@ -133,8 +141,9 @@
   </target>
 
   <target 
-    name="test-run"
-    depends="test-build">
+    name="test:unit"
+    description="Run unit tests on project artifacts."
+    depends="test:build">
 
     <mkdir dir="${test.report.dir}"/>
     <junit printsummary="yes" haltonfailure="yes">
@@ -149,7 +158,31 @@
       <batchtest fork="yes" todir="${test.report.dir}">
         <fileset dir="${test.source.dir}">
           <include name="**/Test*.java"/>
+          <exclude name="**/TestPerf.java"/>
           <exclude name="**/AllTests.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target 
+    name="test:perf"
+    description="Run perf tests on project artifacts."
+    depends="test:build">
+
+    <mkdir dir="${test.report.dir}"/>
+    <junit printsummary="yes" haltonfailure="yes">
+      <formatter type="plain"/>
+      <assertions>
+        <disable/>
+      </assertions>
+      <classpath>
+        <pathelement location="${test.target.dir}"/>
+        <path refid="test.library.path"/>
+      </classpath>
+      <batchtest fork="yes" todir="${test.report.dir}">
+        <fileset dir="${test.source.dir}">
+          <include name="**/TestPerf*.java"/>
         </fileset>
       </batchtest>
     </junit>

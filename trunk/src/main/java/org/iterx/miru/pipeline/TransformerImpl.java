@@ -86,7 +86,6 @@ public class TransformerImpl implements Transformer {
         if(parent != null && 
            parent instanceof Stage) ((Stage) parent).reset();
                 
-	parent = null;
 	lexicalHandler = null;
 	contentHandler = null;        
     }
@@ -94,6 +93,7 @@ public class TransformerImpl implements Transformer {
     public void destroy() {
 
         reset();
+	parent = null;
     }
     
 }
