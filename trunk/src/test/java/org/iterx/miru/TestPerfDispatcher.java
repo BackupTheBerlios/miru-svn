@@ -76,7 +76,7 @@ public class TestPerfDispatcher extends TestCase {
 
             System.gc();
             memory = runtime.freeMemory();            
-
+            
             handlerMapping = new HandlerMappingImpl();
             handlerMapping.addHandler
                 ("default",

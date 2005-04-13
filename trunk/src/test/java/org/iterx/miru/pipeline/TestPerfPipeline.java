@@ -74,15 +74,23 @@ public class TestPerfPipeline extends TestCase {
             System.gc();
             memory = runtime.freeMemory();            
 
+            new Pipeline
+                    (new SaxGenerator(),
+                     new SaxSerializer(new SimpleXmlWriter()));
+            
+            memory -= runtime.freeMemory();
+            System.out.println("Memory: " + 
+                               memory +
+                               " bytes");
+
+            memory = runtime.freeMemory();    
             pipelines = new Pipeline[CONCURRENCY];
             for(int i = CONCURRENCY; i-- > 0; ) {
                 pipelines[i] = new Pipeline
                     (new SaxGenerator(),
                      new SaxSerializer(new SimpleXmlWriter()));
             }
-            System.gc();
             memory -= runtime.freeMemory();
-
             System.out.println("Memory: " + 
                                (memory / CONCURRENCY) +
                                " bytes/Pipeline");
