@@ -120,6 +120,7 @@ public class XmlHandlerMappingParser extends DefaultHandler {
 			     Attributes attributes)
 	throws SAXException {
 
+        System.out.println("START State:"+state+" Tag:"+localName+" ("+uri+")");
 	switch(state) {
 	case STATE_DEFAULT:
 	    if(TAG_MAP.equals(localName) &&
@@ -207,6 +208,7 @@ public class XmlHandlerMappingParser extends DefaultHandler {
 			   String qName)
 	throws SAXException {
 
+        System.out.println("END State:"+state+" Tag:"+localName+" ("+uri+")");
 	
 	switch(state) {
 	case STATE_DEFAULT:

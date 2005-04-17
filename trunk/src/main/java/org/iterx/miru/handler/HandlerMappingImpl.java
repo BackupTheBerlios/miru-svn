@@ -75,4 +75,17 @@ public class HandlerMappingImpl implements HandlerMapping {
 	}
     }
 
+    public String toString() {
+        StringBuffer buffer;
+        String cls;
+
+        buffer = new StringBuffer();
+	cls = (getClass().getName());
+        buffer.append(cls.substring(1 + cls.lastIndexOf('.')));
+	buffer.append('[');
+        buffer.append(handlers.toString());
+        buffer.append(']');
+        return buffer.toString();
+    }
+
 }

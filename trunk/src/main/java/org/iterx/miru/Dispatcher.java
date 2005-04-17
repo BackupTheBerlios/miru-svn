@@ -134,7 +134,7 @@ public class Dispatcher implements ApplicationContextAware {
 		Object handler;
 		int i;
 		
-		i = 0;
+		i = -1;
 		chain = (HandlerChain) chains.next();
 		if((interceptors = chain.getHandlerInterceptors()) != null) {
 		    
@@ -159,7 +159,7 @@ public class Dispatcher implements ApplicationContextAware {
 		else {                    
                     int j;
                     
-                    j = 0;
+                    j = -1;
                     for(; ++j < handlerAdapters.length; ) {
                         HandlerAdapter handlerAdapter;
                         
@@ -182,6 +182,7 @@ public class Dispatcher implements ApplicationContextAware {
 			interceptors[i].postHandle(processingContext);
 		    }
 		}
+                return status;
 	    }	    
 	}
 	return status;

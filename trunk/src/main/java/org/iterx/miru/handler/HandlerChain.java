@@ -54,4 +54,27 @@ public class HandlerChain {
 	return handlerInterceptors;
     }
 
+    public String toString() {
+        StringBuffer buffer;
+        String cls;
+
+        buffer = new StringBuffer();
+	cls = (getClass().getName());
+        buffer.append(cls.substring(1 + cls.lastIndexOf('.')));
+	buffer.append('[');
+        buffer.append(handler.toString());
+        buffer.append(",HandlerInterceptors[");
+        if(handlerInterceptors != null && 
+           handlerInterceptors.length > 0) {
+            for(int i = 0; i < handlerInterceptors.length; i++) {
+                buffer.append(handlerInterceptors[i].toString());
+                buffer.append(',');
+            }
+            buffer.setLength(buffer.length() - 1);
+        }
+        buffer.append("]]");
+        return buffer.toString();
+    }
+
+
 }
