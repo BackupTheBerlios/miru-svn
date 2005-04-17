@@ -79,8 +79,6 @@ public class Dispatcher implements ApplicationContextAware {
 
     public void setHandlerMapping(HandlerMapping handlerMapping) {
 
-	if(logger.isDebugEnabled())
-	    logger.debug("Setting HandlerMapping [" + handlerMapping + "]");
         if(handlerMapping == null) 
             throw new IllegalArgumentException("handlerMapping == null");
         this.handlerMapping = handlerMapping;
@@ -93,18 +91,12 @@ public class Dispatcher implements ApplicationContextAware {
 
     public void setHandlerResolver(HandlerResolver handlerResolver) {
 
-	if(logger.isDebugEnabled())
-	    logger.debug("Setting HandlerResolver [" + handlerResolver + "]");
 	this.handlerResolver = handlerResolver;	
     }
 
 
     public void addHandlerAdapter(HandlerAdapter handlerAdapter) {
 
-	if(logger.isDebugEnabled())
-	    logger.debug("Adding HandlerAdapter [" + handlerAdapter + "]");
-        if(handlerAdapter == null) 
-            throw new IllegalArgumentException("handlerAdapter == null");
         handlerAdapters = (HandlerAdapter[])
             Arrays.add(handlerAdapters, handlerAdapter);
     }
@@ -114,10 +106,13 @@ public class Dispatcher implements ApplicationContextAware {
         return handlerAdapters;
     }
 
+    public void setHandlerAdapters(HandlerAdapter[] handlerAdapters) {
+
+        this.handlerAdapters = handlerAdapters;
+    }
+
     public void removeHandlerAdapter(HandlerAdapter handlerAdapter) {
 
-	if(logger.isDebugEnabled())
-	    logger.debug("Removing HandlerAdapter [" + handlerAdapter + "]");
         handlerAdapters = (HandlerAdapter[])
             Arrays.remove(handlerAdapters, handlerAdapter);
     }

@@ -23,7 +23,6 @@ package org.iterx.miru.handler;
 
 import java.util.Iterator;
 
-import org.iterx.miru.handler.Handler;
 import org.iterx.miru.handler.HandlerChain;
 import org.iterx.miru.interceptor.HandlerInterceptor;
 
@@ -34,10 +33,10 @@ public interface HandlerMapping {
     public Iterator getHandlers();
     
     public void addHandler(String id, 
-    			   Handler handler);
+    			   Object handler);
 
     public void addHandler(String id, 
-			   Handler handler,
+			   Object handler,
 			   HandlerInterceptor[] handlerInterceptors);
 
     public void removeHandler(String id);

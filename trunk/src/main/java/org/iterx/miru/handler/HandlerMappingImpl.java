@@ -50,13 +50,13 @@ public class HandlerMappingImpl implements HandlerMapping {
     }
     
     public void addHandler(String id, 
-			   Handler handler) {
+			   Object handler) {
 
 	addHandler(id, handler, null);
     }
 
     public void addHandler(String id, 
-			   Handler handler,
+			   Object handler,
 			   HandlerInterceptor[] handlerInterceptors) {
 
 	if(id == null)

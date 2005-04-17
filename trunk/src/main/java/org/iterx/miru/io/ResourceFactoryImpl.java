@@ -23,10 +23,6 @@ package org.iterx.miru.io;
 
 import java.net.URI;
 
-import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -35,45 +31,55 @@ import org.iterx.miru.io.ResourceFactory;
 
 import org.iterx.miru.resolver.ResourceResolver;
 
+import org.iterx.util.Arrays;
+
 public class ResourceFactoryImpl implements ResourceFactory {
 
-    protected final Log log = LogFactory.getLog(ResourceFactoryImpl.class);
+    protected final Log logger = LogFactory.getLog(ResourceFactoryImpl.class);
 
-    protected List resourceResolvers;
+    protected ResourceResolver[] resourceResolvers;
 
     public ResourceFactoryImpl() {
 
-	resourceResolvers = new ArrayList();
+	resourceResolvers = new ResourceResolver[0];
     }
 
     public ResourceResolver[] getResourceResolvers() {
 
-	return ((ResourceResolver[]) resourceResolvers.toArray
-		(new ResourceResolver[resourceResolvers.size()]));
+        return resourceResolvers;
+    }
+
+    public void setResourceResolvers(ResourceResolver[] resourceResolvers) {
+
+        if(resourceResolvers == null)
+            throw new IllegalArgumentException("resourceResolvers == null");
+        this.resourceResolvers = resourceResolvers;
     }
 
     public void addResourceResolver(ResourceResolver resourceResolver) {
-	
-	resourceResolvers.add(resourceResolver);
+
+        resourceResolvers = 
+            (ResourceResolver[]) Arrays.add(resourceResolvers, resourceResolver);
     }
 
     public void removeResourceResolver(ResourceResolver resourceResolver) {
-	
-	resourceResolvers.remove(resourceResolver);
+
+        resourceResolvers = 
+            (ResourceResolver[]) Arrays.remove(resourceResolvers, resourceResolver);
     }
 
     public Resource getResource(URI uri) {
 	assert (uri != null) : "uri == null";
-	Resource resource;
 
-	resource = null;
-	for(Iterator iterator = resourceResolvers.iterator();
-	    iterator.hasNext(); ) {
-	    ResourceResolver resourceResolver;
+        for(int i = 0; i < resourceResolvers.length; i++) {
+            Resource resource;
 
-	    resourceResolver = (ResourceResolver) iterator.next();
-	    if((resource = resourceResolver.resolve(uri)) != null) break;
+	    if((resource = (resourceResolvers[i]).resolve(uri)) != null) 
+                return resource;
 	}
-	return resource;
+
+        if(logger.isWarnEnabled())
+            logger.warn("Resource [" + uri + "] not found.");        
+	return null;
     }
 }

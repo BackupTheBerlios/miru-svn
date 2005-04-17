@@ -66,7 +66,7 @@ public class XmlHandlerMappingParser extends DefaultHandler {
     private HandlerMapping handlerMapping;
 
     private ArrayList interceptors;
-    private Handler handler;
+    private Object handler;
 
     private String chainId, handlerId;
 
@@ -178,7 +178,7 @@ public class XmlHandlerMappingParser extends DefaultHandler {
 			//if(logger.isInfoEnabled())
 			//  logger.info("Adding Handler [" + handler.toString() + "]");
 			
-			handler = (Handler) object;
+			handler = object;
 			handlerId = localName;
 			
 

@@ -158,7 +158,7 @@
       <batchtest fork="yes" todir="${test.report.dir}">
         <fileset dir="${test.source.dir}">
           <include name="**/Test*.java"/>
-          <exclude name="**/TestPerf.java"/>
+          <exclude name="**/TestPerf*.java"/>
           <exclude name="**/AllTests.java"/>
         </fileset>
       </batchtest>
