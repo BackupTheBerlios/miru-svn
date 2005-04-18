@@ -17,30 +17,10 @@
       org="geronimo-spec"
       name="geronimo-spec-servlet"
       rev="2.4-rc1"/>   
-    <!--dependency
-      org="cglib"
-      name="cglib-nodep"
-      rev="2.1"/>
     <dependency
       org="springframework"
-      name="spring-aop"
-      rev="1.2-rc1"/-->
-    <dependency
-      org="springframework"
-      name="spring-core"
+      name="spring"
       rev="1.2-rc1"/>
-    <dependency
-      org="springframework"
-      name="spring-beans"
-      rev="1.2-rc1"/>
-    <dependency
-      org="springframework"
-      name="spring-context"
-      rev="1.2-rc1"/>
-
-
-
-
   </dependencies>
 
 </ivy-module>
