@@ -19,11 +19,11 @@
     <dependency  
       org="geronimo-spec"  
       name="geronimo-spec-servlet"
-      rev="2.4"/>
+      rev="2.4-rc1"/>
     <dependency
       org="springframework"
       name="spring"
-      rev="1.2"/>
+      rev="1.2-rc2"/>
   </dependencies>
 
 </ivy-module>
