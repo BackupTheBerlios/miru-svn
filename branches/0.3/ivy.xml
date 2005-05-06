@@ -2,7 +2,7 @@
   <info
     organisation="iterx"
     module="miru"
-    revision="0.1.1"
+    revision="0.3.0"
     status="integration">
     <license name="GNU Lesser General Public License 2.1"/>    
   </info>

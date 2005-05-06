@@ -8,7 +8,7 @@
 ]]>
   </description>
 
-  <property name="version" value="0.1.1"/>
+  <property name="version" value="0.3.0"/>
 
   <property name="debug" value="on"/>
   <property name="optimize" value="off"/>
