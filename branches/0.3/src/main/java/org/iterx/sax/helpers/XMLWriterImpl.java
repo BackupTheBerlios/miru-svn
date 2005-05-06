@@ -28,7 +28,6 @@ import org.iterx.sax.OutputTarget;
 
 public class XMLWriterImpl extends XMLFilterImpl implements XMLWriter {
     
-    private OutputTarget outputTarget;
 
     public XMLWriterImpl() {
 
@@ -40,28 +39,10 @@ public class XMLWriterImpl extends XMLFilterImpl implements XMLWriter {
         super(parent);
     }
 
-    public XMLWriterImpl(OutputTarget outputTarget) {
-
-        super();
-        this.outputTarget = outputTarget;
-    }
-
-
-    public XMLWriterImpl(XMLReader parent,
-                         OutputTarget outputTarget) {
-
-        super(parent);
-        this.outputTarget = outputTarget;
-    }
-
-    public OutputTarget getOutputTarget() {
-
-        return outputTarget;
-    }
-
-    public void setOutputTarget(OutputTarget outputTarget) {
-
-        this.outputTarget = outputTarget;
+    public void parse(InputSource input, OutputTarget output) 
+        throws IOException, SAXException {
+        
+        super.parse(input);
     }
 
 }

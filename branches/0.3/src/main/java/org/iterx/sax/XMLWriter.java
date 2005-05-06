@@ -30,8 +30,8 @@ import org.iterx.sax.OutputTarget;
 
 public interface XMLWriter extends XMLFilter {
     
-    public OutputTarget getOutputTarget();
+    public void parse(InputSource input, OutputTarget output) 
+        throws IOException, SAXException;
 
-    public void setOutputTarget(OutputTarget outputTarget);
 
 }
