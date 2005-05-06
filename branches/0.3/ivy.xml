@@ -1,0 +1,29 @@
+<ivy-module version="1.0">
+  <info
+    organisation="iterx"
+    module="miru"
+    revision="0.1.1"
+    status="integration">
+    <license name="GNU Lesser General Public License 2.1"/>    
+  </info>
+
+  <publications>
+    <artifact name="miru" type="jar"/>
+  </publications>
+
+  <dependencies>
+    <dependency
+      org="apache"
+      name="commons-logging"
+      rev="1.0.4"/>
+    <dependency  
+      org="geronimo-spec"  
+      name="geronimo-spec-servlet"
+      rev="2.4-rc1"/>
+    <dependency
+      org="springframework"
+      name="spring"
+      rev="1.2-rc2"/>
+  </dependencies>
+
+</ivy-module>

@@ -1,0 +1,198 @@
+<project 
+  name="miru"
+  xmlns:ivy="antlib:fr.jayasoft.ivy.ant">
+  <description>
+<![CDATA[
+    Miru
+
+]]>
+  </description>
+
+  <property name="version" value="0.1.1"/>
+
+  <property name="debug" value="on"/>
+  <property name="optimize" value="off"/>
+
+
+  <property name="source.dir" value="${basedir}/src"/>
+  <property name="target.dir" value="${basedir}/target"/>
+  <property name="library.dir" value="${basedir}/lib"/>
+
+  <property name="java.compiler.source" value="1.4"/>
+  <property name="java.compiler.target" value="1.4"/>
+
+  <target 
+    name="all" 
+    description="Build all project artifacts and test."
+    depends="test"/>
+
+  <target 
+    name="init">
+    <available file="lib" property="update.skip"/>
+    <antcall target="update"/>    
+  </target>
+
+  <target
+    name="update" unless="update.skip"
+    description="Update project dependencies.">
+    <property name="ivy.file" value="${basedir}/ivy.xml"/>
+
+    
+    <ivy:configure/>    
+    <ivy:resolve
+      file="${ivy.file}"
+      showprogress="false"
+      haltonfailure="true"/>
+    <mkdir dir="${library.dir}"/>
+
+    <ivy:retrieve
+      pattern="${library.dir}/${artifact}-${revision}.${type}"
+      haltonfailure="true"/>
+
+  </target>
+
+
+  <target name="compile">
+    <fail unless="java.source.dir">You must specify 'java.source.dir'.</fail>
+    <fail unless="java.target.dir">You must specify 'java.target.dir'.</fail>
+    <fail unless="java.library.path">You must specify 'java.library.path'.</fail>
+
+    <mkdir dir="${java.target.dir}"/>
+    <javac
+      destdir="${java.target.dir}"
+      source="${java.compiler.source}"
+      target="${java.compiler.target}"
+      optimize="${optimize}"
+      debug="${debug}">
+      <classpath>
+        <path refid="java.library.path"/>
+      </classpath>
+      <src>
+        <path><pathelement path="${java.source.dir}"/></path>
+      </src>
+      <include name="**/*.java" />
+    </javac>
+  </target>
+
+  <target 
+    name="build"
+    depends="init"
+    description="Build all project files.">
+
+    <property name="java.source.dir" value="${source.dir}/main/java"/>
+    <property name="java.target.dir" value="${target.dir}/classes"/>
+    <path id="java.library.path">
+      <fileset dir="${library.dir}">
+        <include name="**/*.jar"/>
+      </fileset>
+    </path>
+
+    <antcall target="compile">
+      <param name="java.source.dir" value="${java.source.dir}"/>
+      <param name="java.target.dir" value="${java.target.dir}"/>
+      <reference torefid="java.library.path" refid="java.library.path"/>
+    </antcall>
+
+  </target>
+
+
+  <target 
+    name="jar"
+    description="Build project artifacts."
+    depends="build">
+
+    <property name="jar.name" value="miru-${version}"/>        
+    <property name="jar.source.dir" value="${target.dir}/classes"/>
+    <property name="jar.target.dir" value="${target.dir}"/>
+
+    <mkdir dir="${jar.target.dir}"/>
+    <jar 
+      destfile="${jar.target.dir}/${jar.name}.jar"
+      basedir="${jar.source.dir}"/>
+  </target>
+
+  <target 
+    name="test"
+    description="Run all tests on project artifacts."
+    depends="test:build, test:unit, test:perf"/>
+
+  <target
+    name="test:build"
+    depends="jar">
+
+    <property name="test.source.dir" value="${source.dir}/test/java"/>
+    <property name="test.report.dir" value="${target.dir}/test-reports"/>
+    <property name="test.target.dir" value="${target.dir}/test-classes"/>
+
+    <path id="test.library.path">
+      <fileset dir="${jar.target.dir}">
+        <include name="${jar.name}.jar"/>
+      </fileset>      
+      <fileset dir="${library.dir}">
+        <include name="**/*.jar"/>
+      </fileset>
+    </path>
+
+    <antcall target="compile">
+      <param name="java.source.dir" value="${test.source.dir}"/>
+      <param name="java.target.dir" value="${test.target.dir}"/>
+      <reference torefid="java.library.path" refid="test.library.path"/>
+    </antcall>
+  </target>
+
+  <target 
+    name="test:unit"
+    description="Run unit tests on project artifacts."
+    depends="test:build">
+
+    <mkdir dir="${test.report.dir}"/>
+    <junit printsummary="yes" haltonfailure="yes">
+      <formatter type="plain"/>
+      <assertions>
+        <enable/>
+      </assertions>
+      <classpath>
+        <pathelement location="${test.target.dir}"/>
+        <path refid="test.library.path"/>
+      </classpath>
+      <batchtest fork="yes" todir="${test.report.dir}">
+        <fileset dir="${test.source.dir}">
+          <include name="**/Test*.java"/>
+          <exclude name="**/TestPerf*.java"/>
+          <exclude name="**/AllTests.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target 
+    name="test:perf"
+    description="Run perf tests on project artifacts."
+    depends="test:build">
+
+    <mkdir dir="${test.report.dir}"/>
+    <junit printsummary="yes" haltonfailure="yes">
+      <formatter type="plain"/>
+      <assertions>
+        <disable/>
+      </assertions>
+      <classpath>
+        <pathelement location="${test.target.dir}"/>
+        <path refid="test.library.path"/>
+      </classpath>
+      <batchtest fork="yes" todir="${test.report.dir}">
+        <fileset dir="${test.source.dir}">
+          <include name="**/TestPerf*.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+
+  <target 
+    name="clean" 
+    description="Delete all project build files &amp; artifacts.">
+    <delete dir="${target.dir}"/>
+  </target>
+  
+</project>
