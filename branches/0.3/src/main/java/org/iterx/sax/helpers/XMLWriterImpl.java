@@ -20,8 +20,12 @@
 */
 package org.iterx.sax.helpers;
 
+import java.io.IOException;
+
 import org.xml.sax.XMLReader;
+import org.xml.sax.InputSource;
 import org.xml.sax.helpers.XMLFilterImpl;
+import org.xml.sax.SAXException;
 
 import org.iterx.sax.XMLWriter;
 import org.iterx.sax.OutputTarget;

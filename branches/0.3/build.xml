@@ -131,6 +131,9 @@
       <fileset dir="${library.dir}">
         <include name="**/*.jar"/>
       </fileset>
+      <fileset dir="${ant.home}">
+        <include name="**/*.jar"/>
+      </fileset>
     </path>
 
     <antcall target="compile">

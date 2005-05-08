@@ -108,9 +108,12 @@ public class SaxSerializer extends SerializerImpl {
         assert (xmlWriter != null) : "xmlWriter == null";
         assert (outputTarget != null) : "Invalid output target.";
 
-        xmlWriter.setOutputTarget(outputTarget);
+        //write wrapper for parent to pass through details
+
+
+        //        xmlWriter.setOutputTarget(outputTarget);
         if(parent instanceof Stage) ((Stage) parent).execute();
-        xmlWriter.setOutputTarget(null);
+        //xmlWriter.setOutputTarget(null);
     }
 
     public void reset() {

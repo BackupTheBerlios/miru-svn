@@ -33,9 +33,11 @@ import junit.extensions.RepeatedTest;
 import com.clarkware.junitperf.LoadTest;
 import com.clarkware.junitperf.TimedTest;
 
+import org.xml.sax.InputSource;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import org.iterx.sax.OutputTarget;
 import org.iterx.sax.helpers.XMLWriterImpl;
 
 import org.iterx.miru.context.ProcessingContext;
@@ -149,9 +151,13 @@ public class TestPerfPipeline extends TestCase {
     private static class SimpleXmlWriter extends XMLWriterImpl {
         private Writer writer;
 
-        public void startDocument() throws SAXException {
+        public void parse(InputSource source, OutputTarget target) 
+            throws IOException, SAXException {
 
-            writer = getOutputTarget().getCharacterStream();
+            writer = target.getCharacterStream();
+            parse(source);
+            writer.flush();
+            writer = null;
         }
 
         public void startElement(String namespaceURI,
@@ -192,17 +198,5 @@ public class TestPerfPipeline extends TestCase {
             catch(IOException e) {}
 
         }
-
-
-        public void endDocument() throws SAXException {
-
-            try {
-                writer.flush();
-                writer = null;
-            }
-            catch(IOException e) {}
-
-        }
     }
-
 }
