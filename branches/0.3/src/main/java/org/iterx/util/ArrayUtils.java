@@ -1,5 +1,5 @@
 /*
-  org.iterx.util.Arrays
+  org.iterx.util.ArrayUtils
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -22,9 +22,9 @@ package org.iterx.util;
 
 import java.lang.reflect.Array;
 
-public final class Arrays {
+public final class ArrayUtils {
 
-    private Arrays() {}
+    private ArrayUtils() {}
 
     public static Object[] add(Object[] array, Object object) {
         Object[] clone;
