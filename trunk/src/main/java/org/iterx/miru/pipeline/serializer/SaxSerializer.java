@@ -24,10 +24,13 @@ import java.io.Writer;
 import java.io.OutputStream;
 import java.io.IOException;
 
+import org.xml.sax.SAXException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.helpers.XMLFilterImpl;
 
 import org.iterx.sax.XMLWriter;
+import org.iterx.sax.InputSource;
 import org.iterx.sax.OutputTarget;
 
 import org.iterx.miru.io.StreamTarget;
@@ -37,13 +40,13 @@ import org.iterx.miru.context.ProcessingContext;
 
 import org.iterx.miru.pipeline.Stage;
 import org.iterx.miru.pipeline.SerializerImpl;
+import org.iterx.miru.pipeline.PipelineException;
 
 public class SaxSerializer extends SerializerImpl {
     
     private static final String LEXICAL_HANDLER =
         "http://xml.org/sax/properties/lexical-handler";
 
-    private OutputTarget outputTarget;
     protected XMLWriter xmlWriter;
 
     public SaxSerializer() {}
@@ -66,9 +69,8 @@ public class SaxSerializer extends SerializerImpl {
     }   
     
     
-    public void init(ProcessingContext processingContext) {
+    public void init() {
         assert (parent != null) : "parent == null";
-        assert (processingContext != null) : "processingContext == null";
         assert (xmlWriter != null) : "xmlWriter == null";        
 
         if(xmlWriter instanceof ContentHandler)
@@ -76,9 +78,23 @@ public class SaxSerializer extends SerializerImpl {
         if(xmlWriter instanceof LexicalHandler)
             parent.setLexicalHandler((LexicalHandler) xmlWriter);
 
-        
+        xmlWriter.setParent(new XmlFilterCallback());
+        if(parent instanceof Stage)((Stage) parent).init();
+
+    }  
+
+    public void execute(ProcessingContext processingContext) 
+        throws IOException {
+        assert (xmlWriter != null) : "xmlWriter == null";
+
+        //write wrapper for parent to pass through details
+        //        xmlWriter.setOutputTarget(outputTarget);
+        //
+        //xmlWriter.setOutputTarget(null);
+
         try {
             ResponseContext responseContext;
+            OutputTarget outputTarget;
             
             responseContext = processingContext.getResponseContext();
             outputTarget = new OutputTarget(responseContext);
@@ -94,30 +110,29 @@ public class SaxSerializer extends SerializerImpl {
                 }
                 else outputTarget.setCharacterStream(streamTarget.getWriter());
             }
+
+
+            xmlWriter.parse(new InputSource(processingContext), 
+                            outputTarget);
         }
         catch(Exception e) {
-            throw new RuntimeException
-                ("Failed to initialise target.", e);
+            throw new PipelineException
+                ("Pipeline execution failure.", e);
+        }
+    }    
+
+    private class XmlFilterCallback extends XMLFilterImpl {
+
+        public void parse(org.xml.sax.InputSource inputSource) 
+            throws IOException, SAXException {
+
+            if(parent instanceof Stage) 
+                ((Stage) parent).execute
+                    ((ProcessingContext)
+                     ((InputSource) inputSource).getObject());
         }
 
-        if(parent instanceof Stage)((Stage) parent).init(processingContext);
-
-    }  
-
-    public void execute() throws IOException {
-        assert (xmlWriter != null) : "xmlWriter == null";
-        assert (outputTarget != null) : "Invalid output target.";
-
-        xmlWriter.setOutputTarget(outputTarget);
-        if(parent instanceof Stage) ((Stage) parent).execute();
-        xmlWriter.setOutputTarget(null);
     }
 
-    public void reset() {
 
-        outputTarget = null;
-        super.reset();               
-    }
-
-    
 }

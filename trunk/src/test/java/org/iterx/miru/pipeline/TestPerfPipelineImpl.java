@@ -33,9 +33,11 @@ import junit.extensions.RepeatedTest;
 import com.clarkware.junitperf.LoadTest;
 import com.clarkware.junitperf.TimedTest;
 
+import org.xml.sax.InputSource;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import org.iterx.sax.OutputTarget;
 import org.iterx.sax.helpers.XMLWriterImpl;
 
 import org.iterx.miru.context.ProcessingContext;
@@ -43,10 +45,11 @@ import org.iterx.miru.context.WebRequestContextImpl;
 import org.iterx.miru.context.WebResponseContextImpl;
 
 import org.iterx.miru.pipeline.Pipeline;
+import org.iterx.miru.pipeline.PipelineImpl;
 import org.iterx.miru.pipeline.generator.SaxGenerator;
 import org.iterx.miru.pipeline.serializer.SaxSerializer;
 
-public class TestPerfPipeline extends TestCase {
+public class TestPerfPipelineImpl extends TestCase {
 
     public static final int ITERATIONS  = 100;
     public static final int CONCURRENCY = 100;
@@ -55,14 +58,14 @@ public class TestPerfPipeline extends TestCase {
     public static Test suite() {
         Test test;
 
-        test = new PipelineTest("testPipeline");
+        test = new PipelineImplTest("testPipeline");
         
         test = new RepeatedTest(test, ITERATIONS);
         test = new TimedTest(test, TIMEOUT);
         return new LoadTest(test, CONCURRENCY);
     }
 
-    public static class PipelineTest extends TestCase {
+    public static class PipelineImplTest extends TestCase {
         
         private Pipeline[] pipelines;
         private int next, recycle;
@@ -74,9 +77,9 @@ public class TestPerfPipeline extends TestCase {
             System.gc();
             memory = runtime.freeMemory();            
 
-            new Pipeline
-                    (new SaxGenerator(),
-                     new SaxSerializer(new SimpleXmlWriter()));
+            new PipelineImpl
+                (new SaxGenerator(),
+                 new SaxSerializer(new SimpleXmlWriter()));
             
             memory -= runtime.freeMemory();
             System.out.println("Memory: " + 
@@ -84,21 +87,21 @@ public class TestPerfPipeline extends TestCase {
                                " bytes");
 
             memory = runtime.freeMemory();    
-            pipelines = new Pipeline[CONCURRENCY];
+            pipelines = new PipelineImpl[CONCURRENCY];
             for(int i = CONCURRENCY; i-- > 0; ) {
-                pipelines[i] = new Pipeline
+                pipelines[i] = new PipelineImpl
                     (new SaxGenerator(),
                      new SaxSerializer(new SimpleXmlWriter()));
             }
             memory -= runtime.freeMemory();
             System.out.println("Memory: " + 
                                (memory / CONCURRENCY) +
-                               " bytes/Pipeline");
+                               " bytes/PipelineImpl");
             System.gc();
             next = recycle = -1;
         }
 
-        public PipelineTest(String name) {
+        public PipelineImplTest(String name) {
 
             super(name);
         }
@@ -149,9 +152,13 @@ public class TestPerfPipeline extends TestCase {
     private static class SimpleXmlWriter extends XMLWriterImpl {
         private Writer writer;
 
-        public void startDocument() throws SAXException {
+        public void parse(InputSource source, OutputTarget target) 
+            throws IOException, SAXException {
 
-            writer = getOutputTarget().getCharacterStream();
+            writer = target.getCharacterStream();
+            parse(source);
+            writer.flush();
+            writer = null;
         }
 
         public void startElement(String namespaceURI,
@@ -192,17 +199,5 @@ public class TestPerfPipeline extends TestCase {
             catch(IOException e) {}
 
         }
-
-
-        public void endDocument() throws SAXException {
-
-            try {
-                writer.flush();
-                writer = null;
-            }
-            catch(IOException e) {}
-
-        }
     }
-
 }

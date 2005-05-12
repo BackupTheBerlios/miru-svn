@@ -66,33 +66,29 @@ public class TransformerImpl implements Transformer {
         this.lexicalHandler = lexicalHandler;
     }
 
-    public void init(ProcessingContext processingContext) {
+    public void init() {
         assert (parent != null) : "parent == null";
-        assert (processingContext != null) : "processingContext == null";
 
-        if(parent instanceof Stage)((Stage) parent).init(processingContext);
+        if(parent instanceof Stage)((Stage) parent).init();
 	if(contentHandler != null)
 	    parent.setContentHandler(contentHandler);
 	if(lexicalHandler != null)
 	    parent.setLexicalHandler(lexicalHandler);
     }
 
-    public void execute() throws IOException {
+    public void execute(ProcessingContext processingContext) throws IOException {
+        assert (processingContext != null) : "processingContext == null";
 
-        if(parent instanceof Stage) ((Stage) parent).execute();
-    }
-
-    public void reset() {
-        if(parent != null && 
-           parent instanceof Stage) ((Stage) parent).reset();
-                
-	lexicalHandler = null;
-	contentHandler = null;        
+        if(parent instanceof Stage) ((Stage) parent).execute(processingContext);
     }
 
     public void destroy() {
 
-        reset();
+        if(parent != null && 
+           parent instanceof Stage) ((Stage) parent).destroy();
+                
+	lexicalHandler = null;
+	contentHandler = null;        
 	parent = null;
     }
     

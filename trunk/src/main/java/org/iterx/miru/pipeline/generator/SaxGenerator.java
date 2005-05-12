@@ -35,6 +35,7 @@ import org.iterx.miru.io.StreamSource;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.pipeline.GeneratorImpl;
+import org.iterx.miru.pipeline.PipelineException;
 
 public class SaxGenerator extends GeneratorImpl {
 
@@ -44,8 +45,6 @@ public class SaxGenerator extends GeneratorImpl {
     protected static SAXParserFactory saxParserFactory;
     protected XMLReader xmlReader;
     
-    private InputSource inputSource;
-
     static {
         saxParserFactory = SAXParserFactory.newInstance();
     }
@@ -69,7 +68,7 @@ public class SaxGenerator extends GeneratorImpl {
         this.xmlReader = xmlReader;
     }
 
-    public void init(ProcessingContext processingContext) {
+    public void init() {
 
         if(xmlReader == null) {
             try {
@@ -83,9 +82,26 @@ public class SaxGenerator extends GeneratorImpl {
                     ("Failed to initialise Generator.", e);
             }
         }
+
+        if(contentHandler != null)
+            xmlReader.setContentHandler(contentHandler);
+        if(lexicalHandler != null) {
+            try {
+                xmlReader.setProperty(LEXICAL_HANDLER, lexicalHandler);
+            }
+            catch(SAXException e) {}
+        }        
+        super.init();
+    }
+
+    public void execute(ProcessingContext processingContext) 
+        throws IOException {    
+        assert (xmlReader != null) : "xmlReader == null";
+
         try {
             RequestContext requestContext;
-            
+            InputSource inputSource;
+
             requestContext = processingContext.getRequestContext();
             inputSource = new InputSource(requestContext);
             if(requestContext instanceof StreamSource) {
@@ -99,40 +115,19 @@ public class SaxGenerator extends GeneratorImpl {
                         (streamSource.getCharacterEncoding());
                 }
                 else inputSource.setCharacterStream(streamSource.getReader());
+
             }
-        }
-        catch(Exception e) {
-            throw new RuntimeException
-                ("Failed to initialise source.", e);
-        }
-        if(contentHandler != null)
-            xmlReader.setContentHandler(contentHandler);
-        if(lexicalHandler != null) {
-            try {
-                xmlReader.setProperty(LEXICAL_HANDLER, lexicalHandler);
-            }
-            catch(SAXException e) {}
-        }
 
-        super.init(processingContext);
-    }
-
-    public void execute() throws IOException {
-        assert (xmlReader != null) : "xmlReader == null";
-        assert (inputSource != null) : "Invalid input source.";
-
-        try {
 	    xmlReader.parse(inputSource);
 	}
 	catch(SAXException e) {	    
-	    throw new RuntimeException
+	    throw new PipelineException
                 ("Pipeline execution failure.", e);
 	}
     }
 
-    public void reset() {
+    public void destroy() {
 
-        inputSource = null;
         if(contentHandler != null)            
             xmlReader.setContentHandler(null);
         if(lexicalHandler != null) {
@@ -141,8 +136,7 @@ public class SaxGenerator extends GeneratorImpl {
             }
             catch(SAXException e) {}
         }
-        super.reset();
+        super.destroy();
     }
-  
     
 }

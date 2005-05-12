@@ -26,11 +26,9 @@ import org.iterx.miru.context.ProcessingContext;
 
 public interface Stage  {
     
-    public void init(ProcessingContext processingContext);
+    public void init();
 
-    public void execute() throws IOException;
-
-    public void reset();
+    public void execute(ProcessingContext processingContext) throws IOException;
 
     public void destroy();
 

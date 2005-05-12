@@ -56,9 +56,8 @@ public class SaxTransformer extends TransformerImpl {
         this.xmlFilter = xmlFilter;
     }   
     
-    public void init(ProcessingContext processingContext) {
+    public void init() {
         assert (parent != null) : "parent == null";
-        assert (processingContext != null) : "processingContext == null";
         assert (xmlFilter != null) : "xmlFilter == null";        
 
         if(xmlFilter instanceof ContentHandler) {
@@ -75,12 +74,11 @@ public class SaxTransformer extends TransformerImpl {
                 catch(SAXException e) {}
             }                
         }
-
-        if(parent instanceof Stage)((Stage) parent).init(processingContext);
+        if(parent instanceof Stage)((Stage) parent).init();
     }
 
 
-    public void reset() {
+    public void destory() {
 
         if(contentHandler != null)
             xmlFilter.setContentHandler(null);
@@ -90,7 +88,7 @@ public class SaxTransformer extends TransformerImpl {
             }
             catch(SAXException e) {}
         }
-        super.reset();               
+        super.destroy();               
     }
 
     

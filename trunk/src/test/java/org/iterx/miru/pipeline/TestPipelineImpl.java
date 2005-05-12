@@ -23,46 +23,45 @@ package org.iterx.miru.pipeline;
 
 import junit.framework.TestCase;
 
-
-import org.iterx.miru.pipeline.Pipeline;
 import org.iterx.miru.pipeline.Generator;
 import org.iterx.miru.pipeline.Transformer;
 import org.iterx.miru.pipeline.Serializer;
+import org.iterx.miru.pipeline.PipelineImpl;
 import org.iterx.miru.pipeline.GeneratorImpl;
 import org.iterx.miru.pipeline.TransformerImpl;
 import org.iterx.miru.pipeline.SerializerImpl;
 
-public class TestPipeline extends TestCase {
+public class TestPipelineImpl extends TestCase {
 
     public void testConstructors() {
-        Pipeline pipeline;
+        PipelineImpl pipeline;
         Generator generator;
         Transformer[] transformers;
         Serializer serializer;
 
-        pipeline = new Pipeline();
+        pipeline = new PipelineImpl();
         assertNotNull(pipeline);
         assertNull(pipeline.getGenerator());
         assertNull(pipeline.getTransformers());
         assertNull(pipeline.getSerializer());
 
-        pipeline = new Pipeline((generator = new GeneratorImpl()),
+        pipeline = new PipelineImpl((generator = new GeneratorImpl()),
                                 (serializer = new SerializerImpl()));
         assertNotNull(pipeline);
         assertEquals(generator, pipeline.getGenerator());
         assertNull(pipeline.getTransformers());
         assertEquals(serializer, pipeline.getSerializer());
 
-        pipeline = new Pipeline((generator = new GeneratorImpl()),
-                                null,
-                                (serializer = new SerializerImpl()));
+        pipeline = new PipelineImpl((generator = new GeneratorImpl()),
+                                    null,
+                                    (serializer = new SerializerImpl()));
         assertNotNull(pipeline);
         assertEquals(generator, pipeline.getGenerator());
         assertNull(pipeline.getTransformers());
         assertEquals(serializer, pipeline.getSerializer());
 
 
-        pipeline = new Pipeline
+        pipeline = new PipelineImpl
             ((generator = new GeneratorImpl()),
              (transformers = new Transformer[] { new TransformerImpl() }),
              (serializer = new SerializerImpl()));
@@ -73,25 +72,25 @@ public class TestPipeline extends TestCase {
 
         
         try {
-            pipeline = new Pipeline(null,
-                                    new SerializerImpl());
+            pipeline = new PipelineImpl(null,
+                                        new SerializerImpl());
             fail("Failed to detect null Generator");
         }
         catch(IllegalArgumentException e) {}
 
         try {
-            pipeline = new Pipeline(new GeneratorImpl(),
-                                    null);
+            pipeline = new PipelineImpl(new GeneratorImpl(),
+                                        null);
             fail("Failed to detect null Generator");
         }
         catch(IllegalArgumentException e) {}
     }
 
     public void testGeneratorAccessors() {
-        Pipeline pipeline;
+        PipelineImpl pipeline;
         Generator generator;
 
-        pipeline = new Pipeline();
+        pipeline = new PipelineImpl();
         assertNull(pipeline.getGenerator());
 
         pipeline.setGenerator((generator = new GeneratorImpl()));
@@ -102,10 +101,10 @@ public class TestPipeline extends TestCase {
     }
 
     public void testSerializerAccessors() {
-        Pipeline pipeline;
+        PipelineImpl pipeline;
         Serializer serializer;
 
-        pipeline = new Pipeline();
+        pipeline = new PipelineImpl();
         assertNull(pipeline.getSerializer());
 
         pipeline.setSerializer((serializer = new SerializerImpl()));
@@ -116,11 +115,11 @@ public class TestPipeline extends TestCase {
     }
 
     public void testTransformerAccessors() {
-        Pipeline pipeline;
+        PipelineImpl pipeline;
         Transformer[] transformers;
         Transformer transformer;
 
-        pipeline = new Pipeline();
+        pipeline = new PipelineImpl();
         assertNull(pipeline.getTransformers());
         
         pipeline.addTransformer((transformer = new TransformerImpl()));

@@ -1,5 +1,5 @@
 /*
-  org.iterx.sax.helpers.XMLWriterImpl
+  org.iterx.miru.pipeline.PipelineException
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,35 +18,28 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.  
 */
-package org.iterx.sax.helpers;
+package org.iterx.miru.pipeline;
 
 import java.io.IOException;
 
-import org.xml.sax.XMLReader;
-import org.xml.sax.InputSource;
-import org.xml.sax.helpers.XMLFilterImpl;
-import org.xml.sax.SAXException;
+public class PipelineException extends IOException {
 
-import org.iterx.sax.XMLWriter;
-import org.iterx.sax.OutputTarget;
+    public PipelineException() {}
 
-public class XMLWriterImpl extends XMLFilterImpl implements XMLWriter {
-    
+    public PipelineException(String message) {
 
-    public XMLWriterImpl() {
-
-        super();
+        super(message);
     }
 
-    public XMLWriterImpl(XMLReader parent) {
+    public PipelineException(Throwable cause) {
 
-        super(parent);
+        initCause(cause);
     }
 
-    public void parse(InputSource input, OutputTarget output) 
-        throws IOException, SAXException {
-        
-        super.parse(input);
+    public PipelineException(String message, Throwable cause) {
+
+        super(message);
+        initCause(cause);
     }
 
 }
