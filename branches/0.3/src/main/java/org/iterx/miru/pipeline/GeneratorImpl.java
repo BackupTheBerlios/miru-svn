@@ -45,19 +45,14 @@ public class GeneratorImpl implements Generator {
         this.lexicalHandler = lexicalHandler;
     }
 
-    public void init(ProcessingContext processingContext) {}
+    public void init() {}
 
-    public void execute() throws IOException {}
-
-    public void reset() {
-
-        lexicalHandler = null;
-	contentHandler = null;  
-    }
+    public void execute(ProcessingContext processingContext) throws IOException {}
 
     public void destroy() {
 
-        reset();
+        lexicalHandler = null;
+	contentHandler = null;  
     }
     
 }

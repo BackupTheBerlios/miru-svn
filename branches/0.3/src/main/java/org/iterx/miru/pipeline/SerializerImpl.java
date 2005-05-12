@@ -55,28 +55,22 @@ public class SerializerImpl implements Serializer {
     }
 
 
-    public void init(ProcessingContext processingContext) {
+    public void init() {
         assert (parent != null) : "parent == null";
+                
+        if(parent instanceof Stage) ((Stage) parent).init();
+    }
+
+    public void execute(ProcessingContext processingContext) throws IOException {
         assert (processingContext != null) : "processingContext == null";
 
-        if(parent instanceof Stage) 
-            ((Stage) parent).init(processingContext);
+        if(parent instanceof Stage) ((Stage) parent).execute(processingContext);
     }
 
-    public void execute() throws IOException {
-
-        if(parent instanceof Stage) ((Stage) parent).execute();
-    }
-
-    public void reset() {
-        if(parent != null &&
-           parent instanceof Stage) ((Stage) parent).reset();
-        
-    }
 
     public void destroy() {
 
-        reset();
+        if(parent != null && parent instanceof Stage) ((Stage) parent).destroy();
         parent = null;
     }
     
