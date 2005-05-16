@@ -27,6 +27,7 @@ import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -107,8 +108,10 @@ public class SpringXmlBeanFactory extends SpringBeanFactory  {
 	}
 	
 	private SpringBeanWrapper assignBeanWrapper(Object object) {
+            BeanWrapperImpl beanWrapper;
 
-	    return new SpringBeanWrapper(createBeanWrapper(object));
+            initBeanWrapper(beanWrapper = new BeanWrapperImpl(object));
+	    return new SpringBeanWrapper(beanWrapper);
 	}
 
     }

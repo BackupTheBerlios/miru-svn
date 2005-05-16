@@ -28,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -187,8 +188,10 @@ public class SpringBeanFactory implements BeanFactory, BeanWrapperSupport {
 	}
 
 	private SpringBeanWrapper assignBeanWrapper(Object object) {
+            BeanWrapperImpl beanWrapper;
 
-	    return new SpringBeanWrapper(createBeanWrapper(object));
+            initBeanWrapper(beanWrapper = new BeanWrapperImpl(object));
+	    return new SpringBeanWrapper(beanWrapper);
 	}
 
     }

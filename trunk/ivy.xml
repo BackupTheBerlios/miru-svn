@@ -23,7 +23,7 @@
     <dependency
       org="springframework"
       name="spring"
-      rev="1.2-rc2"/>
+      rev="1.2"/>
   </dependencies>
 
 </ivy-module>

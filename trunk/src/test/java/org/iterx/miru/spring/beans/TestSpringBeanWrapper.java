@@ -23,7 +23,8 @@ package org.iterx.miru.spring.beans;
 
 import java.util.HashMap;
 
-import org.springframework.beans.BeanWrapper; 
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl; 
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import junit.framework.TestCase;
@@ -141,9 +142,10 @@ public class TestSpringBeanWrapper extends TestCase {
 	private MockDefaultListableBeanFactory() {}
 
 	private BeanWrapper assignBeanWrapper(Object object) {
+            BeanWrapper beanWrapper;
 
-	    return createBeanWrapper(object);
+            initBeanWrapper(beanWrapper = new BeanWrapperImpl(object));
+	    return beanWrapper;
 	}
-
     }
 }
