@@ -30,7 +30,7 @@ import org.iterx.miru.pipeline.Generator;
 import org.iterx.miru.pipeline.Transformer;
 import org.iterx.miru.pipeline.Serializer;
 
-import org.iterx.util.Arrays;
+import org.iterx.util.ArrayUtils;
 
 public class PipelineImpl implements Pipeline {
 
@@ -89,14 +89,14 @@ public class PipelineImpl implements Pipeline {
 
         transformers = ((transformers == null)?
                         new Transformer[] { transformer } :
-                        (Transformer[]) Arrays.add(transformers, transformer));
+                        (Transformer[]) ArrayUtils.add(transformers, transformer));
     }
 
     public void removeTransformer(Transformer transformer) {
         assert (_mutable) : "Immutable object.";
 
         transformers = 
-            (Transformer[]) Arrays.remove(transformers, transformer);
+            (Transformer[]) ArrayUtils.remove(transformers, transformer);
         if(transformers.length == 0) transformers = null;
     }
 

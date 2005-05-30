@@ -31,7 +31,7 @@ import org.iterx.miru.io.ResourceFactory;
 
 import org.iterx.miru.resolver.ResourceResolver;
 
-import org.iterx.util.Arrays;
+import org.iterx.util.ArrayUtils;
 
 public class ResourceFactoryImpl implements ResourceFactory {
 
@@ -59,13 +59,13 @@ public class ResourceFactoryImpl implements ResourceFactory {
     public void addResourceResolver(ResourceResolver resourceResolver) {
 
         resourceResolvers = 
-            (ResourceResolver[]) Arrays.add(resourceResolvers, resourceResolver);
+            (ResourceResolver[]) ArrayUtils.add(resourceResolvers, resourceResolver);
     }
 
     public void removeResourceResolver(ResourceResolver resourceResolver) {
 
         resourceResolvers = 
-            (ResourceResolver[]) Arrays.remove(resourceResolvers, resourceResolver);
+            (ResourceResolver[]) ArrayUtils.remove(resourceResolvers, resourceResolver);
     }
 
     public Resource getResource(URI uri) {

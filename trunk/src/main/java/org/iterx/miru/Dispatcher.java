@@ -25,7 +25,7 @@ import java.util.Iterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.iterx.util.Arrays;
+import org.iterx.util.ArrayUtils;
 
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.ApplicationContext;
@@ -98,7 +98,7 @@ public class Dispatcher implements ApplicationContextAware {
     public void addHandlerAdapter(HandlerAdapter handlerAdapter) {
 
         handlerAdapters = (HandlerAdapter[])
-            Arrays.add(handlerAdapters, handlerAdapter);
+            ArrayUtils.add(handlerAdapters, handlerAdapter);
     }
 
     public HandlerAdapter[] getHandlerAdapters() {
@@ -114,7 +114,7 @@ public class Dispatcher implements ApplicationContextAware {
     public void removeHandlerAdapter(HandlerAdapter handlerAdapter) {
 
         handlerAdapters = (HandlerAdapter[])
-            Arrays.remove(handlerAdapters, handlerAdapter);
+            ArrayUtils.remove(handlerAdapters, handlerAdapter);
     }
  
     public int dispatch(ProcessingContext processingContext) {

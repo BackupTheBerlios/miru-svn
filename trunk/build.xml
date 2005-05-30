@@ -21,6 +21,7 @@
   <property name="java.compiler.source" value="1.4"/>
   <property name="java.compiler.target" value="1.4"/>
 
+
   <target 
     name="all" 
     description="Build all project artifacts and test."
@@ -141,6 +142,7 @@
       <param name="java.target.dir" value="${test.target.dir}"/>
       <reference torefid="java.library.path" refid="test.library.path"/>
     </antcall>
+
   </target>
 
   <target 
@@ -149,6 +151,7 @@
     depends="test:build">
 
     <mkdir dir="${test.report.dir}"/>
+
     <junit printsummary="yes" haltonfailure="yes">
       <formatter type="plain"/>
       <assertions>
