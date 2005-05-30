@@ -71,6 +71,26 @@ public class TestArrayUtils extends TestCase {
         assertFalse(ArrayUtils.contains(arrayB, "c"));
     }
 
+    public void testResize() {
+        String[] array;
+
+        array = new String[]{ a };
+        assertEquals(1, array.length);
+        assertEquals(a, array[0]);
+
+        array = (String[]) ArrayUtils.resize(array, 3);
+        array[1] = b;
+        assertEquals(3, array.length);
+        assertEquals(a, array[0]);
+        assertEquals(b, array[1]);
+        assertNull(array[2]);
+
+        array = (String[]) ArrayUtils.resize(array, 1);
+        assertEquals(1, array.length);
+        assertEquals(a, array[0]);
+
+    }
+
     public void testAdd() {
         String[] array;
 

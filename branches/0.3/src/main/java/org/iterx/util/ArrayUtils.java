@@ -26,6 +26,21 @@ public final class ArrayUtils {
 
     private ArrayUtils() {}
 
+
+    public static Object[] resize(Object[] array, int size) {
+        Object[] clone;
+        int length;
+
+        clone = (Object[]) 
+            Array.newInstance((array.getClass()).getComponentType(), 
+                              size);
+
+        length = (size > array.length)? array.length : size;        
+        System.arraycopy(array, 0, clone, 0, length);
+        return clone;
+    }
+
+
     public static Object[] add(Object[] array, Object object) {
         Object[] clone;
         int length;
