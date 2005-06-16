@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import java.nio.charset.Charset;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -55,6 +57,8 @@ public class TestWebRequestContextImpl extends TestCase {
 	assertNotNull(request);
 	assertEquals(reader, request.getReader());
 
+        System.out.println(ENCODING);
+        System.out.println(request.getCharacterEncoding());
 	assertTrue(encodingEquals(ENCODING, request.getCharacterEncoding()));
 	
 	request = new WebRequestContextImpl
@@ -196,8 +200,13 @@ public class TestWebRequestContextImpl extends TestCase {
     private static boolean encodingEquals(String encodingA, 
 					  String encodingB) {
 
-	return ((encodingA.replaceAll("[^a-zA-Z0-9]", "")).equalsIgnoreCase
-		(encodingB.replaceAll("[^a-zA-Z0-9]", "")));
+        try {
+            return (Charset.forName(encodingA)).equals
+                (Charset.forName(encodingB));
+        }
+        catch(Exception e) {}
+
+        return false;
     }
 
 }

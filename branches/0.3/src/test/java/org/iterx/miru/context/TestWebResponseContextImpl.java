@@ -26,6 +26,8 @@ import java.io.Writer;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import java.nio.charset.Charset;
+
 import junit.framework.TestCase;
 
 import org.iterx.miru.context.WebResponseContext;
@@ -169,7 +171,12 @@ public class TestWebResponseContextImpl extends TestCase {
     private static boolean encodingEquals(String encodingA, 
 					  String encodingB) {
 
-	return ((encodingA.replaceAll("[^a-zA-Z0-9]", "")).equalsIgnoreCase
-		(encodingB.replaceAll("[^a-zA-Z0-9]", "")));
+        try {
+            return (Charset.forName(encodingA)).equals
+                (Charset.forName(encodingB));
+        }
+        catch(Exception e) {}
+
+        return false;
     }
 }
