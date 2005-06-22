@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.ApplicationContext
+  org.iterx.miru.dispatcher.resolver.ResourceResolver
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,18 +18,15 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.  
 */
-package org.iterx.miru.context;
 
-import org.iterx.miru.beans.BeanFactory;
-import org.iterx.miru.io.ResourceFactory;
-import org.iterx.miru.dispatcher.handler.HandlerMappingFactory;
+package org.iterx.miru.dispatcher.resolver;
 
-public interface ApplicationContext extends BeanFactory {
+import java.net.URI;
 
-    public ApplicationContext getParent();
+import org.iterx.miru.io.Resource;
 
-    public ResourceFactory getResourceFactory();
-
-    public HandlerMappingFactory getHandlerMappingFactory();
+public interface ResourceResolver {
+    
+    public Resource resolve(URI uri);
 
 }

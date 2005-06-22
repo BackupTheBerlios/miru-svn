@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.ApplicationContext
+  org.iterx.miru.dispatcher.resolver.MockResourceResolver
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,18 +18,39 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.  
 */
-package org.iterx.miru.context;
 
-import org.iterx.miru.beans.BeanFactory;
-import org.iterx.miru.io.ResourceFactory;
-import org.iterx.miru.dispatcher.handler.HandlerMappingFactory;
+package org.iterx.miru.dispatcher.resolver;
 
-public interface ApplicationContext extends BeanFactory {
+import java.net.URI;
 
-    public ApplicationContext getParent();
+import org.iterx.miru.io.Resource;
+import org.iterx.miru.dispatcher.resolver.ResourceResolver;
 
-    public ResourceFactory getResourceFactory();
+public class MockResourceResolver implements ResourceResolver {
 
-    public HandlerMappingFactory getHandlerMappingFactory();
+    private Resource resource;
+
+    public MockResourceResolver() {}
+
+    public MockResourceResolver(Resource resource) {
+
+    this.resource = resource;
+    }
+
+    public Resource getResource() {
+
+    return resource;
+    }
+
+    public void setResource(Resource resource) {
+
+    this.resource = resource;
+    }
+
+    public Resource resolve(URI uri) {
+
+    return (resource != null &&
+            (resource.getURI()).equals(uri))? resource : null;
+    }
 
 }

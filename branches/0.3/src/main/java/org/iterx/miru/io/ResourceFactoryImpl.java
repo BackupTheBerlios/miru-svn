@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
 import org.iterx.miru.io.Resource;
 import org.iterx.miru.io.ResourceFactory;
 
-import org.iterx.miru.resolver.ResourceResolver;
+import org.iterx.miru.dispatcher.resolver.ResourceResolver;
 
 import org.iterx.util.ArrayUtils;
 

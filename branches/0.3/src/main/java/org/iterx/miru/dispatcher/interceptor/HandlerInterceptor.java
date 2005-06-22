@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.ApplicationContext
+  org.iterx.miru.dispatcher.interceptor.HandlerInterceptor
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,18 +18,15 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.  
 */
-package org.iterx.miru.context;
 
-import org.iterx.miru.beans.BeanFactory;
-import org.iterx.miru.io.ResourceFactory;
-import org.iterx.miru.dispatcher.handler.HandlerMappingFactory;
+package org.iterx.miru.dispatcher.interceptor;
 
-public interface ApplicationContext extends BeanFactory {
+import org.iterx.miru.context.ProcessingContext;
 
-    public ApplicationContext getParent();
+public interface HandlerInterceptor {
 
-    public ResourceFactory getResourceFactory();
+    public boolean preHandle(ProcessingContext processingContext);
 
-    public HandlerMappingFactory getHandlerMappingFactory();
+    public void postHandle(ProcessingContext processingContext);
 
 }

@@ -25,10 +25,10 @@ import org.iterx.miru.beans.BeanException;
 import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.context.ApplicationContextAware;
 import org.iterx.miru.io.ResourceFactory;
-import org.iterx.miru.handler.HandlerMappingFactory;
+import org.iterx.miru.dispatcher.handler.HandlerMappingFactory;
 
 public class ApplicationContextImpl implements ApplicationContext {
-    
+
     protected HandlerMappingFactory handlerMappingFactory;
     protected ResourceFactory resourceFactory;
     protected BeanFactory beanFactory;
@@ -39,16 +39,16 @@ public class ApplicationContextImpl implements ApplicationContext {
 
     public ApplicationContextImpl(BeanFactory beanFactory) {
 
-        if(beanFactory == null) 
+        if(beanFactory == null)
             throw new IllegalArgumentException("beanFactory == null");
         this.beanFactory = beanFactory;
     }
 
-    public ApplicationContextImpl(BeanFactory beanFactory, 
+    public ApplicationContextImpl(BeanFactory beanFactory,
                                   ApplicationContext parent) {
-        
-        if(beanFactory == null) 
-            throw new IllegalArgumentException("beanFactory == null"); 
+
+        if(beanFactory == null)
+            throw new IllegalArgumentException("beanFactory == null");
         this.beanFactory = beanFactory;
         this.parent = parent;
     }
@@ -60,43 +60,43 @@ public class ApplicationContextImpl implements ApplicationContext {
     }
 
     public void setParent(ApplicationContext parent) {
-        
+
         this.parent = parent;
     }
 
     public ResourceFactory getResourceFactory() {
         if(resourceFactory == null) {
-            if((resourceFactory = 
-                (ResourceFactory) getBeanOfType(ResourceFactory.class)) == null) 
+            if((resourceFactory =
+                (ResourceFactory) getBeanOfType(ResourceFactory.class)) == null)
                 throw new BeanException("Invalid bean type 'ResourceFactory'.");
-            
+
         }
-        
+
         return resourceFactory;
     }
 
     public void setResourceFactory(ResourceFactory resourceFactory) {
-        
+
         if(resourceFactory== null)
             throw new IllegalArgumentException("resourceFactory == null");
         this.resourceFactory = resourceFactory;
-    }    
+    }
 
     public HandlerMappingFactory getHandlerMappingFactory() {
 
         if(handlerMappingFactory == null) {
-            if((handlerMappingFactory = 
-                (HandlerMappingFactory) getBeanOfType(HandlerMappingFactory.class)) == null) 
+            if((handlerMappingFactory =
+                (HandlerMappingFactory) getBeanOfType(HandlerMappingFactory.class)) == null)
                 throw new BeanException("Invalid bean type 'HandlerMappingFactory'");
-            
+
         }
 
         return handlerMappingFactory;
     }
 
     public void setHandlerMappingFactory(HandlerMappingFactory handlerMappingFactory) {
-        
-        if(handlerMappingFactory == null) 
+
+        if(handlerMappingFactory == null)
             throw new IllegalArgumentException("handlerMappingFactory == null");
 
         this.handlerMappingFactory = handlerMappingFactory;
@@ -113,7 +113,7 @@ public class ApplicationContextImpl implements ApplicationContext {
         return object;
     }
 
-    public Object getBeanOfType(Class type){ 
+    public Object getBeanOfType(Class type){
         Object object;
 
         if(((object = beanFactory.getBeanOfType(type)) == null) &&
@@ -124,7 +124,7 @@ public class ApplicationContextImpl implements ApplicationContext {
         return object;
     }
 
-    public Object getBeanOfType(Class[] types){ 
+    public Object getBeanOfType(Class[] types){
         Object object;
 
         if(((object = beanFactory.getBeanOfType(types)) == null) &&
@@ -137,7 +137,7 @@ public class ApplicationContextImpl implements ApplicationContext {
 
     public boolean containsBean(String name) {
 
-        return (beanFactory.containsBean(name) || 
+        return (beanFactory.containsBean(name) ||
                 (parent != null) && parent.containsBean(name));
     }
 

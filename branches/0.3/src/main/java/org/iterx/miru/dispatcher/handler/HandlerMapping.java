@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.ApplicationContext
+  org.iterx.miru.dispatcher.handler.HandlerMapping;
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,18 +18,26 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.  
 */
-package org.iterx.miru.context;
 
-import org.iterx.miru.beans.BeanFactory;
-import org.iterx.miru.io.ResourceFactory;
-import org.iterx.miru.dispatcher.handler.HandlerMappingFactory;
+package org.iterx.miru.dispatcher.handler;
 
-public interface ApplicationContext extends BeanFactory {
+import java.util.Iterator;
 
-    public ApplicationContext getParent();
+import org.iterx.miru.dispatcher.interceptor.HandlerInterceptor;
 
-    public ResourceFactory getResourceFactory();
+public interface HandlerMapping {
 
-    public HandlerMappingFactory getHandlerMappingFactory();
+    public Object getHandler(String id);
+
+    public Iterator getHandlers();
+
+    public void addHandler(String id,
+                           Object handler);
+
+    public void addHandler(String id,
+                           Object handler,
+                           HandlerInterceptor[] handlerInterceptors);
+
+    public void removeHandler(String id);
 
 }
