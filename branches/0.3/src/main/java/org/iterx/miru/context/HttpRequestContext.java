@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.WebRequestContext
+  org.iterx.miru.context.HttpRequestContext
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -26,16 +26,15 @@ import java.net.URI;
 import org.iterx.miru.io.StreamSource;
 import org.iterx.miru.context.RequestContext;
 
-public interface WebRequestContext extends RequestContext, StreamSource {
-    
+public interface HttpRequestContext extends RequestContext, StreamSource {
     public URI getURI();
 
-    public String getProperty(String name);
+    public String getHeader(String name);
 
     public String getParameter(String name);
 
     public String[] getParameterValues(String name);
 
     public String[] getParameterNames();
-    
+
 }

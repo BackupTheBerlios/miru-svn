@@ -29,78 +29,78 @@ import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
 
 public class ProcessingContext {
-
     protected RequestContext request;
     protected ResponseContext response;
 
     private Map attributes;
 
-    private ProcessingContext() {}
+    private ProcessingContext() {
+    }
 
     public ProcessingContext(RequestContext request,
-			     ResponseContext response) {
-	if(request == null)
-	    throw new IllegalArgumentException("request == null");
-	if(response == null)
-	    throw new IllegalArgumentException("response == null");
+                             ResponseContext response) {
+        if (request == null)
+            throw new IllegalArgumentException("request == null");
+        if (response == null)
+            throw new IllegalArgumentException("response == null");
 
-	this.request = request;
-	this.response = response;
+        this.request = request;
+        this.response = response;
 
-	attributes = new HashMap();
+        attributes = new HashMap();
     }
-    
+
     public ProcessingContext(ProcessingContext processingContext) {
 
-	if(processingContext == null)
-	    throw new IllegalArgumentException("processingContext == null");
-	this.request = processingContext.request;
-	this.response = processingContext.response;
+        if (processingContext == null)
+            throw new IllegalArgumentException("processingContext == null");
+        this.request = processingContext.request;
+        this.response = processingContext.response;
 
-	attributes = new HashMap();
+        attributes = new HashMap();
     }
 
 
     public RequestContext getRequestContext() {
 
-	return request;
+        return request;
     }
 
     public void setRequestContext(RequestContext request) {
 
-	if(request == null)
-	    throw new IllegalArgumentException("request == null");
-	this.request = request;
+        if (request == null)
+            throw new IllegalArgumentException("request == null");
+        this.request = request;
     }
 
     public ResponseContext getResponseContext() {
 
-	return response;
+        return response;
     }
-    
+
     public void setResponseContext(ResponseContext response) {
 
-	if(response == null)
-	    throw new IllegalArgumentException("response == null");
-	this.response = response;
+        if (response == null)
+            throw new IllegalArgumentException("response == null");
+        this.response = response;
     }
 
     public Object getAttribute(String name) {
 
-	return attributes.get(name);
+        return attributes.get(name);
     }
-    
+
     public String[] getAttributeNames() {
-	Set names;
-	
-	return (String[]) ((names = attributes.keySet()).toArray
-			   ((Object[]) new String[names.size()]));
+        Set names;
+
+        return (String[]) ((names = attributes.keySet()).toArray
+            ((Object[]) new String[names.size()]));
     }
 
     public void setAttribute(String name, Object object) {
-	
-	if(object == null) attributes.remove(name);
-	else attributes.put(name, object);
+
+        if (object == null) attributes.remove(name);
+        else attributes.put(name, object);
     }
 
 }

@@ -25,7 +25,6 @@ import org.iterx.miru.io.ResourceFactory;
 import org.iterx.miru.dispatcher.handler.HandlerMappingFactory;
 
 public interface ApplicationContext extends BeanFactory {
-
     public ApplicationContext getParent();
 
     public ResourceFactory getResourceFactory();

@@ -21,4 +21,5 @@
 
 package org.iterx.miru.context;
 
-public interface RequestContext {}
+public interface RequestContext {
+}
