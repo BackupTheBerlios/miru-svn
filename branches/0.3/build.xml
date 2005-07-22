@@ -1,6 +1,4 @@
-<project 
-  name="miru"
-  xmlns:ivy="antlib:fr.jayasoft.ivy.ant">
+<project name="miru">
   <description>
 <![CDATA[
     Miru
@@ -21,37 +19,46 @@
   <property name="java.compiler.source" value="1.4"/>
   <property name="java.compiler.target" value="1.4"/>
 
+
+  <path id="ant.library.path">
+    <fileset dir="${ant.home}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
+    <classpath refid="ant.library.path"/>
+  </taskdef>
+
+
   <target 
     name="all" 
     description="Build all project artifacts and test."
     depends="test"/>
 
-  <target 
-    name="init">
-    <available file="lib" property="update.skip"/>
-    <antcall target="update"/>    
-  </target>
-
-  <target
-    name="update" unless="update.skip"
-    description="Update project dependencies.">
-    <property name="ivy.file" value="${basedir}/ivy.xml"/>
-
-    
-    <ivy:configure/>    
-    <ivy:resolve
-      file="${ivy.file}"
-      showprogress="false"
-      haltonfailure="true"/>
-    <mkdir dir="${library.dir}"/>
-
-    <ivy:retrieve
-      pattern="${library.dir}/${artifact}-${revision}.${type}"
-      haltonfailure="true"/>
-
+  <target name="init">
   </target>
 
 
+  <target name="compile:aspects" unless="compile.aspects.uptodate">
+      <iajc
+          xnoweave="true"
+          destdir="${java.target.dir}"
+          source="${java.compiler.source}"
+          target="${java.compiler.target}"
+          debug="${debug}">
+          <classpath>
+              <path refid="java.library.path"/>
+              <path><pathelement path="${java.target.dir}"/></path>
+          </classpath>
+          <src>
+              <path><pathelement path="${java.source.dir}"/></path>
+          </src>
+          <include name="**/*.aj" />
+      </iajc>
+  </target>
+
+  
   <target name="compile">
     <fail unless="java.source.dir">You must specify 'java.source.dir'.</fail>
     <fail unless="java.target.dir">You must specify 'java.target.dir'.</fail>
@@ -65,18 +72,28 @@
       optimize="${optimize}"
       debug="${debug}">
       <classpath>
-        <path refid="java.library.path"/>
+          <path refid="java.library.path"/>
       </classpath>
       <src>
         <path><pathelement path="${java.source.dir}"/></path>
       </src>
       <include name="**/*.java" />
     </javac>
+
+    <uptodate property="compile.aspects.uptodate">
+          <srcfiles dir="${java.source.dir}" includes="**/*.aj"/>
+          <mapper type="regexp"
+                  from="^(.*).aj$$"
+                  to="${java.target.dir}/\1.class"/>
+    </uptodate>
+    <antcall target="compile:aspects"/>
+
   </target>
 
   <target 
     name="build"
     depends="init"
+    unless="build.uptodate"
     description="Build all project files.">
 
     <property name="java.source.dir" value="${source.dir}/main/java"/>
@@ -97,18 +114,24 @@
 
 
   <target 
-    name="jar"
-    description="Build project artifacts."
-    depends="build">
+      name="jar"
+      description="Build project artifacts.">
 
-    <property name="jar.name" value="miru-${version}"/>        
-    <property name="jar.source.dir" value="${target.dir}/classes"/>
-    <property name="jar.target.dir" value="${target.dir}"/>
+      <property name="jar.name" value="miru-${version}"/>
+      <property name="jar.source.dir" value="${target.dir}/classes"/>
+      <property name="jar.target.dir" value="${target.dir}"/>
+      <property name="jar.target.file" value="${jar.target.dir}/${jar.name}.jar"/>
 
-    <mkdir dir="${jar.target.dir}"/>
-    <jar 
-      destfile="${jar.target.dir}/${jar.name}.jar"
-      basedir="${jar.source.dir}"/>
+      <uptodate property="build.uptodate">
+          <srcfiles dir="${source.dir}/main/java" includes="**/*"/>
+          <mapper type="merge" to="${jar.target.file}"/>
+      </uptodate>
+      <antcall target="build"/>
+
+      <mkdir dir="${jar.target.dir}"/>
+      <jar
+          destfile="${jar.target.file}"
+          basedir="${jar.source.dir}"/>
   </target>
 
   <target 
