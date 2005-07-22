@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.TestWebResponseContextImpl
+  org.iterx.miru.context.TestHttpResponseContextImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -23,41 +23,40 @@ package org.iterx.miru.context;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 import java.nio.charset.Charset;
 
 import junit.framework.TestCase;
 
-import org.iterx.miru.context.WebResponseContext;
-import org.iterx.miru.context.WebResponseContextImpl;
+import org.iterx.miru.context.HttpResponseContext;
+import org.iterx.miru.context.HttpResponseContextImpl;
 
-public class TestWebResponseContextImpl extends TestCase {
+public class TestHttpResponseContextImpl extends TestCase {
 
     private static final String ENCODING = System.getProperty("file.encoding");
 
     public void testConstructors() throws IOException {
-	WebResponseContextImpl response;
+	HttpResponseContextImpl response;
 	Writer writer;
 	
-	response = new WebResponseContextImpl(System.out);
+	response = new HttpResponseContextImpl(System.out);
 	assertNotNull(response);
 	assertEquals(System.out, response.getOutputStream());
 	assertEquals(null, response.getCharacterEncoding());
 	
 
-	response = new WebResponseContextImpl(System.out, ENCODING);
+	response = new HttpResponseContextImpl(System.out, ENCODING);
 	assertNotNull(response);
 	assertEquals(System.out, response.getOutputStream());
 	assertTrue(encodingEquals(ENCODING, response.getCharacterEncoding()));
 
-	response = new WebResponseContextImpl((writer = new OutputStreamWriter(System.out)));
+	response = new HttpResponseContextImpl((writer = new OutputStreamWriter(System.out)));
 	assertNotNull(response);
 	assertEquals(writer, response.getWriter());
 	assertTrue(encodingEquals(ENCODING, response.getCharacterEncoding()));
 	
-	response = new WebResponseContextImpl
+	response = new HttpResponseContextImpl
 	    ((writer = new OutputStreamWriter(System.out, ENCODING)));
 	assertNotNull(response);
 	assertEquals(writer, response.getWriter());
@@ -65,42 +64,42 @@ public class TestWebResponseContextImpl extends TestCase {
     }
 
     public void testStatusAccessors() {
-	WebResponseContextImpl response;
+	HttpResponseContextImpl response;
 	int status;
 
-	response = new WebResponseContextImpl(System.out);
+	response = new HttpResponseContextImpl(System.out);
 
-	assertEquals(WebResponseContext.OK, response.getStatus());	
+	assertEquals(HttpResponseContext.OK, response.getStatus());
 
-	response.setStatus(WebResponseContext.SERVER_ERROR);
-	assertEquals(WebResponseContext.SERVER_ERROR, response.getStatus());
+	response.setStatus(HttpResponseContext.SERVER_ERROR);
+	assertEquals(HttpResponseContext.SERVER_ERROR, response.getStatus());
     }
 
 
     public void testPropertyAccessors() {    
-        WebResponseContextImpl response;
+        HttpResponseContextImpl response;
         String value;
 
-	response = new WebResponseContextImpl(System.out);
+	response = new HttpResponseContextImpl(System.out);
         
-        assertNull(response.getProperty("a"));
-        response.setProperty("a", (value = "value"));
-        assertEquals(value, response.getProperty("a"));
-        response.setProperty("b", (value = "value"));
-        assertEquals(value, response.getProperty("b"));        
-        response.setProperty("b", (value = ""));
-        assertEquals(value, response.getProperty("b"));        
-        response.setProperty("a", null);
-        assertNull(response.getProperty("a"));
-        response.setProperty("b", null);
-        assertNull(response.getProperty("b"));
+        assertNull(response.getHeader("a"));
+        response.setHeader("a", (value = "value"));
+        assertEquals(value, response.getHeader("a"));
+        response.setHeader("b", (value = "value"));
+        assertEquals(value, response.getHeader("b"));
+        response.setHeader("b", (value = ""));
+        assertEquals(value, response.getHeader("b"));
+        response.setHeader("a", null);
+        assertNull(response.getHeader("a"));
+        response.setHeader("b", null);
+        assertNull(response.getHeader("b"));
     }
 
     public void testContentLengthAccessors() {
-	WebResponseContextImpl response;
+	HttpResponseContextImpl response;
 	int status;
 
-	response = new WebResponseContextImpl(System.out);
+	response = new HttpResponseContextImpl(System.out);
 
 	assertEquals(-1, response.getContentLength());	
 
@@ -109,10 +108,10 @@ public class TestWebResponseContextImpl extends TestCase {
     }
 
     public void testContentTypeAccessors() {
-	WebResponseContextImpl response;
+	HttpResponseContextImpl response;
 	String value;
 
-	response = new WebResponseContextImpl(System.out);	
+	response = new HttpResponseContextImpl(System.out);
 	assertNull(response.getContentType());
 	
 	response.setContentType((value = "text/xml"));
@@ -124,10 +123,10 @@ public class TestWebResponseContextImpl extends TestCase {
     }
 
     public void testCharacterEncodingAccessors() {
-	WebResponseContextImpl response;
+	HttpResponseContextImpl response;
 	String value;
 
-	response = new WebResponseContextImpl(System.out);	
+	response = new HttpResponseContextImpl(System.out);
 	assertNull(response.getCharacterEncoding());
 	
 	response.setCharacterEncoding((value = ENCODING));
@@ -139,14 +138,14 @@ public class TestWebResponseContextImpl extends TestCase {
 
 
     public void testOutputStream() throws IOException {
-	WebResponseContextImpl response;
+	HttpResponseContextImpl response;
 	Writer writer;
 	
-	response = new WebResponseContextImpl(System.out);
+	response = new HttpResponseContextImpl(System.out);
 	assertEquals(System.out, response.getOutputStream());
 	assertNull(response.getWriter());
 
-	response = new WebResponseContextImpl
+	response = new HttpResponseContextImpl
 	    ((writer = new OutputStreamWriter(System.out)));
 	assertNull(response.getOutputStream());
 	assertEquals(writer, response.getWriter());
@@ -154,16 +153,16 @@ public class TestWebResponseContextImpl extends TestCase {
     }
 
     public void testWriter() throws IOException {
-	WebResponseContextImpl response;
+	HttpResponseContextImpl response;
 	Writer writer;
 	
-	response = new WebResponseContextImpl
+	response = new HttpResponseContextImpl
 	    ((writer = new OutputStreamWriter(System.out)));
 	assertNull(response.getOutputStream());
 	assertEquals(writer, response.getWriter());
 	assertNull(response.getOutputStream());
 	
-	response = new WebResponseContextImpl(System.out);
+	response = new HttpResponseContextImpl(System.out);
 	assertNotNull(response.getWriter());
 	assertNull(response.getOutputStream());
     }

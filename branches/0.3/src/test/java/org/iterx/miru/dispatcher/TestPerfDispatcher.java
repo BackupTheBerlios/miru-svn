@@ -40,8 +40,8 @@ import org.iterx.miru.io.StreamSource;
 import org.iterx.miru.io.StreamTarget;
 
 import org.iterx.miru.context.ProcessingContext;
-import org.iterx.miru.context.WebRequestContextImpl;
-import org.iterx.miru.context.WebResponseContextImpl;
+import org.iterx.miru.context.HttpRequestContextImpl;
+import org.iterx.miru.context.HttpResponseContextImpl;
 
 import org.iterx.miru.dispatcher.handler.Handler;
 import org.iterx.miru.dispatcher.handler.HandlerMapping;
@@ -114,8 +114,8 @@ public class TestPerfDispatcher extends TestCase {
             reader = new StringReader(message);
             writer = new StringWriter();
             processingContext = new ProcessingContext
-                (new WebRequestContextImpl(reader),
-                 new WebResponseContextImpl(writer));
+                (new HttpRequestContextImpl(reader),
+                 new HttpResponseContextImpl(writer));
 
             assertEquals(Dispatcher.OK,
                          dispatcher.dispatch(processingContext));

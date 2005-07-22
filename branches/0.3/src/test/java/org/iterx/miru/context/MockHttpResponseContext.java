@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.MockWebRequestContext
+  org.iterx.miru.context.MockHttpResponseContext
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -21,36 +21,15 @@
 
 package org.iterx.miru.context;
 
-import java.io.InputStream;
-import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import org.iterx.miru.context.HttpResponseContextImpl;
 
-import org.iterx.miru.context.WebRequestContextImpl;
+public class MockHttpResponseContext extends HttpResponseContextImpl {
 
-public class MockWebRequestContext extends WebRequestContextImpl {
+    public MockHttpResponseContext() {
+	
+        super(new ByteArrayOutputStream());		
+    }
    
-    public MockWebRequestContext(String uri) {
-
-	super((InputStream) null);
-	setURI(uri);
-    }
-
-    public MockWebRequestContext(String uri, byte[] data) {
-
-	super(new ByteArrayInputStream(data));
-	setURI(uri);
-    }
-
-    public void setURI(String uri) {
-
-	try {
-	    setURI(new URI(uri));
-	}
-	catch(URISyntaxException e) {
-	    throw new IllegalArgumentException("Invalid uri " + uri);
-	}
-    }
-
 }

@@ -20,7 +20,6 @@
 */
 package org.iterx.miru.pipeline;
 
-import java.io.Reader;
 import java.io.Writer;
 import java.io.IOException;
 import java.io.StringReader;
@@ -41,8 +40,8 @@ import org.iterx.sax.OutputTarget;
 import org.iterx.sax.helpers.XMLWriterImpl;
 
 import org.iterx.miru.context.ProcessingContext;
-import org.iterx.miru.context.WebRequestContextImpl;
-import org.iterx.miru.context.WebResponseContextImpl;
+import org.iterx.miru.context.HttpRequestContextImpl;
+import org.iterx.miru.context.HttpResponseContextImpl;
 
 import org.iterx.miru.pipeline.Pipeline;
 import org.iterx.miru.pipeline.PipelineImpl;
@@ -138,8 +137,8 @@ public class TestPerfPipelineImpl extends TestCase {
             reader = new StringReader(message);
             writer = new StringWriter();
             processingContext = new ProcessingContext
-                (new WebRequestContextImpl(reader),
-                 new WebResponseContextImpl(writer));
+                (new HttpRequestContextImpl(reader),
+                 new HttpResponseContextImpl(writer));
             
             pipeline = getPipeline();
             pipeline.execute(processingContext);
