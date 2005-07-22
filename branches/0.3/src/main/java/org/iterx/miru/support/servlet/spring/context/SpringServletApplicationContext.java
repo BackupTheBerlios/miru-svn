@@ -41,8 +41,8 @@ public class SpringServletApplicationContext extends SpringApplicationContext {
 
         super();
         if(servletContext == null)
-	    throw new IllegalArgumentException("servletContext == null");
-	m_servletContext = servletContext;
+            throw new IllegalArgumentException("servletContext == null");
+        m_servletContext = servletContext;
     }
 
     public SpringServletApplicationContext(ApplicationContext parent) {
@@ -55,8 +55,8 @@ public class SpringServletApplicationContext extends SpringApplicationContext {
 	
         super(parent);
         if(servletContext == null)
-	    throw new IllegalArgumentException("servletContext == null");
-	m_servletContext = servletContext;
+            throw new IllegalArgumentException("servletContext == null");
+        m_servletContext = servletContext;
     }
 
     public SpringServletApplicationContext(BeanFactory beanFactory) {
@@ -68,7 +68,7 @@ public class SpringServletApplicationContext extends SpringApplicationContext {
                                            ServletContext servletContext) {
         super(beanFactory);
         if(servletContext == null)
-	    throw new IllegalArgumentException("servletContext == null");
+            throw new IllegalArgumentException("servletContext == null");
         m_servletContext = servletContext;
 
     }
@@ -85,25 +85,23 @@ public class SpringServletApplicationContext extends SpringApplicationContext {
 
         super(beanFactory);
         if(servletContext == null)
-	    throw new IllegalArgumentException("servletContext == null");
+            throw new IllegalArgumentException("servletContext == null");
         m_servletContext = servletContext;        
     }
 
 
     public ServletContext getServletContext() {
 
-	return m_servletContext;
+        return m_servletContext;
     }
 
     public void setServletContext(ServletContext servletContext) {
-	if(servletContext == null)
-	    throw new IllegalArgumentException("servletContext == null");
+        if(servletContext == null)
+            throw new IllegalArgumentException("servletContext == null");
 
-	synchronized(this) {
-	    m_servletContext = servletContext;
-	}
+        synchronized(this) {
+            m_servletContext = servletContext;
+        }
     }
-
-
 
 }

@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.servlet.ServletResponseContext
+  org.iterx.miru.support.servlet.context.HttpServletResponseContext
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -31,96 +31,95 @@ import java.util.HashMap;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.iterx.miru.context.WebResponseContext;
+import org.iterx.miru.context.HttpResponseContext;
 
-public final class ServletResponseContext implements WebResponseContext {
+public final class HttpServletResponseContext implements HttpResponseContext {
 
+    private HttpServletResponse httpResponse;
     private Map properties;
-    private ServletResponse servletResponse;
     private int length, status;
 
     {
-	status = OK;
-	length = -1;
+        status = OK;
+        length = -1;
     }
-    public ServletResponseContext(ServletResponse servletResponse) {
+
+    public HttpServletResponseContext(HttpServletResponse httpResponse) {
 	        
-        if(servletResponse == null) 
-            throw new IllegalArgumentException("servletResponse == null");
+        if(httpResponse == null)
+            throw new IllegalArgumentException("httpResponse == null");
 
         properties = new HashMap();
-	this.servletResponse = servletResponse;
+        this.httpResponse = httpResponse;
     }
     
     public int getStatus() {
 
-	return status;
+        return status;
     }
 
     public void setStatus(int status) {
-	
-	if(servletResponse instanceof HttpServletResponse) 
-	    ((HttpServletResponse) servletResponse).setStatus(status);
-	this.status = status;
+
+        httpResponse.setStatus(status);
+        this.status = status;
     }  
 
-    public String getProperty(String name) {
+    public String getHeader(String name) {
 
         return (String) properties.get(name);
     }
 
-    public void setProperty(String name, String value) {
+    public void setHeader(String name, String value) {
 
-        if(servletResponse instanceof HttpServletResponse) 
-	    ((HttpServletResponse) servletResponse).setHeader(name, value);
+        httpResponse.setHeader(name, value);
         properties.put(name, value);
     }
 
 
-    public ServletResponse getServletResponse() {
+    public ServletResponse getHttpResponse() {
 
-	return servletResponse;
+        return httpResponse;
     }
 
     public String getCharacterEncoding() {
 
-	return servletResponse.getCharacterEncoding();
+        return httpResponse.getCharacterEncoding();
     }
     
     public void setCharacterEncoding(String encoding) {
 
-	servletResponse.setCharacterEncoding(encoding);
+        httpResponse.setCharacterEncoding(encoding);
     }
 
     public String getContentType() {
 
-	return servletResponse.getContentType();
+        return httpResponse.getContentType();
     }
 
     public void setContentType(String type) {
 
-	servletResponse.setContentType(type);
+        httpResponse.setContentType(type);
     }
 
     public int getContentLength() {
 
-	return length;
+        return length;
     }
 
     public void setContentLength(int length) {
 	
-	servletResponse.setContentLength(length);
-	this.length = length;
+        httpResponse.setContentLength(length);
+        this.length = length;
     }
 
     public OutputStream getOutputStream() throws IOException {
 
-	return servletResponse.getOutputStream();
+        return httpResponse.getOutputStream();
     }
 
     public Writer getWriter() throws IOException {
 
-	return servletResponse.getWriter();
+        return httpResponse.getWriter();
     }
 
 }
