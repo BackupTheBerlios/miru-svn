@@ -19,17 +19,17 @@
   All Rights Reserved.  
 */
 
-package org.iterx.miru.support.spring.beans;
+package org.iterx.miru.support.spring.bean;
 
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import junit.framework.TestCase;
 
-import org.iterx.miru.beans.BeanFactory;
-import org.iterx.miru.beans.BeanWrapper;
-import org.iterx.miru.beans.BeanWrapperAware;
-import org.iterx.miru.support.spring.beans.SpringBeanFactory;
+import org.iterx.miru.bean.BeanFactory;
+import org.iterx.miru.bean.BeanWrapper;
+import org.iterx.miru.bean.BeanWrapperAware;
+import org.iterx.miru.support.spring.bean.SpringBeanFactory;
 
 public class TestSpringBeanFactory extends TestCase {
         

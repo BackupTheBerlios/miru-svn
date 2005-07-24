@@ -19,7 +19,7 @@
   All Rights Reserved.  
 */
 
-package org.iterx.miru.support.spring.beans;
+package org.iterx.miru.support.spring.bean;
 
 import java.util.HashMap;
 
@@ -29,7 +29,7 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import junit.framework.TestCase;
 
-import org.iterx.miru.support.spring.beans.SpringBeanWrapper;
+import org.iterx.miru.support.spring.bean.SpringBeanWrapper;
 
 public class TestSpringBeanWrapper extends TestCase {
 

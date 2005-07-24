@@ -20,7 +20,7 @@
 */
 package org.iterx.miru.context;
 
-import org.iterx.miru.beans.BeanProvider;
+import org.iterx.miru.bean.BeanProvider;
 import org.iterx.miru.io.ResourceFactory;
 import org.iterx.miru.dispatcher.handler.HandlerMappingFactory;
 

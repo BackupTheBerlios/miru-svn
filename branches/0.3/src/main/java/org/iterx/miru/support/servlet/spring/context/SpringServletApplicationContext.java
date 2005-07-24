@@ -24,7 +24,7 @@ import javax.servlet.ServletContext;
 
 import org.iterx.miru.context.ApplicationContext;
 
-import org.iterx.miru.beans.BeanFactory;
+import org.iterx.miru.bean.BeanFactory;
 
 import org.iterx.miru.support.spring.context.SpringApplicationContext;
 

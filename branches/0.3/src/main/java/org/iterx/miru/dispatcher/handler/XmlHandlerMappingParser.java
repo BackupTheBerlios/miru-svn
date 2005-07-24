@@ -37,8 +37,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.iterx.miru.io.Resource;
-import org.iterx.miru.beans.BeanWrapper;
-import org.iterx.miru.beans.BeanWrapperAware;
+import org.iterx.miru.bean.BeanWrapper;
+import org.iterx.miru.bean.BeanWrapperAware;
 import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.context.ApplicationContextAware;
 import org.iterx.miru.dispatcher.interceptor.HandlerInterceptor;

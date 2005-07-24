@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.beans.BeanException
+  org.iterx.miru.bean.BeanException
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.  
 */
-package org.iterx.miru.beans;
+package org.iterx.miru.bean;
 
 public class BeanException extends RuntimeException {
 

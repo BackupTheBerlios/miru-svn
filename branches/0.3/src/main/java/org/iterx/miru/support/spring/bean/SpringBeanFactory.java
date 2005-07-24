@@ -19,7 +19,7 @@
   All Rights Reserved.  
 */
 
-package org.iterx.miru.support.spring.beans;
+package org.iterx.miru.support.spring.bean;
 
 import java.util.Map;
 import java.util.Iterator;
@@ -35,11 +35,11 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 
-import org.iterx.miru.beans.BeanFactory;
-import org.iterx.miru.beans.BeanWrapper;
-import org.iterx.miru.beans.BeanWrapperAware;
-import org.iterx.miru.beans.BeanProvider;
-import org.iterx.miru.support.spring.beans.SpringBeanWrapper;
+import org.iterx.miru.bean.BeanFactory;
+import org.iterx.miru.bean.BeanWrapper;
+import org.iterx.miru.bean.BeanWrapperAware;
+import org.iterx.miru.bean.BeanProvider;
+import org.iterx.miru.support.spring.bean.SpringBeanWrapper;
 
 
 public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {

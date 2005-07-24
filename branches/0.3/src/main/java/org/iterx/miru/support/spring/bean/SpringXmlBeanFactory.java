@@ -19,7 +19,7 @@
   All Rights Reserved.  
 */
 
-package org.iterx.miru.support.spring.beans;
+package org.iterx.miru.support.spring.bean;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -33,10 +33,10 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 
 import org.iterx.miru.io.Resource;
-import org.iterx.miru.beans.BeanFactory;
-import org.iterx.miru.beans.BeanWrapper;
-import org.iterx.miru.support.spring.beans.SpringBeanFactory;
-import org.iterx.miru.support.spring.beans.SpringBeanWrapper;
+import org.iterx.miru.bean.BeanFactory;
+import org.iterx.miru.bean.BeanWrapper;
+import org.iterx.miru.support.spring.bean.SpringBeanFactory;
+import org.iterx.miru.support.spring.bean.SpringBeanWrapper;
 
 public class SpringXmlBeanFactory extends SpringBeanFactory  {
 

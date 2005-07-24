@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.beans.BeanFactoryImpl
+  org.iterx.miru.bean.BeanFactoryImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,12 +19,12 @@
   All Rights Reserved.  
 */
 
-package org.iterx.miru.beans;
+package org.iterx.miru.bean;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import org.iterx.miru.beans.BeanFactory;
+import org.iterx.miru.bean.BeanFactory;
 
 public class BeanFactoryImpl extends BeanFactory {
 

@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.beans.BeanProvider
+  org.iterx.miru.bean.BeanProvider
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,7 @@
   All Rights Reserved.
 */
 
-package org.iterx.miru.beans;
+package org.iterx.miru.bean;
 
 public interface BeanProvider {
 

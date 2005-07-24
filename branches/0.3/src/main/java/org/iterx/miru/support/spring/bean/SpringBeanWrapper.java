@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.beans.SpringBeanWrapper
+  org.iterx.miru.bean.SpringBeanWrapper
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,13 +19,13 @@
   All Rights Reserved.  
 */
 
-package org.iterx.miru.support.spring.beans;
+package org.iterx.miru.support.spring.bean;
 
 import java.util.Map;
 
 import org.springframework.beans.BeanWrapper;
 
-public class SpringBeanWrapper implements org.iterx.miru.beans.BeanWrapper {
+public class SpringBeanWrapper implements org.iterx.miru.bean.BeanWrapper {
 
     private BeanWrapper wrapper;
 

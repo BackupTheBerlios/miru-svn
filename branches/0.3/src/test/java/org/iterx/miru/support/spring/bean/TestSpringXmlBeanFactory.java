@@ -19,7 +19,7 @@
   All Rights Reserved.  
 */
 
-package org.iterx.miru.support.spring.beans;
+package org.iterx.miru.support.spring.bean;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,11 +30,11 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import junit.framework.TestCase;
 
-import org.iterx.miru.beans.BeanFactory;
-import org.iterx.miru.beans.BeanWrapper;
-import org.iterx.miru.beans.BeanWrapperAware;
+import org.iterx.miru.bean.BeanFactory;
+import org.iterx.miru.bean.BeanWrapper;
+import org.iterx.miru.bean.BeanWrapperAware;
 import org.iterx.miru.io.resource.MockResource;
-import org.iterx.miru.support.spring.beans.SpringXmlBeanFactory;
+import org.iterx.miru.support.spring.bean.SpringXmlBeanFactory;
 
 
 public class TestSpringXmlBeanFactory extends TestCase {
@@ -48,9 +48,9 @@ public class TestSpringXmlBeanFactory extends TestCase {
 		"\"http://www.springframework.org/dtd/spring-beans.dtd\">\n" +
 		"<beans>" +
 		"<bean id=\"bean\" singleton=\"true\" " +  
-		"class=\"org.iterx.miru.support.spring.beans.SpringXmlBeanFactory\"/>" +
+		"class=\"org.iterx.miru.support.spring.bean.SpringXmlBeanFactory\"/>" +
 		"<bean id=\"bean-prototype\" singleton=\"false\" " +  
-		"class=\"org.iterx.miru.support.spring.beans.SpringXmlBeanFactory\"/>" +
+		"class=\"org.iterx.miru.support.spring.bean.SpringXmlBeanFactory\"/>" +
 		"</beans>").getBytes();
 	resource = new MockResource(new URI("spring-beans.xml"));
 	resource.setContent(data);

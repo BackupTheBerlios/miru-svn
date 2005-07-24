@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.beans.BeanWrapper
+  org.iterx.miru.bean.BeanWrapper
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,7 @@
   All Rights Reserved.  
 */
 
-package org.iterx.miru.beans;
+package org.iterx.miru.bean;
 
 import java.util.Map;
 

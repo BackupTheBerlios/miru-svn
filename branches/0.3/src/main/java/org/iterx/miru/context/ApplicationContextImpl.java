@@ -20,8 +20,8 @@
 */
 package org.iterx.miru.context;
 
-import org.iterx.miru.beans.BeanException;
-import org.iterx.miru.beans.BeanProvider;
+import org.iterx.miru.bean.BeanException;
+import org.iterx.miru.bean.BeanProvider;
 import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.context.ApplicationContextAware;
 import org.iterx.miru.io.ResourceFactory;
