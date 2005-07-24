@@ -25,6 +25,8 @@ import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.iterx.miru.resolver.ContextResolver;
+
 public class ProcessingContextImpl implements ProcessingContext {
 
     protected RequestContext request;
@@ -82,8 +84,12 @@ public class ProcessingContextImpl implements ProcessingContext {
     }
 
     public Object getAttribute(String name) {
+        Object value;
 
-        return attributes.get(name);
+        if((value = attributes.get(name)) instanceof ContextResolver)
+            value = ((ContextResolver) value).resolve(this);
+        
+        return value;
     }
 
     public String[] getAttributeNames() {

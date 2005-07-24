@@ -22,13 +22,54 @@
 
 package org.iterx.miru.context;
 
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.Iterator;
+
+import org.iterx.miru.resolver.ContextResolver;
+
 public class ProcessingContextFactoryImpl extends ProcessingContextFactory {
+
+    private Map contextResolvers;
+
+    {
+        contextResolvers = new HashMap();
+    }
+
+    public String[] getContextResolverNames() {
+        Set names;
+
+        return (String[]) ((names = contextResolvers.keySet()).toArray
+            ((Object[]) new String[names.size()]));
+    }
+
+    public ContextResolver getContextResolver(String name) {
+
+        return (ContextResolver) contextResolvers.get(name);
+    }
+
+    public void setContextResolver(String name,
+                                   ContextResolver contextResolver) {
+        if(contextResolver == null)
+            contextResolvers.remove(name);
+        else contextResolvers.put(name, contextResolver);
+    }
+
 
     public ProcessingContext getProcessingContext(RequestContext request,
                                                   ResponseContext response) {
         ProcessingContext context;
-
         context = new ProcessingContextImpl(request, response);
+
+        for(Iterator iterator = (contextResolvers.entrySet()).iterator();
+            iterator.hasNext();) {
+            Map.Entry entry;
+
+            entry = (Map.Entry) iterator.next();
+            context.setAttribute((String) entry.getKey(),
+                                 entry.getValue());
+        }
 
         return context;
     }
