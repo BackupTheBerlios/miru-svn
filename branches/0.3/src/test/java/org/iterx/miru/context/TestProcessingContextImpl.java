@@ -22,13 +22,14 @@
 package org.iterx.miru.context;
 
 import junit.framework.TestCase;
+import org.iterx.miru.resolver.MockContextResolver;
 
 public class TestProcessingContextImpl extends TestCase {
-    
+
     private ProcessingContextImpl processingContext;
 
     protected void setUp() {
-	
+
         processingContext = new ProcessingContextImpl(new MockHttpRequestContext("/"),
                                                       new MockHttpResponseContext());
     }
@@ -106,7 +107,10 @@ public class TestProcessingContextImpl extends TestCase {
 
 
     public void testAttributeAccessors() {
-        Object object;
+        MockContextResolver resolver;
+        Object object, resolved;
+
+        resolver = new MockContextResolver(resolved = new Object());
 
         processingContext.setAttribute("name", null);
         assertNull(processingContext.getAttribute("name"));
@@ -116,13 +120,22 @@ public class TestProcessingContextImpl extends TestCase {
 
         processingContext.setAttribute("name", null);
         assertNull(processingContext.getAttribute("name"));
-
         assertEquals(0, (processingContext.getAttributeNames()).length);
-	
+
+        processingContext.setAttribute("resolver", resolver);
+        assertEquals(resolved, processingContext.getAttribute("resolver"));
+
+        processingContext.setAttribute("resolver", null);
+        assertNull(processingContext.getAttribute("resolver"));
+        assertEquals(0, (processingContext.getAttributeNames()).length);
+
+
         processingContext.setAttribute("null", null);
         processingContext.setAttribute("name", object);
         assertEquals(1, (processingContext.getAttributeNames()).length);
         assertEquals("name", (processingContext.getAttributeNames())[0]);
+
+
     }
 
 }
