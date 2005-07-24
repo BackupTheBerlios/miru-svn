@@ -23,14 +23,11 @@ package org.iterx.miru.io;
 
 import java.net.URI;
 
-import org.iterx.miru.io.Resource;
-import org.iterx.miru.io.ResourceFactory;
-
-public class MockResourceFactory implements ResourceFactory {
+public class MockResourceFactory extends ResourceFactory {
 
     public Resource getResource(URI uri) {
-	
-	return null;
+
+        return null;
     }
     
 }

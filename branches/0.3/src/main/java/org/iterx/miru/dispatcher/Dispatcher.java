@@ -5,18 +5,18 @@
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2.1 of the License, or (at your option) any later version.
-  
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
-  All Rights Reserved.  
+  All Rights Reserved.
 */
 package org.iterx.miru.dispatcher;
 
@@ -51,10 +51,10 @@ public class Dispatcher implements ApplicationContextAware {
     private HandlerMapping handlerMapping;
     private HandlerAdapter[] handlerAdapters;
 
-
     {
         handlerAdapters = new HandlerAdapter[0];
     }
+
     public Dispatcher() {}
 
     public Dispatcher(HandlerMapping handlerMapping) {
@@ -68,8 +68,8 @@ public class Dispatcher implements ApplicationContextAware {
         if(applicationContext == null)
             throw new IllegalArgumentException("applicationContext == null");
 
-    handlerMapping =
-    (applicationContext.getHandlerMappingFactory()).getHandlerMapping();
+        handlerMapping =
+        (applicationContext.getHandlerMappingFactory()).getHandlerMapping();
     }
 
     public HandlerMapping getHandlerMapping() {
@@ -86,19 +86,12 @@ public class Dispatcher implements ApplicationContextAware {
 
     public HandlerResolver getHandlerResolver() {
 
-    return handlerResolver;
+        return handlerResolver;
     }
 
     public void setHandlerResolver(HandlerResolver handlerResolver) {
 
-    this.handlerResolver = handlerResolver;
-    }
-
-
-    public void addHandlerAdapter(HandlerAdapter handlerAdapter) {
-
-        handlerAdapters = (HandlerAdapter[])
-            ArrayUtils.add(handlerAdapters, handlerAdapter);
+        this.handlerResolver = handlerResolver;
     }
 
     public HandlerAdapter[] getHandlerAdapters() {
@@ -111,6 +104,12 @@ public class Dispatcher implements ApplicationContextAware {
         this.handlerAdapters = handlerAdapters;
     }
 
+    public void addHandlerAdapter(HandlerAdapter handlerAdapter) {
+
+        handlerAdapters = (HandlerAdapter[])
+            ArrayUtils.add(handlerAdapters, handlerAdapter);
+    }
+
     public void removeHandlerAdapter(HandlerAdapter handlerAdapter) {
 
         handlerAdapters = (HandlerAdapter[])
@@ -118,45 +117,60 @@ public class Dispatcher implements ApplicationContextAware {
     }
 
     public int dispatch(ProcessingContext processingContext) {
-    assert (processingContext != null) : "processingContext == null";
+        assert (processingContext != null) : "processingContext == null";
+        Iterator chains;
+        int status;
 
-    Iterator chains;
-    int status;
+        status = DECLINE;
+        if((chains = ((handlerResolver == null)?
+                      handlerMapping.getHandlers() :
+                      handlerResolver.resolve(handlerMapping,
+                                              processingContext))) != null) {
+            while(chains.hasNext()) {
+                HandlerInterceptor[] interceptors;
+                HandlerChain chain;
+                Object handler;
+                int i;
 
-    status = DECLINE;
-    if((chains = ((handlerResolver == null)?
-                  handlerMapping.getHandlers() :
-                  handlerResolver.resolve(handlerMapping,
-                                          processingContext))) != null) {
-        while(chains.hasNext()) {
-        HandlerInterceptor[] interceptors;
-        HandlerChain chain;
-        Object handler;
-        int i;
+                i = -1;
+                chain = (HandlerChain) chains.next();
+                if((interceptors = chain.getHandlerInterceptors()) != null) {
 
-        i = -1;
-        chain = (HandlerChain) chains.next();
-        if((interceptors = chain.getHandlerInterceptors()) != null) {
+                    /*
+                    TODO:
+                     * Check for volatility of before advice - if it is
+                       volatile, then handler chain is commited and
+                       must be executed.
+                     * If uncommited to chain, then must reset processing context?
 
-            for(; ++i < interceptors.length; ) {
-            HandlerInterceptor interceptor;
+                    */
+                    for(; ++i < interceptors.length; ) {
+                        HandlerInterceptor interceptor;
 
-            interceptor = interceptors[i];
-            if(logger.isDebugEnabled())
-                logger.debug("Invoking HandlerInterceptor [" +
-                             interceptor + "]");
-            if(!interceptor.preHandle(processingContext)) break;
-            }
-            if(i != interceptors.length) continue;
-        }
+                        interceptor = interceptors[i];
+                        if(logger.isDebugEnabled())
+                            logger.debug("Invoking HandlerInterceptor [" +
+                                         interceptor + "]");
+                        if(!interceptor.preHandle(processingContext)) break;
+                    }
+                    if(i != interceptors.length) continue;
+                }
 
-        if((handler = chain.getHandler()) instanceof Handler) {
-            if(logger.isDebugEnabled())
-            logger.debug("Invoking Handler [" +
-                         handler + "]");
-            status = ((Handler) handler).handle(processingContext);
-        }
-        else {
+
+                /*
+                TODO:
+                 * Need to ensure that after advice is always run
+                 * Add support for around advice
+
+
+                */
+                if((handler = chain.getHandler()) instanceof Handler) {
+                    if(logger.isDebugEnabled())
+                        logger.debug("Invoking Handler [" +
+                                     handler + "]");
+                    status = ((Handler) handler).handle(processingContext);
+                }
+                else {
                     int j;
 
                     j = -1;
@@ -175,17 +189,17 @@ public class Dispatcher implements ApplicationContextAware {
                     }
                     if(j == handlerAdapters.length)
                         throw new RuntimeException("Unsupported Handler.");
-        }
+                }
 
-        if(interceptors != null) {
-            for(; i-- > 0;) {
-            interceptors[i].postHandle(processingContext);
+                if(interceptors != null) {
+                    for(; i-- > 0;) {
+                        interceptors[i].postHandle(processingContext);
+                    }
+                }
+                return status;
             }
         }
-                return status;
-        }
-    }
-    return status;
+        return status;
     }
 
 }

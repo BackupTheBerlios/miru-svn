@@ -20,36 +20,36 @@
 */
 package org.iterx.miru.context;
 
-import org.iterx.miru.beans.BeanFactory;
 import org.iterx.miru.beans.BeanException;
+import org.iterx.miru.beans.BeanProvider;
 import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.context.ApplicationContextAware;
 import org.iterx.miru.io.ResourceFactory;
 import org.iterx.miru.dispatcher.handler.HandlerMappingFactory;
 
 public class ApplicationContextImpl implements ApplicationContext {
+
     protected HandlerMappingFactory handlerMappingFactory;
     protected ResourceFactory resourceFactory;
-    protected BeanFactory beanFactory;
+    protected BeanProvider beanProvider;
 
     protected ApplicationContext parent;
 
-    protected ApplicationContextImpl() {
-    }
+    protected ApplicationContextImpl() {}
 
-    public ApplicationContextImpl(BeanFactory beanFactory) {
+    public ApplicationContextImpl(BeanProvider beanProvider) {
 
-        if (beanFactory == null)
+        if (beanProvider == null)
             throw new IllegalArgumentException("beanFactory == null");
-        this.beanFactory = beanFactory;
+        this.beanProvider = beanProvider;
     }
 
-    public ApplicationContextImpl(BeanFactory beanFactory,
+    public ApplicationContextImpl(BeanProvider beanProvider,
                                   ApplicationContext parent) {
 
-        if (beanFactory == null)
+        if (beanProvider == null)
             throw new IllegalArgumentException("beanFactory == null");
-        this.beanFactory = beanFactory;
+        this.beanProvider = beanProvider;
         this.parent = parent;
     }
 
@@ -71,7 +71,6 @@ public class ApplicationContextImpl implements ApplicationContext {
                 throw new BeanException("Invalid bean type 'ResourceFactory'.");
 
         }
-
         return resourceFactory;
     }
 
@@ -105,7 +104,7 @@ public class ApplicationContextImpl implements ApplicationContext {
     public Object getBean(String name) {
         Object object;
 
-        if (((object = beanFactory.getBean(name)) == null) &&
+        if (((object = beanProvider.getBean(name)) == null) &&
             parent != null) object = parent.getBean(name);
 
         if (object instanceof ApplicationContextAware)
@@ -116,7 +115,7 @@ public class ApplicationContextImpl implements ApplicationContext {
     public Object getBeanOfType(Class type) {
         Object object;
 
-        if (((object = beanFactory.getBeanOfType(type)) == null) &&
+        if (((object = beanProvider.getBeanOfType(type)) == null) &&
             parent != null) object = parent.getBeanOfType(type);
 
         if (object instanceof ApplicationContextAware)
@@ -127,7 +126,7 @@ public class ApplicationContextImpl implements ApplicationContext {
     public Object getBeanOfType(Class[] types) {
         Object object;
 
-        if (((object = beanFactory.getBeanOfType(types)) == null) &&
+        if (((object = beanProvider.getBeanOfType(types)) == null) &&
             parent != null) object = parent.getBeanOfType(types);
 
         if (object instanceof ApplicationContextAware)
@@ -137,14 +136,14 @@ public class ApplicationContextImpl implements ApplicationContext {
 
     public boolean containsBean(String name) {
 
-        return (beanFactory.containsBean(name) ||
+        return (beanProvider.containsBean(name) ||
                 (parent != null) && parent.containsBean(name));
     }
 
     public boolean isSingleton(String name) {
 
-        if (beanFactory.containsBean(name))
-            return beanFactory.isSingleton(name);
+        if (beanProvider.containsBean(name))
+            return beanProvider.isSingleton(name);
         else if (parent != null && parent.containsBean(name))
             return parent.isSingleton(name);
         throw new BeanException("Invalid bean name '" + name + "'");

@@ -44,7 +44,7 @@ public class SpringApplicationContext extends SpringBeanFactory
     public SpringApplicationContext(ApplicationContext parent)  {
 
         super(parent);
-    this.parent = parent;
+        this.parent = parent;
     }
 
     public SpringApplicationContext(BeanFactory beanFactory) {

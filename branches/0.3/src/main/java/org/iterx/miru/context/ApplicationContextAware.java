@@ -21,9 +21,8 @@
 
 package org.iterx.miru.context;
 
-import org.iterx.miru.context.ApplicationContext;
-
 public interface ApplicationContextAware {
+
     public void setApplicationContext(ApplicationContext applicationContext);
 
 }

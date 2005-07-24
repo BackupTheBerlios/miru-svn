@@ -42,9 +42,8 @@ import org.iterx.sax.helpers.XMLWriterImpl;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.HttpRequestContextImpl;
 import org.iterx.miru.context.HttpResponseContextImpl;
+import org.iterx.miru.context.ProcessingContextFactory;
 
-import org.iterx.miru.pipeline.Pipeline;
-import org.iterx.miru.pipeline.PipelineImpl;
 import org.iterx.miru.pipeline.generator.SaxGenerator;
 import org.iterx.miru.pipeline.serializer.SaxSerializer;
 
@@ -65,7 +64,8 @@ public class TestPerfPipelineImpl extends TestCase {
     }
 
     public static class PipelineImplTest extends TestCase {
-        
+
+        private ProcessingContextFactory processingContextFactory;
         private Pipeline[] pipelines;
         private int next, recycle;
         {   
@@ -100,6 +100,7 @@ public class TestPerfPipelineImpl extends TestCase {
                                (memory / CONCURRENCY) +
                                " bytes/PipelineImpl");
             System.gc();
+            processingContextFactory = ProcessingContextFactory.getProcessingContextFactory();
             next = recycle = -1;
         }
 
@@ -136,9 +137,8 @@ public class TestPerfPipelineImpl extends TestCase {
             message = createMessage();
             reader = new StringReader(message);
             writer = new StringWriter();
-            processingContext = new ProcessingContext
-                (new HttpRequestContextImpl(reader),
-                 new HttpResponseContextImpl(writer));
+            processingContext = processingContextFactory.getProcessingContext
+                (new HttpRequestContextImpl(reader), new HttpResponseContextImpl(writer));
             
             pipeline = getPipeline();
             pipeline.execute(processingContext);

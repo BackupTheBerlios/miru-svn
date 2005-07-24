@@ -55,10 +55,11 @@
               <path><pathelement path="${java.source.dir}"/></path>
           </src>
           <include name="**/*.aj" />
+          <include name="**/*.java" />
       </iajc>
   </target>
 
-  
+
   <target name="compile">
     <fail unless="java.source.dir">You must specify 'java.source.dir'.</fail>
     <fail unless="java.target.dir">You must specify 'java.target.dir'.</fail>

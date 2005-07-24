@@ -37,7 +37,7 @@ public abstract aspect AopAllianceAdaptor {
     }
 
    protected abstract pointcut targetJoinPoint();
-
+ 
    pointcut methodExecution() : execution (* *(..));
 
    pointcut constructorExecution() : execution (new (..));

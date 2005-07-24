@@ -20,15 +20,16 @@
 */
 package org.iterx.miru.context;
 
-import org.iterx.miru.beans.BeanFactory;
+import org.iterx.miru.beans.BeanProvider;
 import org.iterx.miru.io.ResourceFactory;
 import org.iterx.miru.dispatcher.handler.HandlerMappingFactory;
 
-public interface ApplicationContext extends BeanFactory {
-    public ApplicationContext getParent();
+public interface ApplicationContext extends BeanProvider {
 
-    public ResourceFactory getResourceFactory();
+    public abstract ApplicationContext getParent();
 
-    public HandlerMappingFactory getHandlerMappingFactory();
+    public abstract ResourceFactory getResourceFactory();
+
+    public abstract HandlerMappingFactory getHandlerMappingFactory();
 
 }

@@ -33,8 +33,6 @@ import junit.extensions.RepeatedTest;
 import com.clarkware.junitperf.LoadTest;
 import com.clarkware.junitperf.TimedTest;
 
-
-import org.iterx.miru.dispatcher.Dispatcher;
 import org.iterx.miru.dispatcher.interceptor.HandlerInterceptor;
 import org.iterx.miru.io.StreamSource;
 import org.iterx.miru.io.StreamTarget;
@@ -42,6 +40,7 @@ import org.iterx.miru.io.StreamTarget;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.HttpRequestContextImpl;
 import org.iterx.miru.context.HttpResponseContextImpl;
+import org.iterx.miru.context.ProcessingContextFactory;
 
 import org.iterx.miru.dispatcher.handler.Handler;
 import org.iterx.miru.dispatcher.handler.HandlerMapping;
@@ -54,76 +53,79 @@ public class TestPerfDispatcher extends TestCase {
     public static final int CONCURRENCY = 100;
     public static final int TIMEOUT     = 10000;
 
-    public static Test suite() {
-        Test test;
+      public static Test suite() {
+          Test test;
 
-        test = new DispatcherTest("testDispatcher");
+          test = new DispatcherTest("testDispatcher");
 
-        test = new RepeatedTest(test, ITERATIONS);
-        test = new TimedTest(test, TIMEOUT);
-        return new LoadTest(test, CONCURRENCY);
-    }
+          test = new RepeatedTest(test, ITERATIONS);
+          test = new TimedTest(test, TIMEOUT);
+          return new LoadTest(test, CONCURRENCY);
+      }
 
-    public static class DispatcherTest extends TestCase {
+      public static class DispatcherTest extends TestCase {
 
-        private Dispatcher dispatcher;
-        {
-            HandlerMapping handlerMapping;
-            Runtime runtime;
-            long memory;
-            runtime = Runtime.getRuntime();
+          private ProcessingContextFactory processingContextFactory;
+          private Dispatcher dispatcher;
 
-            System.gc();
-            memory = runtime.freeMemory();
+          {
+              HandlerMapping handlerMapping;
+              Runtime runtime;
+              long memory;
+              runtime = Runtime.getRuntime();
 
-            handlerMapping = new HandlerMappingImpl();
-            handlerMapping.addHandler
-                ("default",
-                 new SimpleHandler(),
-                 new HandlerInterceptor[] { new SimpleHandlerInterceptor() });
-            dispatcher = new Dispatcher(handlerMapping);
+              System.gc();
+              memory = runtime.freeMemory();
 
-            memory -= runtime.freeMemory();
+              handlerMapping = new HandlerMappingImpl();
+              handlerMapping.addHandler
+                  ("default",
+                   new SimpleHandler(),
+                   new HandlerInterceptor[] { new SimpleHandlerInterceptor() });
+              dispatcher = new Dispatcher(handlerMapping);
 
-            System.out.println("Memory: " +
-                               memory +
-                               " bytes");
-            System.gc();
-        }
+              memory -= runtime.freeMemory();
 
-        public DispatcherTest(String name) {
+              System.out.println("Memory: " +
+                                 memory +
+                                 " bytes");
 
-            super(name);
-        }
+              processingContextFactory = ProcessingContextFactory.getProcessingContextFactory();
+              System.gc();
+          }
+
+          public DispatcherTest(String name) {
+
+              super(name);
+          }
 
 
-        private static String createMessage() {
+          private static String createMessage() {
 
-            return  ("<parent><child>" +
-                     Thread.currentThread() +
-                     "</child></parent>");
-        }
+              return  ("<parent><child>" +
+                       Thread.currentThread() +
+                       "</child></parent>");
+          }
 
-        public void testDispatcher() throws Exception {
-            ProcessingContext processingContext;
-            StringReader reader;
-            StringWriter writer;
-            String message;
+          public void testDispatcher() throws Exception {
+              ProcessingContext processingContext;
+              StringReader reader;
+              StringWriter writer;
+              String message;
 
-            message = createMessage();
-            reader = new StringReader(message);
-            writer = new StringWriter();
-            processingContext = new ProcessingContext
-                (new HttpRequestContextImpl(reader),
-                 new HttpResponseContextImpl(writer));
+              message = createMessage();
+              reader = new StringReader(message);
+              writer = new StringWriter();
+              processingContext = processingContextFactory.getProcessingContext
+                  (new HttpRequestContextImpl(reader), new HttpResponseContextImpl(writer));
 
-            assertEquals(Dispatcher.OK,
-                         dispatcher.dispatch(processingContext));
-            reader.close();
-            writer.close();
-            assertEquals(message, writer.toString());
-        }
-    }
+              assertEquals(Dispatcher.OK,
+                           dispatcher.dispatch(processingContext));
+              reader.close();
+              writer.close();
+              assertEquals(message, writer.toString());
+          }
+      }
 
 
     private static class SimpleHandlerInterceptor implements HandlerInterceptor {

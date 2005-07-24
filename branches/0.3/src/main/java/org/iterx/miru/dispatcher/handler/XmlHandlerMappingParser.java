@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
 
 import org.iterx.miru.io.Resource;
 import org.iterx.miru.beans.BeanWrapper;
-import org.iterx.miru.beans.BeanWrapperSupport;
+import org.iterx.miru.beans.BeanWrapperAware;
 import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.context.ApplicationContextAware;
 import org.iterx.miru.dispatcher.interceptor.HandlerInterceptor;
@@ -146,13 +146,13 @@ public class XmlHandlerMappingParser extends DefaultHandler {
 
             if((length = attributes.getLength()) > 0) {
                 if(applicationContext.isSingleton(localName) ||
-                   !(applicationContext instanceof BeanWrapperSupport))
+                   !(applicationContext instanceof BeanWrapperAware))
                 throw new RuntimeException
                     ("Immutable bean '" + localName + "'.");
                 BeanWrapper wrapper;
 
                 wrapper =
-                ((BeanWrapperSupport) applicationContext).assignBeanWrapper(object);
+                ((BeanWrapperAware) applicationContext).assignBeanWrapper(object);
 
 
                 for(int i = length; i-- > 0;) {

@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.ProcessingContext
+  org.iterx.miru.context.ProcessingContextFactory
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -21,22 +21,23 @@
 
 package org.iterx.miru.context;
 
+public abstract class ProcessingContextFactory implements ProcessingContextProvider {
 
-//TODO: - Replace this by interface
-//      - Create ProcessingContextImpl
-//      - Create ProcessingContextFactoryImpl
-//      - Modify HttpDispatchServlet to take ProcessingContextFactory
-//      - Create ContextResolver marker interface
-//      - Create Locale Resolver
-public interface ProcessingContext {
+    private static ProcessingContextFactory processingContextFactory;
 
-    public RequestContext getRequestContext();
+    public static ProcessingContextFactory getProcessingContextFactory() {
 
-    public ResponseContext getResponseContext();
+        if(processingContextFactory == null)
+            processingContextFactory = new ProcessingContextFactoryImpl();
+        return processingContextFactory;
+    }
 
-    public Object getAttribute(String name);
+    public static void setProcessingContextFactory
+        (ProcessingContextFactory processingContextFactory) {
 
-    public String[] getAttributeNames();
+        if(processingContextFactory == null)
+            throw new IllegalArgumentException("processingContextFactory == null");
 
-    public void setAttribute(String name, Object object);
+        ProcessingContextFactory.processingContextFactory = processingContextFactory;
+    }
 }

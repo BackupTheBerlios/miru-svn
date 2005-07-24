@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 
 import org.iterx.miru.beans.BeanFactory;
 
-public class BeanFactoryImpl implements BeanFactory {
+public class BeanFactoryImpl extends BeanFactory {
 
     protected BeanFactory parent;
 
@@ -35,6 +35,7 @@ public class BeanFactoryImpl implements BeanFactory {
     {
         beans = new LinkedHashMap();
     }
+
     public BeanFactoryImpl() {}
 
     public BeanFactoryImpl(BeanFactory parent) {

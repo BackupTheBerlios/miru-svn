@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.beans.BeanFactory
+  org.iterx.miru.beans.BeanWrapperAware
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -21,25 +21,10 @@
 
 package org.iterx.miru.beans;
 
-public abstract class BeanFactory implements BeanProvider {
+public interface BeanWrapperAware {
 
-    private static BeanFactory beanFactory;
-
-    public static BeanFactory getBeanFactory() {
-
-        if(beanFactory == null)
-            beanFactory = new BeanFactoryImpl();
-        return beanFactory;
-    }
-
-    public static void setBeanFactory(BeanFactory beanFactory) {
-
-        if(beanFactory == null)
-            throw new IllegalArgumentException("beanFactory == null");
-
-        BeanFactory.beanFactory = beanFactory;
-    }
-
-
+    public BeanWrapper assignBeanWrapper(Object object);
+      
+    public void recycleBeanWrapper(BeanWrapper wrapper);
 
 }

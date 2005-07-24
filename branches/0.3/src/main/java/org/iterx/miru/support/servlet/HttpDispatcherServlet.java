@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletContext;
 
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.ProcessingContextFactory;
 import org.iterx.miru.dispatcher.Dispatcher;
 import org.iterx.miru.support.servlet.context.HttpServletRequestContext;
 import org.iterx.miru.support.servlet.context.HttpServletResponseContext;
@@ -20,15 +21,45 @@ public class HttpDispatcherServlet extends HttpServlet {
 
     protected Log logger = LogFactory.getLog(HttpDispatcherServlet.class);
 
-    protected Dispatcher dispatcher;
+    private ProcessingContextFactory processingContextFactory;
+    private Dispatcher dispatcher;
+
+    {
+        processingContextFactory = ProcessingContextFactory.getProcessingContextFactory();
+    }
 
     public HttpDispatcherServlet() {}
 
     public HttpDispatcherServlet(Dispatcher dispatcher) {
 
+        if(dispatcher == null)
+            throw new IllegalArgumentException("dispatcher == null");
         this.dispatcher = dispatcher;
     }
 
+    public Dispatcher getDispatcher() {
+
+        return dispatcher;
+    }
+
+    public void setDispatcher(Dispatcher dispatcher) {
+
+        if(dispatcher == null)
+            throw new IllegalArgumentException("dispatcher == null");
+        this.dispatcher = dispatcher;
+    }
+
+    public ProcessingContextFactory getProcessingContextFactory() {
+
+        return processingContextFactory;
+    }
+
+    public void setProcessingContextFactory(ProcessingContextFactory processingContextFactory) {
+
+        if(processingContextFactory != null)
+            throw new IllegalArgumentException("processingContextFactory == null");
+        this.processingContextFactory = processingContextFactory;
+    }
 
     public void init(ServletConfig servletConfig) throws ServletException {}
 
@@ -36,13 +67,15 @@ public class HttpDispatcherServlet extends HttpServlet {
     public void service(HttpServletRequest request,
                         HttpServletResponse response)
         throws ServletException, IOException {
+        assert (dispatcher != null) : "dispatcher == null";
+        assert (processingContextFactory != null) : "processingContextFactory == null";
 
         try {
             ProcessingContext processingContext;
             HttpServletResponseContext responseContext;
             HttpServletRequestContext requestContext;
 
-            processingContext = new ProcessingContext
+            processingContext = processingContextFactory.getProcessingContext
                 (requestContext = new HttpServletRequestContext(request),
                  responseContext = new HttpServletResponseContext(response));
 

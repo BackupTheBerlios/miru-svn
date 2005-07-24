@@ -37,34 +37,35 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 import org.iterx.miru.beans.BeanFactory;
 import org.iterx.miru.beans.BeanWrapper;
-import org.iterx.miru.beans.BeanWrapperSupport;
+import org.iterx.miru.beans.BeanWrapperAware;
+import org.iterx.miru.beans.BeanProvider;
 import org.iterx.miru.support.spring.beans.SpringBeanWrapper;
 
 
-public class SpringBeanFactory implements BeanFactory, BeanWrapperSupport {
+public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {
 
     protected static final Log logger = 
-	LogFactory.getLog(SpringBeanFactory.class);
+        LogFactory.getLog(SpringBeanFactory.class);
 
     protected org.springframework.beans.factory.BeanFactory factory;
-    protected BeanFactory parent;
+    protected BeanProvider parent;
 
     public SpringBeanFactory()  {
 
 	factory = new SpringDefaultListableBeanFactoryProxy();
     }
 
-    public SpringBeanFactory(BeanFactory parent)  {
+    public SpringBeanFactory(BeanProvider parent)  {
 	
 	if(parent == null) 
 	    throw new IllegalArgumentException("parent == null");
 	
-	factory = new SpringDefaultListableBeanFactoryProxy();
-	this.parent = parent;
+        factory = new SpringDefaultListableBeanFactoryProxy();
+        this.parent = parent;
     }
 
     public SpringBeanFactory
-	(org.springframework.beans.factory.BeanFactory beanFactory)  {
+        (org.springframework.beans.factory.BeanFactory beanFactory)  {
 	
 	if(beanFactory == null) 
 	    throw new IllegalArgumentException("beanFactory == null");

@@ -32,7 +32,7 @@ import junit.framework.TestCase;
 
 import org.iterx.miru.beans.BeanFactory;
 import org.iterx.miru.beans.BeanWrapper;
-import org.iterx.miru.beans.BeanWrapperSupport;
+import org.iterx.miru.beans.BeanWrapperAware;
 import org.iterx.miru.io.resource.MockResource;
 import org.iterx.miru.support.spring.beans.SpringXmlBeanFactory;
 
@@ -116,10 +116,10 @@ public class TestSpringXmlBeanFactory extends TestCase {
 	assertNotNull((bean = beanFactory.getBeanOfType
 		       (new Class[]{ 
 			   BeanFactory.class,
-			   BeanWrapperSupport.class
+			   BeanWrapperAware.class
 		       })));
 	assertTrue(bean instanceof BeanFactory &&
-		   bean instanceof BeanWrapperSupport);
+		   bean instanceof BeanWrapperAware);
 		
 	assertNull(beanFactory.getBeanOfType
 		    (new Class[]{ 

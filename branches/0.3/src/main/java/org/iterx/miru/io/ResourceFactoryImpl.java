@@ -26,14 +26,11 @@ import java.net.URI;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.iterx.miru.io.Resource;
-import org.iterx.miru.io.ResourceFactory;
-
 import org.iterx.miru.dispatcher.resolver.ResourceResolver;
 
 import org.iterx.util.ArrayUtils;
 
-public class ResourceFactoryImpl implements ResourceFactory {
+public class ResourceFactoryImpl extends ResourceFactory {
 
     protected final Log logger = LogFactory.getLog(ResourceFactoryImpl.class);
 
@@ -41,7 +38,7 @@ public class ResourceFactoryImpl implements ResourceFactory {
 
     public ResourceFactoryImpl() {
 
-	resourceResolvers = new ResourceResolver[0];
+        resourceResolvers = new ResourceResolver[0];
     }
 
     public ResourceResolver[] getResourceResolvers() {
@@ -69,17 +66,17 @@ public class ResourceFactoryImpl implements ResourceFactory {
     }
 
     public Resource getResource(URI uri) {
-	assert (uri != null) : "uri == null";
+        assert (uri != null) : "uri == null";
 
         for(int i = 0; i < resourceResolvers.length; i++) {
             Resource resource;
 
-	    if((resource = (resourceResolvers[i]).resolve(uri)) != null) 
+            if((resource = (resourceResolvers[i]).resolve(uri)) != null)
                 return resource;
-	}
+        }
 
-        if(logger.isWarnEnabled())
-            logger.warn("Resource [" + uri + "] not found.");        
-	return null;
+
+        logger.warn("Resource [" + uri + "] not found.");
+        return null;
     }
 }
