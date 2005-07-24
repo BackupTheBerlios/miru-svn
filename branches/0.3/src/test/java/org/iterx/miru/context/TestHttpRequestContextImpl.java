@@ -90,17 +90,17 @@ public class TestHttpRequestContextImpl extends TestCase {
 	request = new HttpRequestContextImpl(System.in);
 	assertNull(request.getHeader("key"));
 
-	request.setProperty("key", (value = "value"));
+	request.setHeader("key", (value = "value"));
 	assertEquals(value, request.getHeader("key"));
 
-	request.setProperty("key", null);
+	request.setHeader("key", null);
 	assertNull(request.getHeader("key"));
 
-	request.setProperty("KEY", (value = "value"));
+	request.setHeader("KEY", (value = "value"));
 	assertEquals(value, request.getHeader("key"));
 	assertEquals(value, request.getHeader("kEy"));
 	assertEquals(value, request.getHeader("KEY"));
-	request.setProperty("KeY", null);
+	request.setHeader("KeY", null);
 	assertNull(request.getHeader("KEY"));
     }
 

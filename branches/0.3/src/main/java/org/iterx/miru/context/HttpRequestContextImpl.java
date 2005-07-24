@@ -100,7 +100,7 @@ public class HttpRequestContextImpl implements HttpRequestContext {
         return (String) properties.get(new CaseInsensitiveKey(name));
     }
 
-    public void setProperty(String name, String value) {
+    public void setHeader(String name, String value) {
 
         if (value == null) properties.remove(new CaseInsensitiveKey(name));
         else properties.put(new CaseInsensitiveKey(name), value);
