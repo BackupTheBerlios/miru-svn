@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.support.servlet.context.HttpServletRequestContext
+  org.iterx.miru.support.servlet.context.http.HttpServletRequestContext
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,7 @@
   All Rights Reserved.
 */
 
-package org.iterx.miru.support.servlet.context;
+package org.iterx.miru.support.servlet.context.http;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,7 +30,7 @@ import java.io.Reader;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.iterx.miru.context.HttpRequestContext;
+import org.iterx.miru.context.http.HttpRequestContext;
 
 public final class HttpServletRequestContext implements HttpRequestContext {
 

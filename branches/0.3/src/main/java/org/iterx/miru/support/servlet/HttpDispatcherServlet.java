@@ -12,8 +12,8 @@ import javax.servlet.ServletContext;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.ProcessingContextFactory;
 import org.iterx.miru.dispatcher.Dispatcher;
-import org.iterx.miru.support.servlet.context.HttpServletRequestContext;
-import org.iterx.miru.support.servlet.context.HttpServletResponseContext;
+import org.iterx.miru.support.servlet.context.http.HttpServletRequestContext;
+import org.iterx.miru.support.servlet.context.http.HttpServletResponseContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -105,7 +105,7 @@ public class HttpDispatcherServlet extends HttpServlet {
             };
         }
         catch(Exception e) {
-            logger.error("Failed to process [" + request.getRequestURL() + "]", e);
+            logger.error("Failed to execute [" + request.getRequestURL() + "]", e);
             throw new ServletException
                 ("Request " + request.getRequestURL() + "failed.", e);
         }

@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.support.servlet.context.HttpServletResponseContext
+  org.iterx.miru.support.servlet.context.http.HttpServletResponseContext
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,7 @@
   All Rights Reserved.  
 */
 
-package org.iterx.miru.support.servlet.context;
+package org.iterx.miru.support.servlet.context.http;
 
 import java.io.Writer;
 import java.io.OutputStream;
@@ -31,7 +31,7 @@ import java.util.HashMap;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.iterx.miru.context.HttpResponseContext;
+import org.iterx.miru.context.http.HttpResponseContext;
 
 public final class HttpServletResponseContext implements HttpResponseContext {
 
