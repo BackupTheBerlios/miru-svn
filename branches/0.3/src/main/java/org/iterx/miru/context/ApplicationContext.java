@@ -22,14 +22,14 @@ package org.iterx.miru.context;
 
 import org.iterx.miru.bean.BeanProvider;
 import org.iterx.miru.io.ResourceFactory;
-import org.iterx.miru.dispatcher.handler.HandlerMappingFactory;
+import org.iterx.miru.dispatcher.handler.HandlerChainFactory;
 
 public interface ApplicationContext extends BeanProvider {
 
-    public abstract ApplicationContext getParent();
+    public ApplicationContext getParent();
 
-    public abstract ResourceFactory getResourceFactory();
+    public ResourceFactory getResourceFactory();
 
-    public abstract HandlerMappingFactory getHandlerMappingFactory();
+    public HandlerChainFactory getHandlerChainFactory();
 
 }

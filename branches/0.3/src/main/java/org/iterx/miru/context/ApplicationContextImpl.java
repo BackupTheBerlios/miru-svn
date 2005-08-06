@@ -22,14 +22,12 @@ package org.iterx.miru.context;
 
 import org.iterx.miru.bean.BeanException;
 import org.iterx.miru.bean.BeanProvider;
-import org.iterx.miru.context.ApplicationContext;
-import org.iterx.miru.context.ApplicationContextAware;
 import org.iterx.miru.io.ResourceFactory;
-import org.iterx.miru.dispatcher.handler.HandlerMappingFactory;
+import org.iterx.miru.dispatcher.handler.HandlerChainFactory;
 
 public class ApplicationContextImpl implements ApplicationContext {
 
-    protected HandlerMappingFactory handlerMappingFactory;
+    protected HandlerChainFactory handlerChainFactory;
     protected ResourceFactory resourceFactory;
     protected BeanProvider beanProvider;
 
@@ -81,24 +79,24 @@ public class ApplicationContextImpl implements ApplicationContext {
         this.resourceFactory = resourceFactory;
     }
 
-    public HandlerMappingFactory getHandlerMappingFactory() {
+    public HandlerChainFactory getHandlerChainFactory() {
 
-        if (handlerMappingFactory == null) {
-            if ((handlerMappingFactory =
-                 (HandlerMappingFactory) getBeanOfType(HandlerMappingFactory.class)) == null)
-                throw new BeanException("Invalid bean type 'HandlerMappingFactory'");
+        if (handlerChainFactory == null) {
+            if ((handlerChainFactory =
+                 (HandlerChainFactory) getBeanOfType(HandlerChainFactory.class)) == null)
+                throw new BeanException("Invalid bean type 'HandlerChainFactory'");
 
         }
 
-        return handlerMappingFactory;
+        return handlerChainFactory;
     }
 
-    public void setHandlerMappingFactory(HandlerMappingFactory handlerMappingFactory) {
+    public void setHandlerChainFactory(HandlerChainFactory handlerChainFactory) {
 
-        if (handlerMappingFactory == null)
-            throw new IllegalArgumentException("handlerMappingFactory == null");
+        if (handlerChainFactory == null)
+            throw new IllegalArgumentException("handlerChainFactory == null");
 
-        this.handlerMappingFactory = handlerMappingFactory;
+        this.handlerChainFactory = handlerChainFactory;
     }
 
     public Object getBean(String name) {
