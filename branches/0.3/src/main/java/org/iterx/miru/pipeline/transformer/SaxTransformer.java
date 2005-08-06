@@ -25,8 +25,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.SAXException;
 
-import org.iterx.miru.context.ProcessingContext;
-
 import org.iterx.miru.pipeline.Stage;
 import org.iterx.miru.pipeline.TransformerImpl;
 

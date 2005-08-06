@@ -20,7 +20,6 @@
 */
 package org.iterx.miru.pipeline.serializer;
 
-import java.io.Writer;
 import java.io.OutputStream;
 import java.io.IOException;
 
@@ -40,7 +39,7 @@ import org.iterx.miru.context.ProcessingContext;
 
 import org.iterx.miru.pipeline.Stage;
 import org.iterx.miru.pipeline.SerializerImpl;
-import org.iterx.miru.pipeline.PipelineException;
+import org.iterx.miru.pipeline.PipelineChainException;
 
 public class SaxSerializer extends SerializerImpl {
     
@@ -116,7 +115,7 @@ public class SaxSerializer extends SerializerImpl {
                             outputTarget);
         }
         catch(Exception e) {
-            throw new PipelineException
+            throw new PipelineChainException
                 ("Pipeline execution failure.", e);
         }
     }    
@@ -126,7 +125,7 @@ public class SaxSerializer extends SerializerImpl {
         public void parse(org.xml.sax.InputSource inputSource) 
             throws IOException, SAXException {
 
-            if(parent instanceof Stage) 
+            if(parent instanceof Stage)
                 ((Stage) parent).execute
                     ((ProcessingContext)
                      ((InputSource) inputSource).getObject());

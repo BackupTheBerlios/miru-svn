@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.resolver.HttpLocaleResolver
+  org.iterx.miru.resolver.HttpLocaleContextResolver
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -23,16 +23,16 @@ package org.iterx.miru.resolver;
 
 import java.util.Locale;
 
-import org.iterx.miru.context.HttpRequestContext;
+import org.iterx.miru.context.http.HttpRequestContext;
 import org.iterx.miru.context.ProcessingContext;
 
-public class HttpLocaleResolver implements ContextResolver {
+public class HttpLocaleContextResolver implements ContextResolver {
 
     private static final String ACCEPT_LANGUAGE  = "Accept-Language";
 
     private Locale defaultLocale;
 
-    public HttpLocaleResolver() {
+    public HttpLocaleContextResolver() {
 
         defaultLocale = Locale.getDefault();
     }

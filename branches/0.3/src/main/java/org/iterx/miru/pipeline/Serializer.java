@@ -21,7 +21,6 @@
 package org.iterx.miru.pipeline;
 
 import org.iterx.miru.pipeline.Stage;
-import org.iterx.miru.pipeline.XmlProducer;
 import org.iterx.miru.pipeline.XmlConsumer;
 
 public interface Serializer extends Stage, XmlConsumer {

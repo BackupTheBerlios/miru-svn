@@ -22,9 +22,6 @@ package org.iterx.miru.pipeline;
 
 import java.io.IOException;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ext.LexicalHandler;
-
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.pipeline.Stage;
 import org.iterx.miru.pipeline.XmlProducer;

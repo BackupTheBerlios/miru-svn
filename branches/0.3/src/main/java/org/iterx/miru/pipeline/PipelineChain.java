@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.pipeline.Pipeline
+  org.iterx.miru.pipeline.PipelineChain
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -24,7 +24,7 @@ import java.io.IOException;
 
 import org.iterx.miru.context.ProcessingContext;
 
-public interface Pipeline {
+public interface PipelineChain {
 
     public void execute(ProcessingContext processingContext) throws IOException;
 

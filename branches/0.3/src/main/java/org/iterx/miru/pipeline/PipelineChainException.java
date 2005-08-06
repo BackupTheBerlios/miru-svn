@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.pipeline.PipelineException
+  org.iterx.miru.pipeline.PipelineChainException
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -22,21 +22,21 @@ package org.iterx.miru.pipeline;
 
 import java.io.IOException;
 
-public class PipelineException extends IOException {
+public class PipelineChainException extends IOException {
 
-    public PipelineException() {}
+    public PipelineChainException() {}
 
-    public PipelineException(String message) {
+    public PipelineChainException(String message) {
 
         super(message);
     }
 
-    public PipelineException(Throwable cause) {
+    public PipelineChainException(Throwable cause) {
 
         initCause(cause);
     }
 
-    public PipelineException(String message, Throwable cause) {
+    public PipelineChainException(String message, Throwable cause) {
 
         super(message);
         initCause(cause);

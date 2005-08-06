@@ -35,7 +35,7 @@ import org.iterx.miru.io.StreamSource;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.pipeline.GeneratorImpl;
-import org.iterx.miru.pipeline.PipelineException;
+import org.iterx.miru.pipeline.PipelineChainException;
 
 public class SaxGenerator extends GeneratorImpl {
 
@@ -121,7 +121,7 @@ public class SaxGenerator extends GeneratorImpl {
 	    xmlReader.parse(inputSource);
 	}
 	catch(SAXException e) {	    
-	    throw new PipelineException
+	    throw new PipelineChainException
                 ("Pipeline execution failure.", e);
 	}
     }

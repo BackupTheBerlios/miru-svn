@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.pipeline.PipelineImpl
+  org.iterx.miru.pipeline.PipelineChainImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -25,14 +25,14 @@ import java.io.IOException;
 import org.iterx.miru.context.ProcessingContext;
 
 import org.iterx.miru.pipeline.Stage;
-import org.iterx.miru.pipeline.Pipeline;
+import org.iterx.miru.pipeline.PipelineChain;
 import org.iterx.miru.pipeline.Generator;
 import org.iterx.miru.pipeline.Transformer;
 import org.iterx.miru.pipeline.Serializer;
 
 import org.iterx.util.ArrayUtils;
 
-public class PipelineImpl implements Pipeline {
+public class PipelineChainImpl implements PipelineChain {
 
     protected Generator generator;
     protected Transformer[] transformers;
@@ -40,22 +40,22 @@ public class PipelineImpl implements Pipeline {
 
     protected boolean _mutable;
 
-    private Stage pipeline;
+    private Stage pipelineChain;
 
     {
         _mutable = true;
     }
-    public PipelineImpl() {}
+    public PipelineChainImpl() {}
 
-    public PipelineImpl(Generator generator,
-                    Serializer serializer) {
+    public PipelineChainImpl(Generator generator,
+                             Serializer serializer) {
 
         this(generator, null, serializer);
     }
     
-    public PipelineImpl(Generator generator,
-                    Transformer[] transformers,
-                    Serializer serializer) {
+    public PipelineChainImpl(Generator generator,
+                             Transformer[] transformers,
+                             Serializer serializer) {
         
         if(generator == null) 
             throw new IllegalArgumentException("generator == null");
@@ -133,19 +133,19 @@ public class PipelineImpl implements Pipeline {
         chain = serializer;
         chain.init();
 
-        pipeline = chain;
+        pipelineChain = chain;
     }
 
     public void execute(ProcessingContext processingContext) throws IOException {
-        if(pipeline == null) init();
+        if(pipelineChain == null) init();
         
-        pipeline.execute(processingContext);
+        pipelineChain.execute(processingContext);
     }
 
     public void destroy() {
         
-        pipeline.destroy();
-        pipeline = null;
+        pipelineChain.destroy();
+        pipelineChain = null;
         generator = null;
         transformers = null;
         serializer = null;
