@@ -39,162 +39,159 @@ import org.iterx.miru.bean.BeanFactory;
 import org.iterx.miru.bean.BeanWrapper;
 import org.iterx.miru.bean.BeanWrapperAware;
 import org.iterx.miru.bean.BeanProvider;
-import org.iterx.miru.support.spring.bean.SpringBeanWrapper;
-
 
 public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {
 
-    protected static final Log logger = 
+    protected static final Log logger =
         LogFactory.getLog(SpringBeanFactory.class);
 
-    protected org.springframework.beans.factory.BeanFactory factory;
+    protected org.springframework.beans.factory.BeanFactory beanFactory;
     protected BeanProvider parent;
 
-    public SpringBeanFactory()  {
+    public SpringBeanFactory() {
 
-	factory = new SpringDefaultListableBeanFactoryProxy();
+        beanFactory = new SpringDefaultListableBeanFactoryProxy();
     }
 
-    public SpringBeanFactory(BeanProvider parent)  {
-	
-	if(parent == null) 
-	    throw new IllegalArgumentException("parent == null");
-	
-        factory = new SpringDefaultListableBeanFactoryProxy();
+    public SpringBeanFactory(BeanProvider parent) {
+
+        if (parent == null)
+            throw new IllegalArgumentException("parent == null");
+
+        beanFactory = new SpringDefaultListableBeanFactoryProxy();
         this.parent = parent;
     }
 
     public SpringBeanFactory
-        (org.springframework.beans.factory.BeanFactory beanFactory)  {
-	
-	if(beanFactory == null) 
-	    throw new IllegalArgumentException("beanFactory == null");
+        (org.springframework.beans.factory.BeanFactory beanFactory) {
 
-	factory = new SpringDefaultListableBeanFactoryProxy(beanFactory);
+        if (beanFactory == null)
+            throw new IllegalArgumentException("beanFactory == null");
+
+        this.beanFactory = new SpringDefaultListableBeanFactoryProxy(beanFactory);
     }
 
     public Object getBean(String name) {
-	Object bean;
-	
-	bean = null;
-	try {
-	    bean = factory.getBean(name);
-	}
-	catch(NoSuchBeanDefinitionException e) {
-	    if(parent != null) parent.getBean(name);
-	    else if(logger.isDebugEnabled())
-		logger.debug("Failed to get bean '" + 
-			     name + "'", e);
-	}
-	return bean;
+        assert (name != null)  : "name == null";
+
+        try {            
+            return beanFactory.getBean(name);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            if(logger.isDebugEnabled())
+                logger.debug("Failed to get bean '" + name + "'", e);
+        }
+        return (parent != null)? parent.getBean(name) : null;
     }
 
-    public Object getBeanOfType(Class type){ 
-
+    public Object getBeanOfType(Class type) {
         assert (type != null) : "type == null";
-	try {
-	    Map map;
-	    
-	    if((factory instanceof ListableBeanFactory) &&	       
-	       (map = BeanFactoryUtils.beansOfTypeIncludingAncestors
-		((ListableBeanFactory) factory, type, true, false)).size() > 0)
-		return ((map.values()).iterator()).next();
-	    
-	}
-	catch(BeansException e) {
-	    if(logger.isDebugEnabled())
-		logger.debug("Failed to create bean implementation [" + 
-			     type.toString() + "]", e);
-	}
 
-	return (parent != null)? parent.getBeanOfType(type) : null;
+        try {
+            Map map;
+
+            if ((beanFactory instanceof ListableBeanFactory) &&
+                (map = BeanFactoryUtils.beansOfTypeIncludingAncestors
+                    ((ListableBeanFactory) beanFactory, type, true, false)).size() > 0)
+                return ((map.values()).iterator()).next();
+
+        }
+        catch (BeansException e) {
+            if (logger.isDebugEnabled())
+                logger.debug("Failed to create bean implementation [" +
+                             type.toString() + "]", e);
+        }
+
+        return (parent != null) ? parent.getBeanOfType(type) : null;
     }
 
 
     public Object getBeanOfType(Class[] types) {
-	assert (types != null && types.length > 0) : "types == null";
-	try {
-	    Map map;
-	    
-		    if((factory instanceof ListableBeanFactory) &&	       
-	       (map = BeanFactoryUtils.beansOfTypeIncludingAncestors
-		((ListableBeanFactory) factory, 
-		 types[0], true, false)).size() > 0) {
-		
+        assert (types != null && types.length > 0) : "types == null";
+        try {
+            Map map;
 
-		for(Iterator beans = (map.values()).iterator(); 
-		    beans.hasNext();) {
-		    Object bean;
-		    Class cls;
-		    int i;
+            if ((beanFactory instanceof ListableBeanFactory) &&
+                (map = BeanFactoryUtils.beansOfTypeIncludingAncestors
+                    ((ListableBeanFactory) beanFactory,
+                     types[0], true, false)).size() > 0) {
 
-		    cls = (bean = beans.next()).getClass();
 
-		    for(i = types.length; i-- > 1; ) {
-			if(!types[i].isAssignableFrom(cls)) break;
-		    }
-		    
-		    if(i < 1) return bean;
-		}
-	    }
-	}
-	catch(BeansException e) {
-	    if(logger.isDebugEnabled()) {
-		StringBuffer buffer;
+                for (Iterator beans = (map.values()).iterator();
+                     beans.hasNext();) {
+                    Object bean;
+                    Class cls;
+                    int i;
 
-		buffer = new StringBuffer();
-		for(int i = 0; i < types.length; i++) {
-		    buffer.append(',');
-		    buffer.append(types[i]);
-		}
-		logger.debug("Failed to create bean implementation [" + 
-			     buffer.substring(1) + "]", e);
-	    }
-	}
+                    cls = (bean = beans.next()).getClass();
 
-	return (parent != null)? parent.getBeanOfType(types) : null;
+                    for (i = types.length; i-- > 1;) {
+                        if (!types[i].isAssignableFrom(cls)) break;
+                    }
+
+                    if (i < 1) return bean;
+                }
+            }
+        }
+        catch (BeansException e) {
+            if (logger.isDebugEnabled()) {
+                StringBuffer buffer;
+
+                buffer = new StringBuffer();
+                for (int i = 0; i < types.length; i++) {
+                    buffer.append(',');
+                    buffer.append(types[i]);
+                }
+                logger.debug("Failed to create bean implementation [" +
+                             buffer.substring(1) + "]", e);
+            }
+        }
+
+        return (parent != null) ? parent.getBeanOfType(types) : null;
     }
 
     public boolean containsBean(String name) {
 
-	return (factory.containsBean(name) ||
-		(parent != null && parent.containsBean(name)));
-	
+        return (beanFactory.containsBean(name) ||
+                (parent != null && parent.containsBean(name)));
+
     }
 
-	
+
     public boolean isSingleton(String name) {
 
-	return (factory.isSingleton(name) ||
-		(parent != null && parent.isSingleton(name)));
+        return (beanFactory.isSingleton(name) ||
+                (parent != null && parent.isSingleton(name)));
     }
 
     public BeanWrapper assignBeanWrapper(Object object) {
-	assert (object != null) : "object == null";
-	
-	return ((SpringDefaultListableBeanFactoryProxy) factory).assignBeanWrapper(object);
+        assert (object != null) : "object == null";
+
+        return ((SpringDefaultListableBeanFactoryProxy) beanFactory).assignBeanWrapper(object);
     }
 
-    public void recycleBeanWrapper(BeanWrapper wrapper) {}
+    public void recycleBeanWrapper(BeanWrapper wrapper) {
+    }
 
-    
-    private class SpringDefaultListableBeanFactoryProxy 
-	extends DefaultListableBeanFactory {
 
-	private SpringDefaultListableBeanFactoryProxy() {}
+    private class SpringDefaultListableBeanFactoryProxy
+        extends DefaultListableBeanFactory {
 
-	private SpringDefaultListableBeanFactoryProxy
-	    (org.springframework.beans.factory.BeanFactory parent) {
+        private SpringDefaultListableBeanFactoryProxy() {
+        }
 
-	    super(parent);
-	}
+        private SpringDefaultListableBeanFactoryProxy
+            (org.springframework.beans.factory.BeanFactory parent) {
 
-	private SpringBeanWrapper assignBeanWrapper(Object object) {
+            super(parent);
+        }
+
+        private SpringBeanWrapper assignBeanWrapper(Object object) {
             BeanWrapperImpl beanWrapper;
 
             initBeanWrapper(beanWrapper = new BeanWrapperImpl(object));
-	    return new SpringBeanWrapper(beanWrapper);
-	}
+            return new SpringBeanWrapper(beanWrapper);
+        }
 
     }
 

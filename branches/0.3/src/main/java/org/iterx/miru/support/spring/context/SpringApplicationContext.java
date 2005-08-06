@@ -23,7 +23,7 @@ package org.iterx.miru.support.spring.context;
 import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.context.ApplicationContextAware;
 import org.iterx.miru.io.ResourceFactory;
-import org.iterx.miru.dispatcher.handler.HandlerMappingFactory;
+import org.iterx.miru.dispatcher.handler.HandlerChainFactory;
 
 import org.iterx.miru.bean.BeanFactory;
 import org.iterx.miru.bean.BeanException;
@@ -34,7 +34,7 @@ public class SpringApplicationContext extends SpringBeanFactory
 
     protected ApplicationContext parent;
     private ResourceFactory resourceFactory;
-    private HandlerMappingFactory handlerMappingFactory;
+    private HandlerChainFactory handlerMappingFactory;
 
     public SpringApplicationContext()  {
 
@@ -76,15 +76,13 @@ public class SpringApplicationContext extends SpringBeanFactory
         return resourceFactory;
     }
 
-    public HandlerMappingFactory getHandlerMappingFactory() {
+    public HandlerChainFactory getHandlerChainFactory() {
 
         if(handlerMappingFactory == null) {
             if((handlerMappingFactory =
-                (HandlerMappingFactory) getBeanOfType(HandlerMappingFactory.class)) == null)
+                (HandlerChainFactory) getBeanOfType(HandlerChainFactory.class)) == null)
                 throw new BeanException();
-
         }
-
         return handlerMappingFactory;
     }
 
