@@ -40,14 +40,14 @@ import org.iterx.sax.OutputTarget;
 import org.iterx.sax.helpers.XMLWriterImpl;
 
 import org.iterx.miru.context.ProcessingContext;
-import org.iterx.miru.context.HttpRequestContextImpl;
-import org.iterx.miru.context.HttpResponseContextImpl;
+import org.iterx.miru.context.http.HttpRequestContextImpl;
+import org.iterx.miru.context.http.HttpResponseContextImpl;
 import org.iterx.miru.context.ProcessingContextFactory;
 
 import org.iterx.miru.pipeline.generator.SaxGenerator;
 import org.iterx.miru.pipeline.serializer.SaxSerializer;
 
-public class TestPerfPipelineImpl extends TestCase {
+public class TestPerfPipelineChainImpl extends TestCase {
 
     public static final int ITERATIONS  = 100;
     public static final int CONCURRENCY = 100;
@@ -56,17 +56,17 @@ public class TestPerfPipelineImpl extends TestCase {
     public static Test suite() {
         Test test;
 
-        test = new PipelineImplTest("testPipeline");
+        test = new PipelineChainImplTest("testPipeline");
         
         test = new RepeatedTest(test, ITERATIONS);
         test = new TimedTest(test, TIMEOUT);
         return new LoadTest(test, CONCURRENCY);
     }
 
-    public static class PipelineImplTest extends TestCase {
+    public static class PipelineChainImplTest extends TestCase {
 
         private ProcessingContextFactory processingContextFactory;
-        private Pipeline[] pipelines;
+        private PipelineChain[] pipelines;
         private int next, recycle;
         {   
             Runtime runtime;
@@ -76,7 +76,7 @@ public class TestPerfPipelineImpl extends TestCase {
             System.gc();
             memory = runtime.freeMemory();            
 
-            (new PipelineImpl
+            (new PipelineChainImpl
              (new SaxGenerator(),
               new SaxSerializer(new SimpleXmlWriter()))).init();
             
@@ -86,14 +86,14 @@ public class TestPerfPipelineImpl extends TestCase {
                                " bytes");
 
             memory = runtime.freeMemory();    
-            pipelines = new PipelineImpl[CONCURRENCY];
+            pipelines = new PipelineChainImpl[CONCURRENCY];
             for(int i = CONCURRENCY; i-- > 0; ) {
-                PipelineImpl pipeline;
-                pipeline = (new PipelineImpl
+                PipelineChainImpl pipelineChain;
+                pipelineChain = (new PipelineChainImpl
                             (new SaxGenerator(),
                              new SaxSerializer(new SimpleXmlWriter())));
-                pipeline.init();
-                pipelines[i] = pipeline;
+                pipelineChain.init();
+                pipelines[i] = pipelineChain;
             }
             memory -= runtime.freeMemory();
             System.out.println("Memory: " + 
@@ -104,7 +104,7 @@ public class TestPerfPipelineImpl extends TestCase {
             next = recycle = -1;
         }
 
-        public PipelineImplTest(String name) {
+        public PipelineChainImplTest(String name) {
 
             super(name);
         }
@@ -117,21 +117,21 @@ public class TestPerfPipelineImpl extends TestCase {
                      "</child></parent>");
         }
 
-        private Pipeline getPipeline() {
+        private PipelineChain getPipeline() {
 
             return pipelines[(next = (++next % CONCURRENCY))];
         }
 
-        private void recyclePipeline(Pipeline pipeline) {
+        private void recyclePipeline(PipelineChain pipelineChain) {
             
-            pipelines[(recycle = (++recycle % CONCURRENCY))] = pipeline;
+            pipelines[(recycle = (++recycle % CONCURRENCY))] = pipelineChain;
         }
     
         public void testPipeline() throws Exception {
             ProcessingContext processingContext;
             StringReader reader;
             StringWriter writer;
-            Pipeline pipeline;
+            PipelineChain pipelineChain;
             String message;
 
             message = createMessage();
@@ -140,9 +140,9 @@ public class TestPerfPipelineImpl extends TestCase {
             processingContext = processingContextFactory.getProcessingContext
                 (new HttpRequestContextImpl(reader), new HttpResponseContextImpl(writer));
             
-            pipeline = getPipeline();
-            pipeline.execute(processingContext);
-            recyclePipeline(pipeline);
+            pipelineChain = getPipeline();
+            pipelineChain.execute(processingContext);
+            recyclePipeline(pipelineChain);
 
             reader.close();
             writer.close();

@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.MockHttpResponseContext
+  org.iterx.miru.context.http.MockHttpResponseContext
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,17 +19,17 @@
   All Rights Reserved.  
 */
 
-package org.iterx.miru.context;
+package org.iterx.miru.context.http;
 
 import java.io.ByteArrayOutputStream;
 
-import org.iterx.miru.context.HttpResponseContextImpl;
+import org.iterx.miru.context.http.HttpResponseContextImpl;
 
 public class MockHttpResponseContext extends HttpResponseContextImpl {
 
     public MockHttpResponseContext() {
-	
-        super(new ByteArrayOutputStream());		
+
+        super(new ByteArrayOutputStream());
     }
-   
+
 }

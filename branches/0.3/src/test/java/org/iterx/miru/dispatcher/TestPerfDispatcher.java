@@ -33,18 +33,16 @@ import junit.extensions.RepeatedTest;
 import com.clarkware.junitperf.LoadTest;
 import com.clarkware.junitperf.TimedTest;
 
-import org.iterx.miru.dispatcher.interceptor.HandlerInterceptor;
 import org.iterx.miru.io.StreamSource;
 import org.iterx.miru.io.StreamTarget;
 
 import org.iterx.miru.context.ProcessingContext;
-import org.iterx.miru.context.HttpRequestContextImpl;
-import org.iterx.miru.context.HttpResponseContextImpl;
+import org.iterx.miru.context.http.HttpRequestContextImpl;
+import org.iterx.miru.context.http.HttpResponseContextImpl;
 import org.iterx.miru.context.ProcessingContextFactory;
 
-import org.iterx.miru.dispatcher.handler.Handler;
-import org.iterx.miru.dispatcher.handler.HandlerMapping;
-import org.iterx.miru.dispatcher.handler.HandlerMappingImpl;
+import org.iterx.miru.dispatcher.handler.ContentHandler;
+import org.iterx.miru.dispatcher.handler.HandlerChainFactoryImpl;
 
 
 public class TestPerfDispatcher extends TestCase {
@@ -69,7 +67,8 @@ public class TestPerfDispatcher extends TestCase {
           private Dispatcher dispatcher;
 
           {
-              HandlerMapping handlerMapping;
+              HandlerChainFactoryImpl handlerChainFactory;
+
               Runtime runtime;
               long memory;
               runtime = Runtime.getRuntime();
@@ -77,12 +76,10 @@ public class TestPerfDispatcher extends TestCase {
               System.gc();
               memory = runtime.freeMemory();
 
-              handlerMapping = new HandlerMappingImpl();
-              handlerMapping.addHandler
-                  ("default",
-                   new SimpleHandler(),
-                   new HandlerInterceptor[] { new SimpleHandlerInterceptor() });
-              dispatcher = new Dispatcher(handlerMapping);
+              handlerChainFactory = new HandlerChainFactoryImpl();
+              //handlerChainFactory.addHandlerChain();
+
+              dispatcher = new Dispatcher(handlerChainFactory.getHandlerChains());
 
               memory -= runtime.freeMemory();
 
@@ -102,9 +99,9 @@ public class TestPerfDispatcher extends TestCase {
 
           private static String createMessage() {
 
-              return  ("<parent><child>" +
+              return  ("<message><thread>" +
                        Thread.currentThread() +
-                       "</child></parent>");
+                       "</thread></message>");
           }
 
           public void testDispatcher() throws Exception {
@@ -128,6 +125,7 @@ public class TestPerfDispatcher extends TestCase {
       }
 
 
+    /*
     private static class SimpleHandlerInterceptor implements HandlerInterceptor {
 
         public boolean preHandle(ProcessingContext processingContext) {
@@ -140,10 +138,11 @@ public class TestPerfDispatcher extends TestCase {
 
 
     }
+    */
 
-    private static class SimpleHandler implements Handler {
+    private static class SimpleHandler implements ContentHandler {
 
-        public int handle(ProcessingContext processingContext) {
+        public int execute(ProcessingContext processingContext) {
             StreamSource source;
             StreamTarget target;
 

@@ -23,6 +23,8 @@ package org.iterx.miru.context;
 
 import junit.framework.TestCase;
 import org.iterx.miru.resolver.MockContextResolver;
+import org.iterx.miru.context.http.MockHttpRequestContext;
+import org.iterx.miru.context.http.MockHttpResponseContext;
 
 public class TestProcessingContextImpl extends TestCase {
 

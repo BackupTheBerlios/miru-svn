@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.handler.MockHandler
+  org.iterx.miru.dispatcher.handler.TestHandlerChainMapFactoryImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -21,19 +21,25 @@
 
 package org.iterx.miru.dispatcher.handler;
 
-
-import org.iterx.miru.dispatcher.Dispatcher;
-import org.iterx.miru.dispatcher.handler.Handler;
-import org.iterx.miru.context.ProcessingContext;
+import junit.framework.TestCase;
 
 
-public class MockHandler implements Handler {
+public class TestHandlerChainMapFactoryImpl extends TestCase {
 
-    public MockHandler() { }
-     
-    public int handle(ProcessingContext processingContext) {
+    public void testConstructors() {
+        HandlerChainFactory handlerChainFactory;
 
-	return Dispatcher.OK;
+        handlerChainFactory = new HandlerChainFactoryImpl();
+        assertNotNull(handlerChainFactory);
+    }
+
+    public void testHandlerChainAccessors() {
+        HandlerChainFactory handlerChainFactory;
+        HandlerChainMap handlerChainMap;
+
+        handlerChainFactory = new HandlerChainFactoryImpl();
+        assertNotNull(handlerChainMap = handlerChainFactory.getHandlerChains());
+        assertFalse((handlerChainMap.iterator()).hasNext());
     }
 
 }

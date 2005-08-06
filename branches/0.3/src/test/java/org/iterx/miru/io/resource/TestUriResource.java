@@ -30,106 +30,106 @@ import java.net.URISyntaxException;
 import junit.framework.TestCase;
 
 import org.iterx.miru.io.Resource;
-import org.iterx.miru.io.resource.UriResource;
+
 
 public class TestUriResource extends TestCase {
 
     private static final String CLASS_URI = 
-	"org/iterx/miru/io/resource/TestUriResource.class";
+        "org/iterx/miru/io/resource/TestUriResource.class";
 
     private Resource resource, bogus;
     private URI resourceUri, bogusUri;
 
     protected void setUp() throws URISyntaxException {
-	ClassLoader loader;
+        ClassLoader loader;
 
-	loader = (TestUriResource.class).getClassLoader();
-	resourceUri = new URI((loader.getSystemResource(CLASS_URI)).toString());
-	resource = new UriResource(resourceUri);
-	bogusUri = new URI("file:///.bogus");
-	bogus = new UriResource(bogusUri);	
+        loader = (TestUriResource.class).getClassLoader();
+        resourceUri = new URI((loader.getSystemResource(CLASS_URI)).toString());
+        resource = new UriResource(resourceUri);
+        bogusUri = new URI("file:///.bogus");
+        bogus = new UriResource(bogusUri);
     }
 
     protected void tearDown() {
 
-	resourceUri = null;
-	resource = null;
-	bogusUri = null;
-	bogus = null;
+        resourceUri = null;
+        resource = null;
+        bogusUri = null;
+        bogus = null;
     }
    
     public void testConstructors() throws URISyntaxException {
-	UriResource resource;
+        UriResource resource;
 
-	resource = new UriResource(new URI("file:///"));
-	assertNotNull(resource);
+        resource = new UriResource(new URI("file:///"));
+        assertNotNull(resource);
 
-	try {
-	    resource = new UriResource((String) null);
-	    fail("UriResource initialised with null arguments");
-	}
-	catch(IllegalArgumentException e) {}
+        try {
+            resource = new UriResource((String) null);
+            fail("UriResource initialised with null arguments");
+        }
+        catch(IllegalArgumentException e) {}
 
-	try {
-	    resource = new UriResource((URI) null);
-	    fail("UriResource initialised with null arguments");
-	}
-	catch(IllegalArgumentException e) {}
+        try {
+            resource = new UriResource((URI) null);
+            fail("UriResource initialised with null arguments");
+        }
+        catch(IllegalArgumentException e) {}
     }
 
     public void testPropertyAccessors() {
 
-	assertNotNull(resource.getProperty("Content-Length"));
-	assertNotNull(resource.getProperty("content-length"));
-	assertNull(resource.getProperty("Bogus-Property"));
+        assertNotNull(resource.getProperty("Content-Length"));
+        assertNotNull(resource.getProperty("content-length"));
+        assertNull(resource.getProperty("Bogus-Property"));
     }
 
     public void testURIAccessors() {
-	
-	assertEquals(resourceUri.toString(), (resource.getURI()).toString());
-	assertEquals(bogusUri.toString(), (bogus.getURI()).toString());
+
+        assertEquals(resourceUri.toString(), (resource.getURI()).toString());
+        assertEquals(bogusUri.toString(), (bogus.getURI()).toString());
     }
 
     public void testInputStreamAccessors() throws IOException {
 
-	assertNotNull(resource.getInputStream());
-	assertNull(resource.getReader());
-	
-	try {
-	    bogus.getInputStream();
-	    fail("Failed to detect invalid resource");
-	}
-	catch(Exception e){}
+        assertNotNull(resource.getInputStream());
+        assertNull(resource.getReader());
 
-	try {
-	    Resource resource;
+        try {
+            bogus.getInputStream();
+            fail("Failed to detect invalid resource");
+        }
+        catch(Exception e){}
 
-	    resource = new UriResource(new URI(".bogus"));
-	    resource.getInputStream();
-	    fail("Failed to detect relative resource URI");
-	}
-	catch(Exception e) {}
+        try {
+            Resource resource;
+
+            resource = new UriResource(new URI(".bogus"));
+            resource.getInputStream();
+            fail("Failed to detect relative resource URI");
+        }
+        catch(Exception e) {}
     }
 
     public void testReaderAccessors() throws IOException {
 
-	assertNotNull(resource.getReader());
-	assertNull(resource.getInputStream());
-	
-	try {
-	    bogus.getReader();
-	    fail("Failed to detect invalid resource");
-	}
-	catch(Exception e){}
+        assertNotNull(resource.getReader());
+        assertNull(resource.getInputStream());
 
-	try {
-	    Resource resource;
-	    
-	    resource = new UriResource(new URI(".bogus"));
-	    resource.getReader();
-	    fail("Failed to detect relative resource URI");
-	}
-	catch(Exception e) {}
+        try {
+            bogus.getReader();
+            fail("Failed to detect invalid resource");
+        }
+        catch(Exception e){}
+
+        try {
+            Resource resource;
+
+            resource = new UriResource(new URI(".bogus"));
+            resource.getReader();
+            fail("Failed to detect relative resource URI");
+        }
+        catch(Exception e) {}
 
     }
     

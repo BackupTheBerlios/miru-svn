@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.MockHttpRequestContext
+  org.iterx.miru.context.http.MockHttpRequestContext
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,7 @@
   All Rights Reserved.
 */
 
-package org.iterx.miru.context;
+package org.iterx.miru.context.http;
 
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
@@ -27,10 +27,10 @@ import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.iterx.miru.context.HttpRequestContextImpl;
+import org.iterx.miru.context.http.HttpRequestContextImpl;
 
 public class MockHttpRequestContext extends HttpRequestContextImpl {
-   
+
     public MockHttpRequestContext(String uri) {
 
         super((InputStream) null);

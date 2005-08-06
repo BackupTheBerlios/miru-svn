@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.resolver.TestHttpLocaleResolver
+  org.iterx.miru.resolver.TestHttpLocaleContextResolver
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -27,10 +27,10 @@ import junit.framework.TestCase;
 
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.MockProcessingContext;
-import org.iterx.miru.context.MockHttpRequestContext;
-import org.iterx.miru.context.MockHttpResponseContext;
+import org.iterx.miru.context.http.MockHttpRequestContext;
+import org.iterx.miru.context.http.MockHttpResponseContext;
 
-public class TestHttpLocaleResolver extends TestCase {
+public class TestHttpLocaleContextResolver extends TestCase {
 
     private static final String ACCEPT_LANGUAGE  = "Accept-Language";
 
@@ -66,19 +66,19 @@ public class TestHttpLocaleResolver extends TestCase {
     }
 
     public void testConstructors() {
-        HttpLocaleResolver resolver;
+        HttpLocaleContextResolver resolver;
 
-        resolver = new HttpLocaleResolver();
+        resolver = new HttpLocaleContextResolver();
         assertNotNull(resolver);
     }
 
 
     public void testDefaultLocaleAccessors() {
-        HttpLocaleResolver resolver;
+        HttpLocaleContextResolver resolver;
         Locale locale;
 
 
-        resolver = new HttpLocaleResolver();
+        resolver = new HttpLocaleContextResolver();
 
         assertEquals(locale = Locale.getDefault(), resolver.getDefaultLocale());
         assertEquals(locale, resolver.resolve(processingContext));
@@ -90,11 +90,11 @@ public class TestHttpLocaleResolver extends TestCase {
 
     public void testResolve() {
         MockHttpRequestContext request;
-        HttpLocaleResolver resolver;
+        HttpLocaleContextResolver resolver;
         Locale locale;
 
         request = (MockHttpRequestContext) processingContext.getRequestContext();
-        resolver = new HttpLocaleResolver();
+        resolver = new HttpLocaleContextResolver();
 
         locale = (Locale) resolver.resolve(processingContext);
         assertEquals(Locale.getDefault(), locale);
