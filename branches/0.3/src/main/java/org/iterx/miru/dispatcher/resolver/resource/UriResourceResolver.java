@@ -31,41 +31,42 @@ import org.iterx.miru.dispatcher.resolver.ResourceResolver;
 public class UriResourceResolver implements ResourceResolver {
 
     protected static final URI BASE_URI =
-	(new File(System.getProperty("user.dir"))).toURI();
+        (new File(System.getProperty("user.dir"))).toURI();
     
     protected URI base;
 
     public UriResourceResolver() {
 
-	base = BASE_URI;
+        base = BASE_URI;
     }
 
     public UriResourceResolver(URI base) {
 
-	setBase(base);
+        setBase(base);
     }
 
     public URI getBase() {
 
-	return base;
+        return base;
     }
     
     public void setBase(URI base) {
-	if(base == null)
-	    throw new IllegalArgumentException("base == null");
-	if(base.getScheme() == null) 
-	    throw new IllegalArgumentException("Relative base uri [" +
-					       base + "]");
+        if(base == null)
+            throw new IllegalArgumentException("base == null");
+        if(base.getScheme() == null)
+            throw new IllegalArgumentException("Relative base uri [" +
+                                               base + "]");
 
-	this.base = base;
+        this.base = base;
     }
 
     public Resource resolve(URI uri) {
-	Resource resource;
+        Resource resource;
 
-	if(uri.getScheme() == null) uri = base.resolve(uri);
-	resource = new UriResource(uri);
-	return (resource.exists())? resource : null;
+        if(uri.getScheme() == null) uri = base.resolve(uri);
+        resource = new UriResource(uri);
+
+        return (resource.exists())? resource : null;
     }
 
 }

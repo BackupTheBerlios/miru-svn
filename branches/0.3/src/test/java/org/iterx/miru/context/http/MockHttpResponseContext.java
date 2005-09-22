@@ -22,14 +22,33 @@
 package org.iterx.miru.context.http;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import org.iterx.miru.context.http.HttpResponseContextImpl;
 
 public class MockHttpResponseContext extends HttpResponseContextImpl {
 
+
     public MockHttpResponseContext() {
 
         super(new ByteArrayOutputStream());
+    }
+
+    public byte[] getData() {
+
+        try {
+            return ((ByteArrayOutputStream) getOutputStream()).toByteArray();
+        }
+        catch(IOException e) {}
+        return null;
+    }
+
+    public void reset() {
+
+        try {
+            ((ByteArrayOutputStream) getOutputStream()).reset();
+        }
+        catch(IOException e) {}
     }
 
 }

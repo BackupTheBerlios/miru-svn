@@ -33,5 +33,5 @@ public interface HandlerChainProvider {
 
     public void removeHandlerAdapter(HandlerAdapter handlerAdapter);
 
-    public HandlerChainMap getHandlerChains();   
+    public HandlerChainMap getHandlerChains();
 }

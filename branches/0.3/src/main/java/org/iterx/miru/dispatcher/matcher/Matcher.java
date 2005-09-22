@@ -20,10 +20,12 @@
 */
 package org.iterx.miru.dispatcher.matcher;
 
+import org.iterx.miru.context.ProcessingContext;
+
 public interface Matcher {
 
-    public boolean hasMatches(Object object);
+    public boolean hasMatches(ProcessingContext context);
 
-    public Object[] getMatches(Object object);
+    public Object[] getMatches(ProcessingContext context);
 
 }

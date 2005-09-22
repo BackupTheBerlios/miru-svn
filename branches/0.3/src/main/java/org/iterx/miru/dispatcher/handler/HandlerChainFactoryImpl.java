@@ -27,7 +27,8 @@ import java.util.Iterator;
 import org.iterx.miru.dispatcher.adapter.HandlerAdapter;
 import org.iterx.util.ArrayUtils;
 
-public class HandlerChainFactoryImpl extends HandlerChainFactory {
+public class HandlerChainFactoryImpl extends HandlerChainFactory
+    implements HandlerChainWrapperAware {
 
     private HandlerAdapter[] handlerAdapters;
     private HandlerChainMap handlerChainMap;
@@ -69,52 +70,41 @@ public class HandlerChainFactoryImpl extends HandlerChainFactory {
         return handlerChainMap;
     }
 
-    public HandlerChain addHandlerChain(HandlerChain handlerChain) {
-        Object key;
+    public HandlerChain createHandlerChain() {
 
-        if(handlerChain == null)
-            throw new IllegalArgumentException("handerChain == null");
-
-        if((key = handlerChain.getName()) == null) key = handlerChain;
-        if(handlerChains.containsKey(key))
-            throw new IllegalArgumentException
-                ("HandlerChain of that name already exists.");
-
-        handlerChainMap = null;
-        handlerChains.put(key, handlerChain);
-        return handlerChain;
+        return new HandlerChainImpl();
     }
 
-    public void removeHandlerChain(HandlerChain handlerChain) {
-        Object key;
+    public void addHandlerChain(HandlerChain handler) {
+        String name;
 
-        if(handlerChain == null)
-            throw new IllegalArgumentException("handerChain == null");
+        if(handler == null)
+            throw new IllegalArgumentException("handler == null");
 
-        if((key = handlerChain.getName()) == null) key = handlerChain;
-
-        handlerChainMap = null;
-        handlerChains.remove(key);
+        if((name = handler.getName()) != null) handlerChains.put(name, handler);
+        else handlerChains.put(handler, handler);
     }
 
+    public void removeHandlerChain(HandlerChain handler) {
 
-    protected class HandlerChainMapImpl implements HandlerChainMap {
-        private Map handlerChains;
+        if(handler == null)
+            throw new IllegalArgumentException("handler == null");
 
-        public HandlerChainMapImpl(Map handlerChains) {
-
-            this.handlerChains = handlerChains;
-        }
-
-        public HandlerChain get(String key) {
-
-            return (HandlerChain) handlerChains.get(key);
-        }
-
-        public Iterator iterator() {
-
-            return (handlerChains.values()).iterator();
-        }
+        (handlerChains.values()).remove(handler);
     }
+
+    public HandlerChainWrapper assignHandlerChainWrapper(Object object) {
+        HandlerChainWrapper wrapper;
+
+        wrapper = new HandlerChainWrapperImpl(this);
+        wrapper.setWrappedInstance(object);
+        return wrapper;
+    }
+
+    public void recycleHandlerChainWrapper(HandlerChainWrapper wrapper) {
+
+        wrapper.setWrappedInstance(null);        
+    }
+
 
 }

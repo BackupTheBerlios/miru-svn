@@ -52,7 +52,7 @@ public class TestXmlSpringBeanFactory extends TestCase {
                 "class=\"org.iterx.miru.support.spring.bean.XmlSpringBeanFactory\"/>" +
                 "</beans>").getBytes();
         resource = new MockResource(new URI("spring-beans.xml"));
-        resource.setContent(data);
+        resource.setData(data);
     }
     
     protected void tearDown() {

@@ -20,10 +20,7 @@
 */
 package org.iterx.util;
 
-
 import junit.framework.TestCase;
-
-import org.iterx.util.ArrayUtils;
 
 public class TestArrayUtils extends TestCase {
 

@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.handler.HandlerChain;
+  org.iterx.miru.dispatcher.handler.HandlerChainImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,11 +18,27 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
-
 package org.iterx.miru.dispatcher.handler;
 
-public interface HandlerChain extends Handler {
+import java.util.Map;
+import java.util.Iterator;
 
-    public String getName();
+public class HandlerChainMapImpl implements HandlerChainMap {
+    private Map handlerChains;
 
+    public HandlerChainMapImpl(Map handlerChains) {
+
+        this.handlerChains = handlerChains;
+    }
+
+    public HandlerChain get(String key) {
+        
+        return ((key != null)?
+                (HandlerChain) handlerChains.get(key) : null);
+    }
+
+    public Iterator iterator() {
+
+        return (handlerChains.values()).iterator();
+    }
 }

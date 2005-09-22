@@ -21,5 +21,10 @@
 
 package org.iterx.miru.context;
 
+import java.net.URI;
+
 public interface RequestContext {
+
+    public URI getURI();
+
 }

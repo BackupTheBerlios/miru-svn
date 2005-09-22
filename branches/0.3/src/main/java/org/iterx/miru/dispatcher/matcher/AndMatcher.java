@@ -20,7 +20,10 @@
 */
 package org.iterx.miru.dispatcher.matcher;
 
+import java.util.ArrayList;
+
 import org.iterx.util.ArrayUtils;
+import org.iterx.miru.context.ProcessingContext;
 
 public class AndMatcher implements Matcher {
 
@@ -56,18 +59,26 @@ public class AndMatcher implements Matcher {
     }
 
 
-    public Object[] getMatches(Object object) {
+    public Object[] getMatches(ProcessingContext context) {
         assert (matchers != null) : "matchers == null";
+        Object[] objects;
 
-        //TODO: implement getMatches();
-        throw new UnsupportedOperationException();
+        objects = new Object[matchers.length];
+        for(int i = 0; i < matchers.length; i++) {
+            Object[] matches;
+
+            if((matches = matchers[i].getMatches(context)) != null)
+                objects[i] = matches;
+            else return null;
+        }
+        return objects;
     }
 
-    public boolean hasMatches(Object object) {
+    public boolean hasMatches(ProcessingContext context) {
         assert (matchers != null) : "matchers == null";
 
         for(int i = 0; i < matchers.length; i++) {
-            if(!matchers[i].hasMatches(object)) return false;
+            if(!matchers[i].hasMatches(context)) return false;
         }
         return true;
     }

@@ -72,7 +72,7 @@ public class HttpRequestContextImpl implements HttpRequestContext {
 
     }
 
-    public HttpRequestContextImpl(Reader reader , String encoding) {
+    public HttpRequestContextImpl(Reader reader, String encoding) {
 
         if (encoding == null &&
             reader instanceof InputStreamReader)

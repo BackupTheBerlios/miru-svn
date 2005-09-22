@@ -20,6 +20,8 @@
 */
 package org.iterx.miru.dispatcher.matcher;
 
+import org.iterx.miru.context.ProcessingContext;
+
 public class NotMatcher implements Matcher {
 
     private Matcher matcher;
@@ -36,16 +38,16 @@ public class NotMatcher implements Matcher {
         this.matcher = matcher;
     }
 
-    public Object[] getMatches(Object object) {
+    public Object[] getMatches(ProcessingContext context) {
         assert (matcher != null) : "matcher == null";
 
-        throw new UnsupportedOperationException();
+        return ((!matcher.hasMatches(context))? new Object[]{} : null);
     }
 
-    public boolean hasMatches(Object object) {
+    public boolean hasMatches(ProcessingContext context) {
         assert (matcher != null) : "matcher == null";
 
-        return (!matcher.hasMatches(object));
+        return (!matcher.hasMatches(context));
     }
 
 }

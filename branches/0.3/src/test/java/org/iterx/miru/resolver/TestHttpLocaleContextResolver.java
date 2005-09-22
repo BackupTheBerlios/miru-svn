@@ -37,20 +37,20 @@ public class TestHttpLocaleContextResolver extends TestCase {
     private ProcessingContext processingContext;
 
     private static Object[][] LOCALES = {
-    { "en", Locale.ENGLISH },
-    { "en;qa=1.0", Locale.ENGLISH },
-    { "en-GB", Locale.UK },
-    { "en-GB;qa=1.0", Locale.UK },
-    { "ja", Locale.JAPANESE },
-    { "ja,en", Locale.JAPANESE },
-    { "ja;qa=1.0,en", Locale.JAPANESE },
-    { "ja-JP", Locale.JAPAN },
-    { "ja-JP,en", Locale.JAPAN },
-    { "ja-JP;qa=1.0,en", Locale.JAPAN },
-    { "en-cockney", new Locale("en", "COCKNEY") },
-    { "x-pig-latin", new Locale("x", "PIG-LATIN") },
-    { "", Locale.getDefault() },
-    {null, Locale.getDefault() }};
+        { "en", Locale.ENGLISH },
+        { "en;qa=1.0", Locale.ENGLISH },
+        { "en-GB", Locale.UK },
+        { "en-GB;qa=1.0", Locale.UK },
+        { "ja", Locale.JAPANESE },
+        { "ja,en", Locale.JAPANESE },
+        { "ja;qa=1.0,en", Locale.JAPANESE },
+        { "ja-JP", Locale.JAPAN },
+        { "ja-JP,en", Locale.JAPAN },
+        { "ja-JP;qa=1.0,en", Locale.JAPAN },
+        { "en-cockney", new Locale("en", "COCKNEY") },
+        { "x-pig-latin", new Locale("x", "PIG-LATIN") },
+        { "", Locale.getDefault() },
+        {null, Locale.getDefault() }};
 
 
     protected void setUp() {

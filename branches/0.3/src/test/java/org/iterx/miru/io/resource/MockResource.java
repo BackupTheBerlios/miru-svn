@@ -36,109 +36,107 @@ public class MockResource implements Resource {
     private String type, encoding;
     private InputStream in;
     private Reader reader;
-    private byte[] content;
+    private byte[] data;
     private URI uri;
 
     {
-	content = new byte[0];
+        data = new byte[0];
     }    
-    public MockResource() {
 
-    }
+    public MockResource() {}
 
     public MockResource(URI uri) {
 
-	this.uri = uri;
+        this.uri = uri;
     }
 
     public URI getURI() {
 
-	return uri;
+        return uri;
     }
 
     public void setURI(URI uri) {
 
-	this.uri = uri;
+        this.uri = uri;
     }
 
-    public byte[] getContent() {
+    public byte[] getData() {
 
-	return content;
+        return data;
     }
 
-    public void setContent(byte[] content) {
-	if(content == null) 
-	    throw new IllegalArgumentException("content == null");
+    public void setData(byte[] data) {
 
-	this.content = content;
+        if(data == null)
+            throw new IllegalArgumentException("data == null");
+
+        this.data = data;
         reset();
     }
 
 
     public boolean exists() {
 	
-	return true;
+        return true;
     }
     
     public void reset() {
 
-	reader = null;
-	in = null;
+        reader = null;
+        in = null;
     }
 
 
     public String getProperty(String property) {
 
-	return null;
+        return null;
     }
 
     public int getContentLength() {
-	
-	return content.length;
+
+        return data.length;
     }
     
     public String getContentType() {
 
-	return type;
+        return type;
     }
 
     public void setContentType(String type) {
 
-	this.type = type;
+        this.type = type;
     }
 
     public String getCharacterEncoding() {
 
-	return encoding;
+        return encoding;
     }
 
     public void setCharacterEncoding(String encoding) {
 
-	this.encoding = encoding;
+        this.encoding = encoding;
     }
 
     public InputStream getInputStream() throws IOException {
 
-	if(reader != null) return null;
-	else if(in == null) 
-	    in = new ByteArrayInputStream(content);
+        if(reader != null) return null;
+        else if(in == null)
+            in = new ByteArrayInputStream(data);
 
-	return in;
+        return in;
     }
 
     public Reader getReader() throws IOException {
 
-	if(in != null) return null;
-	else if(reader == null) {
-	    reader = 
-		((encoding != null)?
-		 new InputStreamReader
-		 (new ByteArrayInputStream(content), encoding) :
-		 new InputStreamReader
-		 (new ByteArrayInputStream(content)));
-	}
-	return reader;
+        if(in != null) return null;
+        else if(reader == null) {
+            reader =
+                ((encoding != null)?
+                 new InputStreamReader(new ByteArrayInputStream(data), encoding) :
+                 new InputStreamReader(new ByteArrayInputStream(data)));
+        }
+        return reader;
     }
-
     
 }
+                                     

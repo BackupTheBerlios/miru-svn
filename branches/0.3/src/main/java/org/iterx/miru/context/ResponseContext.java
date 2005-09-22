@@ -23,4 +23,7 @@ package org.iterx.miru.context;
 
 
 public interface ResponseContext {
+
+    public int getStatus();
+
 }

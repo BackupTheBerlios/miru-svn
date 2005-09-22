@@ -28,8 +28,6 @@ import org.iterx.miru.context.RequestContext;
 
 public interface HttpRequestContext extends RequestContext, StreamSource {
 
-    public URI getURI();
-
     public String getHeader(String name);
 
     public String getParameter(String name);

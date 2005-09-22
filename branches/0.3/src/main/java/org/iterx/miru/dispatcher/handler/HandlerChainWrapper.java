@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.handler.HandlerChain;
+  org.iterx.miru.dispatcher.handler.HandlerChainWrapper
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,10 +19,25 @@
   All Rights Reserved.
 */
 
+
 package org.iterx.miru.dispatcher.handler;
 
-public interface HandlerChain extends Handler {
+public interface HandlerChainWrapper {
 
     public String getName();
+
+    public void setName(String name);
+
+    public void addHandler(Object handler);
+
+    public Object[] getHandlers();
+
+    public void setHandlers(Object[] handlers);
+
+    public void removeHandler(Object handler);
+
+    public Object getWrappedInstance();
+
+    public void setWrappedInstance(Object object);
 
 }

@@ -26,7 +26,6 @@ public final class ArrayUtils {
 
     private ArrayUtils() {}
 
-
     public static Object[] resize(Object[] array, int size) {
         Object[] clone;
         int length;

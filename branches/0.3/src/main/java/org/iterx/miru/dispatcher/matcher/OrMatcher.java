@@ -21,6 +21,7 @@
 package org.iterx.miru.dispatcher.matcher;
 
 import org.iterx.util.ArrayUtils;
+import org.iterx.miru.context.ProcessingContext;
 
 public class OrMatcher implements Matcher {
 
@@ -37,7 +38,6 @@ public class OrMatcher implements Matcher {
             throw new IllegalArgumentException("matchers == null");
         this.matchers = matchers;
     }
-
 
     public Matcher addMatcher(Matcher matcher) {
 
@@ -56,22 +56,22 @@ public class OrMatcher implements Matcher {
     }
 
 
-    public Object[] getMatches(Object object) {
+    public Object[] getMatches(ProcessingContext context) {
         assert (matchers != null) : "matchers == null";
         Object[] objects;
 
         objects = null;
         for(int i = 0; i < matchers.length; i++) {
-            if((objects = matchers[i].getMatches(object)) != null) break;
+            if((objects = matchers[i].getMatches(context)) != null) break;
         }
         return objects;
     }
 
-    public boolean hasMatches(Object object) {
+    public boolean hasMatches(ProcessingContext context) {
         assert (matchers != null) : "matchers == null";
 
         for(int i = 0; i < matchers.length; i++) {
-            if(matchers[i].hasMatches(object)) return true;
+            if(matchers[i].hasMatches(context)) return true;
         }
         return false;
     }

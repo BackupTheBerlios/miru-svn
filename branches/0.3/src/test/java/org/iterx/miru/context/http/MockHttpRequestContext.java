@@ -23,6 +23,7 @@ package org.iterx.miru.context.http;
 
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -49,8 +50,17 @@ public class MockHttpRequestContext extends HttpRequestContextImpl {
             setURI(new URI(uri));
         }
         catch(URISyntaxException e) {
-            throw new IllegalArgumentException("Invalid uri '" + uri + "'");
+            throw new IllegalArgumentException("Invalid uri '" + uri + "'.");
         }
     }
+
+    public void reset() {
+
+        try {
+            ((ByteArrayInputStream) getInputStream()).reset();
+        }
+        catch(IOException e) {}
+    }
+
 
 }

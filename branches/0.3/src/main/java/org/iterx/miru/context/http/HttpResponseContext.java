@@ -39,8 +39,6 @@ public interface HttpResponseContext extends ResponseContext, StreamTarget {
     public static final int NOT_IMPLEMENTED = 501;
     public static final int SERVICE_UNAVAILABLE = 503;
 
-    public int getStatus();
-
     public void setStatus(int status);
 
     public String getHeader(String name);

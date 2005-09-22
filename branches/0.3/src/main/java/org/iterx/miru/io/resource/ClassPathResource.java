@@ -61,10 +61,10 @@ public class ClassPathResource implements Resource {
     }
     
     public ClassPathResource(URI uri, ClassLoader classLoader) {
-	String scheme;
+        String scheme;
 
-	if(uri == null) 
-	    throw new IllegalArgumentException("uri == null");
+        if(uri == null)
+            throw new IllegalArgumentException("uri == null");
         if((scheme = uri.getScheme()) != null &&
            !(SCHEME.equals(scheme)))
             throw new IllegalArgumentException("Invalid scheme '" + scheme + "'.");
@@ -78,7 +78,7 @@ public class ClassPathResource implements Resource {
 
     public URI getURI() {
 	
-	return uri;
+        return uri;
     }
 
     public String getProperty(String key) {
@@ -93,6 +93,7 @@ public class ClassPathResource implements Resource {
 
     public String getContentType() {
 
+        
         return null;
     }
 
@@ -103,43 +104,43 @@ public class ClassPathResource implements Resource {
 
     public InputStream getInputStream() throws IOException {
 
-	if(in != null) return in;
-	else if(reader != null) return null;
+        if(in != null) return in;
+        else if(reader != null) return null;
 
-	return (in = classLoader.getResourceAsStream(uri.getPath()));
+        return (in = classLoader.getResourceAsStream(uri.getPath()));
     }
 
     public Reader getReader() throws IOException {
 
-	if(reader != null) return reader;
-	else if(in != null) return null;
+        if(reader != null) return reader;
+        else if(in != null) return null;
 
-	return (reader =  new InputStreamReader
-                (classLoader.getResourceAsStream(uri.getPath())));
+        return (reader =  new InputStreamReader
+            (classLoader.getResourceAsStream(uri.getPath())));
     }
 
 
     public boolean exists() {
-	
+
         return ((classLoader.getResourceAsStream(uri.getPath())) != null);
     }
 
     public void reset() {
-		
-	if(in != null) {
-	    try {
-		in.close();
-	    } 
-	    catch(Exception e){}
-	    in = null;
-	}
-	if(reader != null) {
-	    try {
-		reader.close();
-	    } 
-	    catch(Exception e){}
-	    reader = null;
-	}
+
+        if(in != null) {
+            try {
+                in.close();
+            }
+            catch(Exception e){}
+            in = null;
+        }
+        if(reader != null) {
+            try {
+                reader.close();
+            }
+            catch(Exception e){}
+            reader = null;
+        }
     }
 
     public int hashCode() {

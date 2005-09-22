@@ -34,23 +34,23 @@ public class MockResourceResolver implements ResourceResolver {
 
     public MockResourceResolver(Resource resource) {
 
-    this.resource = resource;
+        this.resource = resource;
     }
 
     public Resource getResource() {
 
-    return resource;
+        return resource;
     }
 
     public void setResource(Resource resource) {
 
-    this.resource = resource;
+        this.resource = resource;
     }
 
     public Resource resolve(URI uri) {
 
-    return (resource != null &&
-            (resource.getURI()).equals(uri))? resource : null;
+        return (resource != null &&
+                (resource.getURI()).equals(uri))? resource : null;
     }
-
+    
 }

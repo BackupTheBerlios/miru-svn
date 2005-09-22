@@ -31,14 +31,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.iterx.miru.io.Resource;
 
 public class UriResource implements Resource {
 
-    protected static final Log logger = LogFactory.getLog(UriResource.class);
 
     protected URLConnection _connection;
 
@@ -48,158 +44,160 @@ public class UriResource implements Resource {
     private URI uri;
 
     public UriResource(String uri) throws URISyntaxException {
-	
-	if(uri == null) 
-	    throw new IllegalArgumentException("uri == null");
-	this.uri = new URI(uri);
+        if(uri == null)
+            throw new IllegalArgumentException("uri == null");
+
+        this.uri = new URI(uri);
     }
 
     public UriResource(URI uri) {
-	
-	if(uri == null) 
-	    throw new IllegalArgumentException("uri == null");
-	this.uri = uri;
+
+        if(uri == null)
+            throw new IllegalArgumentException("uri == null");
+
+        this.uri = uri;
     }
 
 
     public URI getURI() {
 	
-	return uri;
+        return uri;
     }
 
     public String getProperty(String key) {
 	
-	if(_connection == null) init();
-	return _connection.getHeaderField(key);
+        if(_connection == null) init();
+
+        return _connection.getHeaderField(key);
     }   
 
     public int getContentLength() {
 
-	if(_connection == null) init();
-	return _connection.getContentLength();
+        if(_connection == null) init();
+
+        return _connection.getContentLength();
     }
 
     public String getContentType() {
 
-	if(_connection == null) init();
-	return _connection.getContentType();
+        if(_connection == null) init();
+
+        return _connection.getContentType();
     }
 
     public String getCharacterEncoding() {
 
-	if(_connection == null) init();
-	return _connection.getContentEncoding();
+        if(_connection == null) init();
+
+        return _connection.getContentEncoding();
     }
 
     public InputStream getInputStream() throws IOException {
 
-	if(in != null) return in;
-	else if(reader != null) return null;
-	else if(_connection == null) init();
+        if(in != null) return in;
+        else if(reader != null) return null;
+        else if(_connection == null) init();
 
-	return (in = _connection.getInputStream());
+        return (in = _connection.getInputStream());
     }
 
     public Reader getReader() throws IOException {
-	String encoding;
+        String encoding;
 
-	if(reader != null) return reader;
-	else if(in != null) return null;
-	else if(_connection == null) init();
+        if(reader != null) return reader;
+        else if(in != null) return null;
+        else if(_connection == null) init();
 	
 	
 	
-	encoding = _connection.getContentEncoding();
-	reader = ((encoding != null)?
-		  new InputStreamReader(_connection.getInputStream(), encoding) :
-		  new InputStreamReader(_connection.getInputStream()));
-	
-	return reader;		
+        encoding = _connection.getContentEncoding();
+        reader = ((encoding != null)?
+                  new InputStreamReader(_connection.getInputStream(), encoding) :
+                  new InputStreamReader(_connection.getInputStream()));
+
+        return reader;
     }
 
 
     public boolean exists() {
 	
-	if(_connection != null) return true;
-	else {
-	    try {
-		init();
-	    }
-	    catch(Exception e) {}
-	}
+        if(_connection != null) return true;
+        else {
+            try {
+                init();
+            }
+            catch(Exception e) {}
+        }
 
-	return (_connection != null);
+        return (_connection != null);
     }
 
     public void reset() {
 		
-	if(in != null) {
-	    try {
-		in.close();
+        if(in != null) {
+            try {
+                in.close();
 	    } 
-	    catch(Exception e){}
-	    in = null;
-	}
-	if(reader != null) {
-	    try {
-		reader.close();
-	    } 
-	    catch(Exception e){}
-	    reader = null;
-	}
-	_connection = null;
+            catch(Exception e){}
+            in = null;
+        }
+        if(reader != null) {
+            try {
+                reader.close();
+            }
+            catch(Exception e){}
+            reader = null;
+        }
+        _connection = null;
     }
 
     public int hashCode() {
-	
-	return uri.hashCode();
+
+        return uri.hashCode();
     }
 
     public boolean equals(Object object) {
 
-	return ((this == object) ||
-		((object instanceof UriResource) &&
-		 uri.equals(((UriResource) object).uri)));
+        return ((this == object) ||
+                ((object instanceof UriResource) &&
+                 uri.equals(((UriResource) object).uri)));
     }
 
     public String toString() {
-	StringBuffer buffer;
+        StringBuffer buffer;
         String cls;
 
         buffer = new StringBuffer();
-	cls = (getClass().getName());
+        cls = (getClass().getName());
         buffer.append(cls.substring(1 + cls.lastIndexOf('.')));
-	buffer.append('[');
+        buffer.append('[');
         buffer.append("uri=[");
-	buffer.append(uri);
-	buffer.append("]]");
-	return buffer.toString();
+        buffer.append(uri);
+        buffer.append("]]");
+        return buffer.toString();
     }
 
     protected void init() {
 	
-	if(_connection == null) {
-	    try {
-		URL url;
+        if(_connection == null) {
+            try {
+                URL url;
 
-		url = uri.toURL();
-		if(logger.isDebugEnabled())
-		    logger.debug("Open resource [" + uri + "]");
-		_connection = url.openConnection();
-		_connection.connect();
-	    }
-	    catch(Exception e){
-		_connection = null;
-		if(logger.isDebugEnabled())
-		    logger.debug("Connection failed [" + uri + "]", e);
-		throw new RuntimeException("Invalid resource [" + 
-					   uri + "]");
-	    }	
-	}
+                url = uri.toURL();
+                _connection = url.openConnection();
+                _connection.connect();
+            }
+            catch(Exception e){
+                _connection = null;
+                throw new RuntimeException("Invalid resource [" +
+                                           uri + "]");
+            }
+        }
     }
 
-    protected void finalize() {
+    protected void finalize() throws Throwable {
 
-	reset();
+        reset();
+        super.finalize();
     }
 }
