@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.handler.LogHandler;
+  org.iterx.miru.bean.editor.URIEditor
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,10 +18,22 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
+package org.iterx.miru.bean.editor;
 
+import java.beans.PropertyEditorSupport;
+import java.net.URI;
 
-package org.iterx.miru.dispatcher.handler;
+public class URIEditor extends PropertyEditorSupport {
 
-public interface LogHandler extends Handler {
-    
+    public void setAsText(String text) throws IllegalArgumentException {
+
+        setValue(URI.create(text));
+    }
+
+    public String getAsText() {
+        Object value;
+
+        return (String) (((value = getValue()) == null)? value : value.toString());
+    }
+
 }

@@ -5,144 +5,168 @@
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2.1 of the License, or (at your option) any later version.
-  
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
-  All Rights Reserved.  
+  All Rights Reserved.
 */
 
 package org.iterx.miru.bean;
 
 import java.util.Iterator;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 
-import org.iterx.miru.bean.BeanFactory;
+public class BeanFactoryImpl extends BeanFactory implements BeanWrapperAware {
 
-public class BeanFactoryImpl extends BeanFactory {
+    protected BeanProvider parent;
 
-    protected BeanFactory parent;
-
-    private LinkedHashMap beans;    
+    private final HashMap beans;
 
     {
-        beans = new LinkedHashMap();
+        beans = new HashMap();
     }
 
     public BeanFactoryImpl() {}
 
-    public BeanFactoryImpl(BeanFactory parent) {
-        
+    public BeanFactoryImpl(BeanProvider parent) {
+
         this.parent = parent;
     }
 
     public Object getBean(String name) {
-        Bean bean;
+        BeanImpl bean;
 
-        if((bean = (Bean) beans.get(name)) != null) return bean.newInstance();
+        if((bean = (BeanImpl) beans.get(name)) != null) return bean.newInstance();
 
         return ((parent != null)? parent.getBean(name) : null);
     }
-    
-    public void addBean(String name, Class cls) {
-        
-        addBean(name, cls, true);
+
+    public Bean createBeanDefinition(String id, Class cls) {
+
+        return createBeanDefinition(id, cls, true);
     }
 
-    public void addBean(String name, Class cls, boolean singleton) {
+    public Bean createBeanDefinition(String id, Class cls, boolean singleton) {
 
-        if(name == null)
-            throw new IllegalArgumentException("name == null");
-        if(cls == null)
-            throw new IllegalArgumentException("cls == null");
+        return new BeanImpl(id, cls, singleton);
+    }
+
+    public void addBeanDefinition(Bean bean) {
+
+        if(bean == null)
+            throw new IllegalArgumentException("bean == null");
+        if(!(bean instanceof BeanImpl))
+            throw new IllegalArgumentException
+                ("Unsupported Bean implementation [" + bean.getClass() + "].");
 
         synchronized(beans) {
-            beans.put(name, new Bean(cls, singleton));
+            BeanImpl beanImpl;
+
+            beanImpl = (BeanImpl) bean;
+            beanImpl.beanFactory = this;
+            beans.put(beanImpl.id, bean);
+        }
+
+    }
+
+    public Bean getBeanDefinition(String id) {
+
+        synchronized(beans) {
+            return (Bean) beans.get(id);
         }
     }
 
-
-    public void removeBean(String name) {
+    public Bean[] getBeanDefinitions() {
 
         synchronized(beans) {
-            beans.remove(name);
+            return (Bean[]) (beans.values()).toArray(new Bean[beans.size()]);
+        }
+    }
+
+    public void setBeanDefinitions(Bean[] beans) {
+
+        synchronized(this.beans) {
+            this.beans.clear();
+            for(int i = beans.length; i-- > 0;){
+                addBeanDefinition(beans[i]);
+            }
+        }
+    }
+
+    public void removeBeanDefinition(String id) {
+
+        synchronized(beans) {
+            beans.remove(id);
         }
     }
 
     public Object getBeanOfType(Class type) {
-        
+
         for(Iterator iterator = (beans.values()).iterator();
             iterator.hasNext();) {
-            Bean bean;
-    
-            if(type.isAssignableFrom((bean = (Bean) iterator.next()).cls))
+            BeanImpl bean;
+
+            if(type.isAssignableFrom((bean = (BeanImpl) iterator.next()).cls))
                 return bean.newInstance();
-        }            
+        }
         return ((parent != null)? parent.getBeanOfType(type) : null);
     }
 
     public Object getBeanOfType(Class[] types) {
 
-
         for(Iterator iterator = (beans.values()).iterator();
             iterator.hasNext();) {
-            Bean bean;
+            BeanImpl bean;
             int i;
 
-            bean = (Bean) iterator.next();
+            bean = (BeanImpl) iterator.next();
             for(i = types.length; i-- > 0; ) {
                 if(!types[i].isAssignableFrom(bean.cls)) break;
             }
             if(i < 0) return bean.newInstance();
-        }            
+        }
         return ((parent != null)? parent.getBeanOfType(types) : null);
     }
 
-    public boolean containsBean(String name) {
+    public boolean containsBean(String id) {
 
-        return ((beans.containsKey(name)) ||
-                (parent != null && parent.containsBean(name)));
+        return ((beans.containsKey(id)) ||
+                (parent != null && parent.containsBean(id)));
     }
 
-    public boolean isSingleton(String name) {
-        Bean bean;
+    public boolean isSingleton(String id) {
+        BeanImpl bean;
 
-        if((bean = (Bean) beans.get(name)) != null) return bean.singleton;
+        if((bean = (BeanImpl) beans.get(id)) != null)
+            return bean.isSingleton();
 
-        return ((parent != null)? parent.isSingleton(name) : false);       
+        return ((parent != null) && parent.isSingleton(id));
     }
 
-    private class Bean {
 
-        private Class cls;
-        private Object object; 
-        private boolean singleton;
+    public BeanWrapper assignBeanWrapper(Object object) {
+        BeanWrapperImpl wrapper;
 
-        private Bean(Class cls, boolean singleton) {
+        wrapper = new BeanWrapperImpl(object);
+        wrapper.beanFactory = this;
+        return wrapper;
+    }
 
-            this.cls = cls;
-            this.singleton = singleton;
-        }
 
-        private Object newInstance() {
-            try {
-                if(singleton) {
-                    if(object == null) object = cls.newInstance();
-                    return object;
-                }
-                return cls.newInstance();
-            }
-            catch(Exception e) {
-                throw new BeanException("Invalid bean instance.", e);
-            }
-        }
+    public void recycleBeanWrapper(BeanWrapper wrapper) {
+        assert (wrapper == null ||
+                wrapper instanceof BeanWrapperImpl) : "Invalid instance.";
+
+        wrapper.setWrappedInstance(null);
+        ((BeanWrapperImpl) wrapper).beanFactory = null;
     }
 
 }

@@ -23,14 +23,14 @@ package org.iterx.miru.bean;
 
 public interface BeanProvider {
 
-    public Object getBean(String name);
+    public Object getBean(String id);
 
     public Object getBeanOfType(Class type);
 
     public Object getBeanOfType(Class[] types);
 
-    public boolean containsBean(String name);
+    public boolean containsBean(String id);
 
-    public boolean isSingleton(String name);
+    public boolean isSingleton(String id);
 
 }

@@ -22,7 +22,6 @@ package org.iterx.miru.dispatcher.handler;
 
 import java.util.Map;
 import java.util.LinkedHashMap;
-import java.util.Iterator;
 
 import org.iterx.miru.dispatcher.adapter.HandlerAdapter;
 import org.iterx.util.ArrayUtils;
@@ -47,26 +46,36 @@ public class HandlerChainFactoryImpl extends HandlerChainFactory
 
     public void setHandlerAdapters(HandlerAdapter[] handlerAdapters) {
 
-        this.handlerAdapters = handlerAdapters;
+        synchronized(this) {
+            this.handlerAdapters = handlerAdapters;
+        }
     }
 
     public HandlerAdapter addHandlerAdapter(HandlerAdapter handlerAdapter) {
 
-        handlerAdapters = (HandlerAdapter[])
-            ArrayUtils.add(handlerAdapters, handlerAdapter);
+        synchronized(this) {
+            handlerAdapters = (HandlerAdapter[])
+                ArrayUtils.add(handlerAdapters, handlerAdapter);
+        }
         return handlerAdapter;
     }
 
     public void removeHandlerAdapter(HandlerAdapter handlerAdapter) {
 
-        handlerAdapters = (HandlerAdapter[])
-            ArrayUtils.remove(handlerAdapters, handlerAdapter);
+        synchronized(this) {
+            handlerAdapters = (HandlerAdapter[])
+                ArrayUtils.remove(handlerAdapters, handlerAdapter);
+        }
     }
 
     public HandlerChainMap getHandlerChains() {
 
-        if(handlerChainMap == null)
-            handlerChainMap = new HandlerChainMapImpl(new LinkedHashMap(handlerChains));
+        if(handlerChainMap == null) {
+            synchronized(this) {
+                if(handlerChainMap == null)
+                    handlerChainMap = new HandlerChainMapImpl(new LinkedHashMap(handlerChains));
+            }
+        }
         return handlerChainMap;
     }
 
@@ -80,9 +89,14 @@ public class HandlerChainFactoryImpl extends HandlerChainFactory
 
         if(handler == null)
             throw new IllegalArgumentException("handler == null");
+        if(!(handler instanceof HandlerChainImpl))
+            throw new IllegalArgumentException
+                ("Unsupported HandlerChain implementation [" + handler.getClass() + "].");
 
-        if((name = handler.getName()) != null) handlerChains.put(name, handler);
-        else handlerChains.put(handler, handler);
+        synchronized(this) {
+            if((name = handler.getId()) != null) handlerChains.put(name, handler);
+            else handlerChains.put(handler, handler);
+        }
     }
 
     public void removeHandlerChain(HandlerChain handler) {
@@ -90,7 +104,9 @@ public class HandlerChainFactoryImpl extends HandlerChainFactory
         if(handler == null)
             throw new IllegalArgumentException("handler == null");
 
-        (handlerChains.values()).remove(handler);
+        synchronized(this) {
+            (handlerChains.values()).remove(handler);
+        }
     }
 
     public HandlerChainWrapper assignHandlerChainWrapper(Object object) {

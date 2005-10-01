@@ -35,7 +35,6 @@ import org.iterx.miru.io.Resource;
 
 public class UriResource implements Resource {
 
-
     protected URLConnection _connection;
 
     private InputStream in;
@@ -43,11 +42,11 @@ public class UriResource implements Resource {
 
     private URI uri;
 
-    public UriResource(String uri) throws URISyntaxException {
+    public UriResource(String uri) {
         if(uri == null)
             throw new IllegalArgumentException("uri == null");
 
-        this.uri = new URI(uri);
+        this.uri = URI.create(uri);
     }
 
     public UriResource(URI uri) {

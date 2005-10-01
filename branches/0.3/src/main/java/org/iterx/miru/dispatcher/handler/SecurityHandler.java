@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.handler.LogHandler;
+  org.iterx.miru.dispatcher.handler.SecurityHandler;
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,9 +19,7 @@
   All Rights Reserved.
 */
 
-
 package org.iterx.miru.dispatcher.handler;
 
-public interface LogHandler extends Handler {
-    
+public interface SecurityHandler extends Handler {
 }

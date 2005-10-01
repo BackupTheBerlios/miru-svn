@@ -6,19 +6,19 @@ import org.iterx.miru.context.ProcessingContext;
 
 public class HandlerChainImpl implements HandlerChain {
 
-    private String name;
+    private String id;
     private Matcher matcher;
 
-    public String getName() {
+    private Handler[] handlers;
 
-        return name;
+    public String getId() {
+
+        return id;
     }
 
-    public void setName(String name) {
+    public void setId(String id) {
 
-        if(name == null)
-            throw new IllegalArgumentException("name == null");
-        this.name = name;
+        this.id = id;
     }
 
     public Matcher getMatcher() {
@@ -32,6 +32,8 @@ public class HandlerChainImpl implements HandlerChain {
     }
 
     public void addHandler(Object handler) {
+
+
 
     }
 
@@ -52,8 +54,13 @@ public class HandlerChainImpl implements HandlerChain {
     public int execute(ProcessingContext processingContext) {
 
         if((matcher == null || matcher.hasMatches(processingContext))) {
-            //iterate over handler chains, executing.
 
+            //phases ->
+            //   security
+            //   pre-fixup
+            //   content
+            //   post-fixup
+            //   log
 
             return Dispatcher.OK;
         }

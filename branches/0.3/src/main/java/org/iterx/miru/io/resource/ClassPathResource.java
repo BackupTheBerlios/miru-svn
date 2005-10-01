@@ -21,15 +21,11 @@
 package org.iterx.miru.io.resource;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import java.io.Reader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import org.iterx.miru.io.Resource;
 
@@ -37,22 +33,20 @@ public class ClassPathResource implements Resource {
 
     private static final String SCHEME = "classpath";
 
-    protected static final Log logger = LogFactory.getLog(ClassPathResource.class);
-
     protected ClassLoader classLoader;
     private InputStream in;
     private Reader reader;
 
     private URI uri;
 
-    public ClassPathResource(String uri) throws URISyntaxException {
+    public ClassPathResource(String uri) {
 	
-        this(new URI(uri));
+        this(URI.create(uri));
     }
     
-    public ClassPathResource(String uri, ClassLoader classLoader) throws URISyntaxException {
+    public ClassPathResource(String uri, ClassLoader classLoader) {
 
-        this(new URI(uri), null);
+        this(URI.create(uri), classLoader);
     }
 
     public ClassPathResource(URI uri) {
@@ -128,17 +122,11 @@ public class ClassPathResource implements Resource {
     public void reset() {
 
         if(in != null) {
-            try {
-                in.close();
-            }
-            catch(Exception e){}
+            try {  in.close(); } catch(Exception e){}
             in = null;
         }
         if(reader != null) {
-            try {
-                reader.close();
-            }
-            catch(Exception e){}
+            try { reader.close(); } catch(Exception e){}
             reader = null;
         }
     }
@@ -158,21 +146,22 @@ public class ClassPathResource implements Resource {
     }
 
     public String toString() {
-	StringBuffer buffer;
+        StringBuffer buffer;
         String cls;
 
         buffer = new StringBuffer();
-	cls = (getClass().getName());
+        cls = (getClass().getName());
         buffer.append(cls.substring(1 + cls.lastIndexOf('.')));
-	buffer.append('[');
+        buffer.append('[');
         buffer.append("uri=[");
-	buffer.append(uri);
-	buffer.append("]]");
-	return buffer.toString();
+        buffer.append(uri);
+        buffer.append("]]");
+        return buffer.toString();
     }
 
-    protected void finalize() {
+    protected void finalize() throws Throwable {
 
-	reset();
+        reset();
+        super.finalize();
     }
 }

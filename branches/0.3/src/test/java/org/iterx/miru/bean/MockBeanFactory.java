@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.handler.LogHandler;
+  org.iterx.miru.bean.MockBeanFactory
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,9 +19,9 @@
   All Rights Reserved.
 */
 
+package org.iterx.miru.bean;
 
-package org.iterx.miru.dispatcher.handler;
+public class MockBeanFactory extends BeanFactoryImpl {
 
-public interface LogHandler extends Handler {
-    
+
 }

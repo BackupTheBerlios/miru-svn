@@ -105,7 +105,7 @@ public class HttpDispatcherServlet extends HttpServlet {
             };
         }
         catch(Exception e) {
-            logger.error("Failed to execute [" + request.getRequestURL() + "]", e);
+            logger.error("Failed to process [" + request.getRequestURL() + "]", e);
             throw new ServletException
                 ("Request " + request.getRequestURL() + "failed.", e);
         }

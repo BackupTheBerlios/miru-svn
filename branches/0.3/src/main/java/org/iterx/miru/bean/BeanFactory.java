@@ -21,9 +21,21 @@
 
 package org.iterx.miru.bean;
 
+import java.beans.PropertyEditorManager;
+
 public abstract class BeanFactory implements BeanProvider {
 
     private static BeanFactory beanFactory;
+
+    static {
+        String[] paths, clone;
+
+        paths = PropertyEditorManager.getEditorSearchPath();
+        clone = new String[paths.length + 1];
+        clone[0] = "org.iterx.miru.bean.editor";
+        System.arraycopy(paths, 0, clone, 1, paths.length);
+        PropertyEditorManager.setEditorSearchPath(clone);
+    }
 
     public static BeanFactory getBeanFactory() {
 

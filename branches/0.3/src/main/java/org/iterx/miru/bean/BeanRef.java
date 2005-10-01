@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.handler.LogHandler;
+  org.iterx.miru.bean.BeanRef
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,10 +18,32 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
+package org.iterx.miru.bean;
 
+public class BeanRef {
 
-package org.iterx.miru.dispatcher.handler;
+    protected String id;
 
-public interface LogHandler extends Handler {
-    
+    public BeanRef(String id) {
+
+        this.id = id;
+    }
+
+    public String getId() {
+
+        return id;
+    }
+
+    public String toString() {
+        StringBuffer buffer;
+        String name;
+
+        buffer = new StringBuffer();
+        name = (getClass().getName());
+        buffer.append(name.substring(1 + name.lastIndexOf('.')));
+        buffer.append("[id='");
+        buffer.append(id);
+        buffer.append("']");
+        return buffer.toString();
+    }
 }

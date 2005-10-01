@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.handler.LogHandler;
+  org.iterx.miru.bean.Bean
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,10 +18,17 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
+package org.iterx.miru.bean;
 
+import org.iterx.util.KeyValue;
 
-package org.iterx.miru.dispatcher.handler;
-
-public interface LogHandler extends Handler {
+public interface Bean {
     
+    public String getId();
+
+    public boolean isSingleton();
+
+    public KeyValue getPropertyValue(String property);
+
+
 }

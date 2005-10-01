@@ -19,7 +19,7 @@
   All Rights Reserved.  
 */
 
-package org.iterx.miru.support.spring.bean;
+package org.iterx.miru.support.spring.bean.factory;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -35,21 +35,23 @@ import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.iterx.miru.io.Resource;
 import org.iterx.miru.bean.BeanFactory;
 import org.iterx.miru.bean.BeanWrapper;
+import org.iterx.miru.support.spring.bean.factory.SpringBeanFactory;
+import org.iterx.miru.support.spring.bean.SpringBeanWrapper;
 
 public class XmlSpringBeanFactory extends SpringBeanFactory  {
 
-    protected static final Log logger = 
+    protected static final Log logger =
         LogFactory.getLog(XmlSpringBeanFactory.class);
 
     public XmlSpringBeanFactory()  {
-	
+
         beanFactory = new XmlSpringBeanFactoryProxy();
     }
 
     public XmlSpringBeanFactory(BeanFactory parent)  {
 
-	if(parent == null) 
-	    throw new IllegalArgumentException("parent == null");
+    if(parent == null)
+        throw new IllegalArgumentException("parent == null");
 
         beanFactory = new XmlSpringBeanFactoryProxy();
         this.parent = parent;
@@ -63,7 +65,7 @@ public class XmlSpringBeanFactory extends SpringBeanFactory  {
 
         beanFactory = new XmlSpringBeanFactoryProxy(parent);
     }
-        
+
     public void load(Resource resource) throws IOException {
         assert (resource != null) : "resource == null";
 

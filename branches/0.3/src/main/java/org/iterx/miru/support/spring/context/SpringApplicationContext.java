@@ -27,7 +27,7 @@ import org.iterx.miru.dispatcher.handler.HandlerChainFactory;
 
 import org.iterx.miru.bean.BeanFactory;
 import org.iterx.miru.bean.BeanException;
-import org.iterx.miru.support.spring.bean.SpringBeanFactory;
+import org.iterx.miru.support.spring.bean.factory.SpringBeanFactory;
 
 public class SpringApplicationContext extends SpringBeanFactory
     implements ApplicationContext {

@@ -22,11 +22,17 @@
 
 package org.iterx.miru.dispatcher.handler;
 
+import org.iterx.miru.dispatcher.matcher.Matcher;
+
 public interface HandlerChainWrapper {
 
-    public String getName();
+    public String getId();
 
-    public void setName(String name);
+    public void setId(String id);
+
+    public Matcher getMatcher();
+
+    public void setMatcher(Matcher matcher);
 
     public void addHandler(Object handler);
 

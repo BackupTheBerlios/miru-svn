@@ -40,21 +40,21 @@ public class ClassPathResourceResolver implements ResourceResolver {
 
     public ClassLoader getClassLoader() {
 
-	return classLoader;
+        return classLoader;
     }
     
     public void setClassLoader(ClassLoader classLoader) {
-	if(classLoader == null)
-	    throw new IllegalArgumentException("classLoader == null");
+        if(classLoader == null)
+            throw new IllegalArgumentException("classLoader == null");
 
-	this.classLoader = classLoader;
+        this.classLoader = classLoader;
     }
 
     public Resource resolve(URI uri) {
-	Resource resource;
+        Resource resource;
 
-	resource = new ClassPathResource(uri, classLoader);
-	return (resource.exists())? resource : null;
+        resource = new ClassPathResource(uri, classLoader);
+        return (resource.exists())? resource : null;
     }
 
 }

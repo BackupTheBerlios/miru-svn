@@ -19,7 +19,7 @@
   All Rights Reserved.  
 */
 
-package org.iterx.miru.support.spring.bean;
+package org.iterx.miru.support.spring.bean.factory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -34,6 +34,7 @@ import org.iterx.miru.bean.BeanFactory;
 import org.iterx.miru.bean.BeanWrapper;
 import org.iterx.miru.bean.BeanWrapperAware;
 import org.iterx.miru.io.resource.MockResource;
+import org.iterx.miru.support.spring.bean.factory.XmlSpringBeanFactory;
 
 
 public class TestXmlSpringBeanFactory extends TestCase {
@@ -47,23 +48,23 @@ public class TestXmlSpringBeanFactory extends TestCase {
                 "\"http://www.springframework.org/dtd/spring-beans.dtd\">\n" +
                 "<beans>" +
                 "<bean id=\"bean\" singleton=\"true\" " +
-                "class=\"org.iterx.miru.support.spring.bean.XmlSpringBeanFactory\"/>" +
+                "class=\"org.iterx.miru.support.spring.bean.factory.XmlSpringBeanFactory\"/>" +
                 "<bean id=\"bean-prototype\" singleton=\"false\" " +
-                "class=\"org.iterx.miru.support.spring.bean.XmlSpringBeanFactory\"/>" +
+                "class=\"org.iterx.miru.support.spring.bean.factory.XmlSpringBeanFactory\"/>" +
                 "</beans>").getBytes();
         resource = new MockResource(new URI("spring-beans.xml"));
         resource.setData(data);
     }
-    
+
     protected void tearDown() {
 
         resource = null;
     }
 
-    
+
     public void testConstructors(){
         BeanFactory beanFactory;
-	
+
         beanFactory = new XmlSpringBeanFactory();
         assertNotNull(beanFactory);
 
@@ -71,7 +72,7 @@ public class TestXmlSpringBeanFactory extends TestCase {
 
         beanFactory = new XmlSpringBeanFactory
             (new DefaultListableBeanFactory());
-	
+
         try {
             beanFactory = new XmlSpringBeanFactory((BeanFactory) null);
             fail("XmlSpringBeanFactory initialised with null arguments");
@@ -102,9 +103,9 @@ public class TestXmlSpringBeanFactory extends TestCase {
         assertNotNull(beanFactory.getBean("bean"));
         assertNotNull((bean = beanFactory.getBean("bean")));
         assertTrue(bean instanceof XmlSpringBeanFactory);
-	
+
         assertNull((bean = beanFactory.getBeanOfType
-		    (TestCase.class)));
+            (TestCase.class)));
         assertNotNull((bean = beanFactory.getBeanOfType
             (BeanFactory.class)));
         assertTrue(bean instanceof BeanFactory);

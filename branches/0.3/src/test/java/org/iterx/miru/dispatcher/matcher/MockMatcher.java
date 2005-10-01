@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.handler.LogHandler;
+  org.iterx.miru.dispatcher.matcher.MockMatcher
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,9 +19,33 @@
   All Rights Reserved.
 */
 
+package org.iterx.miru.dispatcher.matcher;
 
-package org.iterx.miru.dispatcher.handler;
+import org.iterx.miru.context.ProcessingContext;
 
-public interface LogHandler extends Handler {
-    
+public class MockMatcher implements Matcher {
+
+    private Object[] matches;
+
+    public MockMatcher() {}
+
+    public MockMatcher(Object[] matches) {
+
+        this.matches = matches;
+    }
+
+    public boolean hasMatches(ProcessingContext context) {
+
+        return (matches != null);
+    }
+
+    public Object[] getMatches(ProcessingContext context) {
+
+        return (matches != null)? matches : new Object[0];
+    }
+
+    public void setMatches(Object[] matches) {
+
+        this.matches = matches;
+    }
 }

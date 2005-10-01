@@ -28,7 +28,7 @@ public interface BeanWrapper {
     public Object getWrappedInstance();
 
     public void setWrappedInstance(Object object);
-    
+       
     public Object getPropertyValue(String property);
 
     public void setPropertyValue(String property, Object value);

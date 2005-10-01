@@ -1,6 +1,7 @@
 package org.iterx.miru.dispatcher.handler;
 
 import org.iterx.miru.dispatcher.adapter.HandlerAdapter;
+import org.iterx.miru.dispatcher.matcher.Matcher;
 import org.iterx.miru.context.ProcessingContext;
 
 public class HandlerChainWrapperImpl implements HandlerChainWrapper {
@@ -11,41 +12,70 @@ public class HandlerChainWrapperImpl implements HandlerChainWrapper {
     public HandlerChainWrapperImpl(HandlerChainProvider provider) {
 
         if(provider == null)
-            throw new IllegalArgumentException("provider == mull");
+            throw new IllegalArgumentException("provider == null");
         this.provider = null;
     }
 
 
-    public String getName() {
+    public String getId() {
 
-        return instance.getName();
+        return instance.getId();
     }
 
-    public void setName(String name) {
+    public void setId(String id) {
 
-        instance.setName(name);
+        instance.setId(id);
+    }
+
+    public Matcher getMatcher() {
+
+        return instance.getMatcher();
+    }
+
+    public void setMatcher(Matcher matcher) {
+
+        instance.setMatcher(matcher);
     }
 
     public void addHandler(Object object) {
         HandlerAdapter[] adapters;
-        final Object handler;
-
-        handler = object;
         adapters = provider.getHandlerAdapters();
         for(int i = 0; i < adapters.length; i++) {
             final HandlerAdapter adapter;
+            final Object handler;
+
+
+            handler = object;
             if((adapter = adapters[i]).supports(handler)) {
+
                 instance.addHandler
-                    (new Handler() {
+                    (new HandlerWrapper() {
+
+                        public Object unwrap() {
+
+                            return handler;
+                        }
+
                         public int execute(ProcessingContext processingContext) {
-                            return adapter.execute(processingContext, handler);
+
+                            return adapter.process(processingContext, handler);
+                        }
+
+                        public int hashCode() {
+
+                            return handler.hashCode();
+                        }
+
+                        public boolean equals(Object object) {
+
+                            return handler.equals(object);
                         }
                     });
                 return;
             }
         }
         if(object instanceof Handler) {
-            instance.addHandler(handler);
+            instance.addHandler(object);
             return;
         }
 
@@ -54,18 +84,28 @@ public class HandlerChainWrapperImpl implements HandlerChainWrapper {
     }
 
     public Object[] getHandlers() {
+        Object[] handlers;
 
-        return null;
+        handlers = instance.getHandlers();
+        for(int i = 0; i < handlers.length; i++) {
+            Object handler;
+
+            if(((handler = handlers[i]) instanceof HandlerWrapper))
+                handlers[i] = ((HandlerWrapper) handler).unwrap();
+        }
+        return handlers;
     }
 
-    public void setHandlers(Object[] handlers) {
+    public void setHandlers(Object[] objects) {
 
-
+        for(int i = 0; i < objects.length; i++) {
+            addHandler(objects[i]);
+        }
     }
 
-    public void removeHandler(Object handler) {
+    public void removeHandler(Object object) {
 
-
+        instance.removeHandler(object);
     }
 
     public Object getWrappedInstance() {
@@ -74,28 +114,15 @@ public class HandlerChainWrapperImpl implements HandlerChainWrapper {
     }
 
     public void setWrappedInstance(Object object) {
-        assert (object instanceof HandlerChainImpl) : "Invalid instance.";
+        assert (object == null ||
+                object instanceof HandlerChainImpl) : "Invalid instance.";
 
         instance = (HandlerChainImpl) object;
     }
 
-    /*
-    private static class HandlerAdapterAdapter implements Handler {
-        private HandlerAdapter adapter;
-        private Object handler;
+    private interface HandlerWrapper extends Handler {
 
-        private HandlerAdapterAdapter(HandlerAdapter adapter,
-                                      Object handler) {
+        public Object unwrap();
 
-            this.adapter =adapter;
-            this.handler = handler;
-        }
-
-        public int execute(ProcessingContext processingContext) {
-
-            return adapter.execute(processingContext, handler);
-        }
     }
-    */
-
 }

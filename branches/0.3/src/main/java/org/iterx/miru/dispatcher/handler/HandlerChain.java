@@ -23,6 +23,6 @@ package org.iterx.miru.dispatcher.handler;
 
 public interface HandlerChain extends Handler {
 
-    public String getName();
+    public String getId();
 
 }

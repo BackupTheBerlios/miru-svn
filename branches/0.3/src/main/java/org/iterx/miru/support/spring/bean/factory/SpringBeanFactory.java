@@ -19,7 +19,7 @@
   All Rights Reserved.  
 */
 
-package org.iterx.miru.support.spring.bean;
+package org.iterx.miru.support.spring.bean.factory;
 
 import java.util.Map;
 import java.util.Iterator;
@@ -39,6 +39,7 @@ import org.iterx.miru.bean.BeanFactory;
 import org.iterx.miru.bean.BeanWrapper;
 import org.iterx.miru.bean.BeanWrapperAware;
 import org.iterx.miru.bean.BeanProvider;
+import org.iterx.miru.support.spring.bean.SpringBeanWrapper;
 
 public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {
 
@@ -74,7 +75,7 @@ public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {
     public Object getBean(String name) {
         assert (name != null)  : "name == null";
 
-        try {            
+        try {
             return beanFactory.getBean(name);
         }
         catch (NoSuchBeanDefinitionException e) {

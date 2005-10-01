@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.DispatcherException
+  org.iterx.miru.dispatcher.DispatcherEvent
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -21,23 +21,21 @@
 
 package org.iterx.miru.dispatcher;
 
-public class DispatcherException extends RuntimeException {
+public class DispatcherEvent extends RuntimeException {
 
-    public DispatcherException() {}
+    public DispatcherEvent() {}
 
-    public DispatcherException(String message) {
+    public DispatcherEvent(String message) {
 
         super(message);
     }
 
-    public DispatcherException(Throwable cause) {
+    public DispatcherEvent(Throwable cause) {
 
-        initCause(cause);
     }
 
-    public DispatcherException(String message, Throwable cause) {
+    public DispatcherEvent(String message, Throwable cause) {
 
         super(message);
-        initCause(cause);
     }
 }
