@@ -42,8 +42,6 @@ public class BeanImpl implements Bean {
 
     public BeanImpl(String id, Class cls, boolean singleton) {
 
-        if(id == null)
-            throw new IllegalArgumentException("id == null");
         if(cls == null)
             throw new IllegalArgumentException("cls == null");
 
@@ -81,7 +79,7 @@ public class BeanImpl implements Bean {
             return instance;
         }
         catch(Exception e) {
-            throw new BeanException("Invalid Bean instance.", e);
+            throw new BeanException("Invalid Bean instance [" + this + "].", e);
         }
     }
 

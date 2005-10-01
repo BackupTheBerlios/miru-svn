@@ -138,7 +138,11 @@ public class BeanWrapperImpl implements BeanWrapper {
                             next = beanFactory.getBean(((BeanRef) current).getId());
                         }
                         else if(current instanceof BeanImpl) {
-                            next = ((BeanImpl) current).newInstance();
+                            BeanImpl bean;
+
+                            bean = (BeanImpl) current;
+                            bean.beanFactory = beanFactory;
+                            next = bean.newInstance();
                         }
                         else if(current instanceof String &&
                                 (editor = PropertyEditorManager.findEditor(parameterType)) != null) {

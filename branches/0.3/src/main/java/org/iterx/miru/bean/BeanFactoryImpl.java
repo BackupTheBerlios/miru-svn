@@ -60,17 +60,17 @@ public class BeanFactoryImpl extends BeanFactory implements BeanWrapperAware {
     }
 
     public void addBeanDefinition(Bean bean) {
+        BeanImpl beanImpl;
 
         if(bean == null)
             throw new IllegalArgumentException("bean == null");
         if(!(bean instanceof BeanImpl))
             throw new IllegalArgumentException
                 ("Unsupported Bean implementation [" + bean.getClass() + "].");
+        if((beanImpl = (BeanImpl) bean).id == null)
+            throw new IllegalArgumentException("Anonymous Bean Definition.");
 
         synchronized(beans) {
-            BeanImpl beanImpl;
-
-            beanImpl = (BeanImpl) bean;
             beanImpl.beanFactory = this;
             beans.put(beanImpl.id, bean);
         }

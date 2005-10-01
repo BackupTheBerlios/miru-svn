@@ -22,6 +22,8 @@
 package org.iterx.miru.bean.factory;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.SAXParser;
@@ -60,6 +62,7 @@ public class XmlBeanParser extends DefaultHandler {
     private XmlBeanFactory beanFactory;
     private int state;
 
+    private List stack;
 
     private BeanWrapper bean;
     private Object value;
@@ -89,7 +92,7 @@ public class XmlBeanParser extends DefaultHandler {
             throw new RuntimeException(e);
         }
         catch(SAXException e) {
-            if(LOGGER.isErrorEnabled()) LOGGER.error(e);
+            if(LOGGER.isErrorEnabled()) LOGGER.error(e, e);
             throw new IOException("Invalid xml stream [" + resource + "]. " + e.getMessage());
         }
     }
@@ -98,7 +101,7 @@ public class XmlBeanParser extends DefaultHandler {
     public void startDocument() throws SAXException {
 
         state = STATE_UNKNOWN;
-
+        stack = new ArrayList();
     }
 
 
@@ -112,6 +115,17 @@ public class XmlBeanParser extends DefaultHandler {
                 if(TAG_BEANS.equals(localName) &&
                    MIRU_NS.equals(uri)) state = STATE_BEANS;
                 break;
+            case STATE_PROPERTY:
+                if(TAG_BEAN.equals(localName) &&
+                   MIRU_NS.equals(uri)) {
+
+                    stack.add(bean);
+                    bean = null;
+                    value = null;
+
+                    state = STATE_BEANS;
+                }
+                else throw new SAXException("Invalid element '" + qName + "'.");
             case STATE_BEANS:
                 if(TAG_BEAN.equals(localName) &&
                    MIRU_NS.equals(uri)) {
@@ -123,13 +137,13 @@ public class XmlBeanParser extends DefaultHandler {
 
                         bean = beanFactory.createBeanDefinition
                             (attributes.getValue("id"),
-                             Class.forName(cls),
+                             ((cls == null)? null : Class.forName(cls)),
                              (!"false".equals(attributes.getValue("singleton"))));
 
                         this.bean = beanFactory.assignBeanWrapper(bean);
                     }
                     catch(ClassNotFoundException e) {
-                        throw new SAXException("Bean class '" + cls + "' not found.");
+                        throw new RuntimeException("Bean class '" + cls + "' not found.");
                     }
                     state = STATE_BEAN;
                     break;
@@ -185,12 +199,25 @@ public class XmlBeanParser extends DefaultHandler {
                  if(TAG_BEAN.equals(localName) &&
                     MIRU_NS.equals(uri)) {
 
-                     System.out.println(bean.getWrappedInstance());
-                     beanFactory.addBeanDefinition((Bean) bean.getWrappedInstance());
-                     beanFactory.recycleBeanWrapper(bean);
-                     bean = null;
+                     if(stack.isEmpty()) {
+                         System.out.println(bean.getWrappedInstance());
 
-                     state = STATE_BEANS;
+                         beanFactory.addBeanDefinition((Bean) bean.getWrappedInstance());
+                         beanFactory.recycleBeanWrapper(bean);
+                         bean = null;
+                         state = STATE_BEANS;
+                     }
+                     else {
+                         BeanWrapper parent;
+
+                         parent = (BeanWrapper) stack.remove(stack.size() - 1);
+
+                         value = bean.getWrappedInstance();
+                         beanFactory.recycleBeanWrapper(bean);
+
+                         bean = parent;
+                         state = STATE_PROPERTY;
+                     }
                      break;
                  }
                  throw new SAXException("Invalid element '" + qName + "'.");
