@@ -22,19 +22,22 @@ package org.iterx.sax;
 
 import java.io.Writer;
 import java.io.OutputStream;
+import java.util.Iterator;
 
 public class OutputTarget  {
 
     private String systemId, publicId, encoding;
     private OutputStream byteStream;
     private Writer characterStream;
-    private Object object;
+    private Iterator iterator;
 
     public OutputTarget() {}
 
-    public OutputTarget(Object object) {
+    public OutputTarget(Iterator iterator) {
 
-        this.object = object;
+        if(iterator == null)
+            throw new IllegalArgumentException("iterator == null");
+        this.iterator = iterator;
     }
 
     public OutputTarget(OutputStream byteStream) {
@@ -49,7 +52,7 @@ public class OutputTarget  {
     }
 
     public OutputTarget(Writer characterStream) {
-        
+
         this.characterStream = characterStream;
     }
 
@@ -59,16 +62,15 @@ public class OutputTarget  {
     }
 
 
-    public Object getObject() {
+    public Iterator getIterator() {
 
-        return object;
+        return iterator;
     }
 
-    public void setObject(Object object) {
-        
-        this.object = object;
-    }
+    public void setIterator(Iterator iterator) {
 
+        this.iterator = iterator;
+    }
 
     public OutputStream getByteStream() {
 
@@ -92,7 +94,7 @@ public class OutputTarget  {
 
     public Writer getCharacterStream() {
 
-	return characterStream;
+    return characterStream;
     }
 
     public void setCharacterStream(Writer characterStream) {
@@ -109,7 +111,7 @@ public class OutputTarget  {
 
         this.publicId = publicId;
     }
-    
+
 
     public String getSystemId() {
 

@@ -48,12 +48,12 @@ public class TransformerImpl implements Transformer {
 
     public XmlProducer getParent() {
         
-	return parent;
+        return parent;
     }
 
     public void setParent(XmlProducer parent) {
 
-	this.parent = parent;
+        this.parent = parent;
     }
 
     public void setContentHandler(ContentHandler contentHandler) {
@@ -70,10 +70,10 @@ public class TransformerImpl implements Transformer {
         assert (parent != null) : "parent == null";
 
         if(parent instanceof Stage)((Stage) parent).init();
-	if(contentHandler != null)
-	    parent.setContentHandler(contentHandler);
-	if(lexicalHandler != null)
-	    parent.setLexicalHandler(lexicalHandler);
+        if(contentHandler != null)
+            parent.setContentHandler(contentHandler);
+        if(lexicalHandler != null)
+            parent.setLexicalHandler(lexicalHandler);
     }
 
     public void execute(ProcessingContext processingContext) throws IOException {
@@ -86,10 +86,10 @@ public class TransformerImpl implements Transformer {
 
         if(parent != null && 
            parent instanceof Stage) ((Stage) parent).destroy();
-                
-	lexicalHandler = null;
-	contentHandler = null;        
-	parent = null;
+
+        lexicalHandler = null;
+        contentHandler = null;
+        parent = null;
     }
     
 }

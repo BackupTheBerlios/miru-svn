@@ -40,7 +40,7 @@ public class PipelineChainImpl implements PipelineChain {
 
     protected boolean _mutable;
 
-    private Stage pipelineChain;
+    private Stage stages;
 
     {
         _mutable = true;
@@ -117,35 +117,35 @@ public class PipelineChainImpl implements PipelineChain {
         assert (generator != null) : "generator == null";
         assert (serializer != null) : "serializer == null";
 
-        Stage chain;
+        Stage stage;
         
-        chain = generator;
+        stage = generator;
         if(transformers != null) {
             for(int i = 0; i < transformers.length; i++) {
                 Transformer transformer;
                 
                 transformer = transformers[i];
-                transformer.setParent((XmlProducer) chain);
-                chain = transformer;
+                transformer.setParent((XmlProducer) stage);
+                stage = transformer;
             }
         }
-        serializer.setParent((XmlProducer) chain);
-        chain = serializer;
-        chain.init();
+        serializer.setParent((XmlProducer) stage);
+        stage = serializer;
+        stage.init();
 
-        pipelineChain = chain;
+        stages = stage;
     }
 
     public void execute(ProcessingContext processingContext) throws IOException {
-        if(pipelineChain == null) init();
+        if(stages == null) init();
         
-        pipelineChain.execute(processingContext);
+        stages.execute(processingContext);
     }
 
     public void destroy() {
         
-        pipelineChain.destroy();
-        pipelineChain = null;
+        stages.destroy();
+        stages = null;
         generator = null;
         transformers = null;
         serializer = null;

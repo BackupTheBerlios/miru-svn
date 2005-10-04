@@ -49,7 +49,7 @@ public class SaxTransformer extends TransformerImpl {
         return xmlFilter;
     }
 
-    public void setXMLFilter() {
+    public void setXMLFilter(XMLFilter xmlFilter) {
 
         this.xmlFilter = xmlFilter;
     }   
@@ -76,7 +76,7 @@ public class SaxTransformer extends TransformerImpl {
     }
 
 
-    public void destory() {
+    public void destroy() {
 
         if(contentHandler != null)
             xmlFilter.setContentHandler(null);

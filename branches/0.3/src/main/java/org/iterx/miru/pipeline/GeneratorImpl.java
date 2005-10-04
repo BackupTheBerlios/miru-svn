@@ -52,7 +52,7 @@ public class GeneratorImpl implements Generator {
     public void destroy() {
 
         lexicalHandler = null;
-	contentHandler = null;  
+        contentHandler = null;
     }
     
 }

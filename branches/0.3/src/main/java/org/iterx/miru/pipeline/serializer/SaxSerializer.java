@@ -65,8 +65,7 @@ public class SaxSerializer extends SerializerImpl {
     public void setXMLWriter(XMLWriter xmlWriter) {
 
         this.xmlWriter = xmlWriter;
-    }   
-    
+    }       
     
     public void init() {
         assert (parent != null) : "parent == null";
@@ -77,26 +76,26 @@ public class SaxSerializer extends SerializerImpl {
         if(xmlWriter instanceof LexicalHandler)
             parent.setLexicalHandler((LexicalHandler) xmlWriter);
 
-        xmlWriter.setParent(new XmlFilterCallback());
-        if(parent instanceof Stage)((Stage) parent).init();
+
+        if(parent instanceof Stage) {
+            xmlWriter.setParent(new StageXmlFilterAdapter((Stage) parent));
+            ((Stage) parent).init();
+        }
 
     }  
 
-    public void execute(ProcessingContext processingContext) 
+    public void execute(ProcessingContext processingContext)
         throws IOException {
         assert (xmlWriter != null) : "xmlWriter == null";
-
-        //write wrapper for parent to pass through details
-        //        xmlWriter.setOutputTarget(outputTarget);
-        //
-        //xmlWriter.setOutputTarget(null);
 
         try {
             ResponseContext responseContext;
             OutputTarget outputTarget;
-            
+
             responseContext = processingContext.getResponseContext();
-            outputTarget = new OutputTarget(responseContext);
+            if(responseContext instanceof Iterable)
+                outputTarget = new OutputTarget(((Iterable) responseContext).iterator());
+            else outputTarget = new OutputTarget();
             if(responseContext instanceof StreamTarget) {
                 StreamTarget streamTarget;
                 OutputStream out;
@@ -111,7 +110,7 @@ public class SaxSerializer extends SerializerImpl {
             }
 
 
-            xmlWriter.parse(new InputSource(processingContext), 
+            xmlWriter.parse(new ProcessingContextInputSource(processingContext),
                             outputTarget);
         }
         catch(Exception e) {
@@ -120,15 +119,30 @@ public class SaxSerializer extends SerializerImpl {
         }
     }    
 
-    private class XmlFilterCallback extends XMLFilterImpl {
+    private static class ProcessingContextInputSource extends InputSource {
+
+        private ProcessingContext processingContext;
+
+        private ProcessingContextInputSource(ProcessingContext processingContext) {
+
+            this.processingContext = processingContext;
+        }
+    }
+
+    private static class StageXmlFilterAdapter extends XMLFilterImpl {
+
+        private Stage stage;
+
+        private StageXmlFilterAdapter(Stage stage) {
+
+            this.stage = stage;
+        }
 
         public void parse(org.xml.sax.InputSource inputSource) 
             throws IOException, SAXException {
 
-            if(parent instanceof Stage)
-                ((Stage) parent).execute
-                    ((ProcessingContext)
-                     ((InputSource) inputSource).getObject());
+            stage.execute
+                (((ProcessingContextInputSource) inputSource).processingContext);
         }
 
     }

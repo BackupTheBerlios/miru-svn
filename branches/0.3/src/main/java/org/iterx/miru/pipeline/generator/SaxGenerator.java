@@ -63,7 +63,7 @@ public class SaxGenerator extends GeneratorImpl {
         return xmlReader;
     }
 
-    public void setXMLReader() {
+    public void setXMLReader(XMLReader xmlReader) {
 
         this.xmlReader = xmlReader;
     }
@@ -94,8 +94,7 @@ public class SaxGenerator extends GeneratorImpl {
         super.init();
     }
 
-    public void execute(ProcessingContext processingContext) 
-        throws IOException {    
+    public void execute(ProcessingContext processingContext) throws IOException {
         assert (xmlReader != null) : "xmlReader == null";
 
         try {
@@ -103,7 +102,11 @@ public class SaxGenerator extends GeneratorImpl {
             InputSource inputSource;
 
             requestContext = processingContext.getRequestContext();
-            inputSource = new InputSource(requestContext);
+
+            if(requestContext instanceof Iterable)
+                inputSource = new InputSource(((Iterable) requestContext).iterator());
+            else inputSource = new InputSource();
+
             if(requestContext instanceof StreamSource) {
                 StreamSource streamSource;
                 InputStream in;
@@ -118,17 +121,16 @@ public class SaxGenerator extends GeneratorImpl {
 
             }
 
-	    xmlReader.parse(inputSource);
-	}
-	catch(SAXException e) {	    
-	    throw new PipelineChainException
-                ("Pipeline execution failure.", e);
-	}
+            xmlReader.parse(inputSource);
+        }
+        catch(SAXException e) {
+            throw new PipelineChainException("Pipeline execution failure.", e);
+        }
     }
 
     public void destroy() {
 
-        if(contentHandler != null)            
+        if(contentHandler != null)
             xmlReader.setContentHandler(null);
         if(lexicalHandler != null) {
             try {

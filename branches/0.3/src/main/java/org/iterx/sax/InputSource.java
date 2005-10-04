@@ -22,16 +22,19 @@ package org.iterx.sax;
 
 import java.io.Reader;
 import java.io.InputStream;
+import java.util.Iterator;
 
 public class InputSource extends org.xml.sax.InputSource {
 
-    private Object object;
+    private Iterator iterator;
 
     public InputSource() {}
 
-    public InputSource(Object object) {
+    public InputSource(Iterator iterator) {
 
-        this.object = object;
+        if(iterator == null)
+            throw new IllegalArgumentException("iterator == null");
+        this.iterator = iterator;
     }
 
     public InputSource(InputStream byteStream) {
@@ -46,7 +49,7 @@ public class InputSource extends org.xml.sax.InputSource {
     }
 
     public InputSource(Reader characterStream) {
-        
+
         super(characterStream);
     }
 
@@ -55,15 +58,14 @@ public class InputSource extends org.xml.sax.InputSource {
         super(systemId);
     }
 
+    public Iterator getIterator() {
 
-    public Object getObject() {
-
-        return object;
+        return iterator;
     }
 
-    public void setObject(Object object) {
-        
-        this.object = object;
+    public void setIterator(Iterator iterator) {
+
+        this.iterator = iterator;
     }
 
 }
