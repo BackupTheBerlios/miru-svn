@@ -40,9 +40,10 @@ import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.pipeline.Stage;
 import org.iterx.miru.pipeline.SerializerImpl;
 import org.iterx.miru.pipeline.PipelineChainException;
+import org.iterx.miru.pipeline.helper.SaxHelper;
 
 public class SaxSerializer extends SerializerImpl {
-    
+
     private static final String LEXICAL_HANDLER =
         "http://xml.org/sax/properties/lexical-handler";
 
@@ -52,11 +53,11 @@ public class SaxSerializer extends SerializerImpl {
 
     public SaxSerializer(XMLWriter xmlWriter) {
 
-        if(xmlWriter == null) 
+        if(xmlWriter == null)
             throw new IllegalArgumentException("xmlWriter == null");
-        this.xmlWriter = xmlWriter;        
+        this.xmlWriter = xmlWriter;
     }
-    
+
     public XMLWriter getXMLWriter() {
 
         return xmlWriter;
@@ -65,11 +66,11 @@ public class SaxSerializer extends SerializerImpl {
     public void setXMLWriter(XMLWriter xmlWriter) {
 
         this.xmlWriter = xmlWriter;
-    }       
-    
+    }
+
     public void init() {
         assert (parent != null) : "parent == null";
-        assert (xmlWriter != null) : "xmlWriter == null";        
+        assert (xmlWriter != null) : "xmlWriter == null";
 
         if(xmlWriter instanceof ContentHandler)
             parent.setContentHandler((ContentHandler) xmlWriter);
@@ -82,7 +83,7 @@ public class SaxSerializer extends SerializerImpl {
             ((Stage) parent).init();
         }
 
-    }  
+    }
 
     public void execute(ProcessingContext processingContext)
         throws IOException {
@@ -90,34 +91,16 @@ public class SaxSerializer extends SerializerImpl {
 
         try {
             ResponseContext responseContext;
-            OutputTarget outputTarget;
 
             responseContext = processingContext.getResponseContext();
-            if(responseContext instanceof Iterable)
-                outputTarget = new OutputTarget(((Iterable) responseContext).iterator());
-            else outputTarget = new OutputTarget();
-            if(responseContext instanceof StreamTarget) {
-                StreamTarget streamTarget;
-                OutputStream out;
-
-                streamTarget = (StreamTarget) responseContext; 
-                if((out = streamTarget.getOutputStream()) != null) {
-                    outputTarget.setByteStream(out);
-                    outputTarget.setEncoding
-                        (streamTarget.getCharacterEncoding());
-                }
-                else outputTarget.setCharacterStream(streamTarget.getWriter());
-            }
-
-
             xmlWriter.parse(new ProcessingContextInputSource(processingContext),
-                            outputTarget);
+                            SaxHelper.newOutputTarget(responseContext));
         }
         catch(Exception e) {
             throw new PipelineChainException
                 ("Pipeline execution failure.", e);
         }
-    }    
+    }
 
     private static class ProcessingContextInputSource extends InputSource {
 
@@ -138,7 +121,7 @@ public class SaxSerializer extends SerializerImpl {
             this.stage = stage;
         }
 
-        public void parse(org.xml.sax.InputSource inputSource) 
+        public void parse(org.xml.sax.InputSource inputSource)
             throws IOException, SAXException {
 
             stage.execute

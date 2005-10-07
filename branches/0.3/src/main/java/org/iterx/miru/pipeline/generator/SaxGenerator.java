@@ -5,23 +5,24 @@
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2.1 of the License, or (at your option) any later version.
-  
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
-  All Rights Reserved.  
+  All Rights Reserved.
 */
 package org.iterx.miru.pipeline.generator;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.ListIterator;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -36,6 +37,7 @@ import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.pipeline.GeneratorImpl;
 import org.iterx.miru.pipeline.PipelineChainException;
+import org.iterx.miru.pipeline.helper.SaxHelper;
 
 public class SaxGenerator extends GeneratorImpl {
 
@@ -44,16 +46,16 @@ public class SaxGenerator extends GeneratorImpl {
 
     protected static SAXParserFactory saxParserFactory;
     protected XMLReader xmlReader;
-    
+
     static {
         saxParserFactory = SAXParserFactory.newInstance();
     }
-    
+
     public SaxGenerator() {}
 
     public SaxGenerator(XMLReader xmlReader) {
-        
-        if(xmlReader == null) 
+
+        if(xmlReader == null)
             throw new IllegalArgumentException("xmlReader == null");
         this.xmlReader = xmlReader;
     }
@@ -73,9 +75,9 @@ public class SaxGenerator extends GeneratorImpl {
         if(xmlReader == null) {
             try {
                 SAXParser saxParser;
-                
+
                 saxParser = saxParserFactory.newSAXParser();
-                xmlReader = saxParser.getXMLReader();                
+                xmlReader = saxParser.getXMLReader();
             }
             catch(Exception e) {
                 throw new RuntimeException
@@ -90,7 +92,7 @@ public class SaxGenerator extends GeneratorImpl {
                 xmlReader.setProperty(LEXICAL_HANDLER, lexicalHandler);
             }
             catch(SAXException e) {}
-        }        
+        }
         super.init();
     }
 
@@ -99,29 +101,9 @@ public class SaxGenerator extends GeneratorImpl {
 
         try {
             RequestContext requestContext;
-            InputSource inputSource;
 
             requestContext = processingContext.getRequestContext();
-
-            if(requestContext instanceof Iterable)
-                inputSource = new InputSource(((Iterable) requestContext).iterator());
-            else inputSource = new InputSource();
-
-            if(requestContext instanceof StreamSource) {
-                StreamSource streamSource;
-                InputStream in;
-
-                streamSource = (StreamSource) requestContext; 
-                if((in = streamSource.getInputStream()) != null) {
-                    inputSource.setByteStream(in);
-                    inputSource.setEncoding
-                        (streamSource.getCharacterEncoding());
-                }
-                else inputSource.setCharacterStream(streamSource.getReader());
-
-            }
-
-            xmlReader.parse(inputSource);
+            xmlReader.parse(SaxHelper.newInputSource(requestContext));
         }
         catch(SAXException e) {
             throw new PipelineChainException("Pipeline execution failure.", e);
@@ -140,5 +122,6 @@ public class SaxGenerator extends GeneratorImpl {
         }
         super.destroy();
     }
-    
+
+
 }

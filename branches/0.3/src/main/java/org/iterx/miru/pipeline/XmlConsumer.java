@@ -20,7 +20,6 @@
 */
 package org.iterx.miru.pipeline;
 
-import org.iterx.miru.pipeline.XmlProducer;
 
 public interface XmlConsumer {
     

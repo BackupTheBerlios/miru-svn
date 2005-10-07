@@ -23,12 +23,14 @@ package org.iterx.sax;
 import java.io.Reader;
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.ListIterator;
 
-public class InputSource extends org.xml.sax.InputSource {
+public class InputSource extends org.xml.sax.InputSource implements Iterable {
 
     private Iterator iterator;
 
-    public InputSource() {}
+    public InputSource() {  }
 
     public InputSource(Iterator iterator) {
 
@@ -58,14 +60,9 @@ public class InputSource extends org.xml.sax.InputSource {
         super(systemId);
     }
 
-    public Iterator getIterator() {
+    public Iterator iterator() {
 
         return iterator;
-    }
-
-    public void setIterator(Iterator iterator) {
-
-        this.iterator = iterator;
     }
 
 }

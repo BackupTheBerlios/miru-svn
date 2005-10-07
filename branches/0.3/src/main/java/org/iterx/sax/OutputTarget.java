@@ -23,8 +23,9 @@ package org.iterx.sax;
 import java.io.Writer;
 import java.io.OutputStream;
 import java.util.Iterator;
+import java.util.ListIterator;
 
-public class OutputTarget  {
+public class OutputTarget implements Iterable {
 
     private String systemId, publicId, encoding;
     private OutputStream byteStream;
@@ -62,15 +63,12 @@ public class OutputTarget  {
     }
 
 
-    public Iterator getIterator() {
+    public Iterator iterator() {
 
-        return iterator;
+        if(iterator == null) throw new UnsupportedOperationException();
+        return  iterator;
     }
 
-    public void setIterator(Iterator iterator) {
-
-        this.iterator = iterator;
-    }
 
     public OutputStream getByteStream() {
 
@@ -122,7 +120,6 @@ public class OutputTarget  {
 
         this.systemId = systemId;
     }
-
 
 }
 

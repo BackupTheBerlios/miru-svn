@@ -20,11 +20,5 @@
 */
 package org.iterx.miru.pipeline;
 
-import org.iterx.miru.pipeline.Stage;
-import org.iterx.miru.pipeline.XmlProducer;
 
-public interface Generator extends Stage, XmlProducer {
-
-
-
-}
+public interface Generator extends Stage, XmlProducer {}
