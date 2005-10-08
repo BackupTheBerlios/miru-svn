@@ -28,7 +28,7 @@ public class KeyValue implements Serializable {
     private Object key;
     private Object value;
 
-    public KeyValue(String key, Object value) {
+    public KeyValue(Object key, Object value) {
 
         if(key == null)
             throw new IllegalArgumentException("key == null");

@@ -16,8 +16,8 @@
   <property name="target.dir" value="${basedir}/target"/>
   <property name="library.dir" value="${basedir}/lib"/>
 
-  <property name="java.compiler.source" value="1.4"/>
-  <property name="java.compiler.target" value="1.4"/>
+  <property name="java.compiler.source" value="1.5"/>
+  <property name="java.compiler.target" value="1.5"/>
 
 
   <path id="ant.library.path">
