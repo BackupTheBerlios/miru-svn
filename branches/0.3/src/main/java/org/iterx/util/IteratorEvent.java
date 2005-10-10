@@ -29,6 +29,12 @@ public class IteratorEvent extends EventObject {
     private Type type;
     private Object data;
 
+
+    public IteratorEvent(Object source, Type type) {
+
+        this(source, type, null);
+    }
+
     public IteratorEvent(Object source, Type type, Object data) {
 
         super(source);

@@ -37,7 +37,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import org.iterx.sax.OutputTarget;
-import org.iterx.sax.helpers.XMLWriterImpl;
+import org.iterx.sax.helper.XMLWriterImpl;
 
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.http.HttpRequestContextImpl;
@@ -47,7 +47,7 @@ import org.iterx.miru.context.ProcessingContextFactory;
 import org.iterx.miru.pipeline.generator.SaxGenerator;
 import org.iterx.miru.pipeline.serializer.SaxSerializer;
 
-public class TestPerfPipelineChainImpl extends TestCase {
+public class PerfTestPipelineChainImpl extends TestCase {
 
     public static final int ITERATIONS  = 100;
     public static final int CONCURRENCY = 100;
@@ -138,7 +138,8 @@ public class TestPerfPipelineChainImpl extends TestCase {
             reader = new StringReader(message);
             writer = new StringWriter();
             processingContext = processingContextFactory.getProcessingContext
-                (new HttpRequestContextImpl(reader), new HttpResponseContextImpl(writer));
+                (new HttpRequestContextImpl(reader),
+                 new HttpResponseContextImpl(writer));
             
             pipelineChain = getPipeline();
             pipelineChain.execute(processingContext);

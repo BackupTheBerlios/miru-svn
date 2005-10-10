@@ -24,6 +24,8 @@ package org.iterx.miru.bean;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
 import java.lang.reflect.Method;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
@@ -35,7 +37,8 @@ public class BeanWrapperImpl implements BeanWrapper {
     protected BeanFactory beanFactory;
 
     private Object instance;
-    private HashMap map;
+    private HashMap getters;
+    private HashMap setters;
 
     public BeanWrapperImpl() {}
 
@@ -49,7 +52,8 @@ public class BeanWrapperImpl implements BeanWrapper {
 
         Method[] methods;
 
-        map = new HashMap();
+        getters = new HashMap();
+        setters = new HashMap();
         methods = (instance.getClass()).getMethods();
 
         for(int i = 0; i < methods.length; i++) {
@@ -61,14 +65,22 @@ public class BeanWrapperImpl implements BeanWrapper {
 
             if(key.startsWith("get")) {
                 if((method.getParameterTypes()).length  == 0)
-                    map.put(key, method);
+                    getters.put(key.substring(3), method);
             }
-            else if(key.startsWith("set"))  {
+            else if(key.startsWith("set") ||
+                    key.startsWith("add") ||
+                    key.startsWith("put"))  {
+
                 if((method.getParameterTypes()).length  == 1) {
-                    if(map.containsKey(key))
-                        map.put(key,
-                                ArrayUtils.add((Method[]) map.get(key), method));
-                    else map.put(key, new Method[] {method });
+                    for(int j = 0; j < 2; j++) {
+                        if(setters.containsKey(key))
+                            setters.put(key,
+                                        ArrayUtils.add((Method[]) setters.get(key), method));
+                        else setters.put(key, new Method[] { method });
+
+                        if(key.length() > 3) key = key.substring(3);
+                        else break;
+                    }
                 }
             }
         }
@@ -84,7 +96,7 @@ public class BeanWrapperImpl implements BeanWrapper {
 
         instance = object;
 
-        if(instance == null) map = null;
+        if(instance == null) getters = setters = null;
         else initialise();
     }
 
@@ -96,8 +108,8 @@ public class BeanWrapperImpl implements BeanWrapper {
         try {
             String key;
 
-            if(map.containsKey(key = ("get" + property).toLowerCase()))
-                return ((Method) map.get(key)).invoke(instance, null);
+            if(getters.containsKey(key = property.toLowerCase()))
+                return ((Method) getters.get(key)).invoke(instance);
         }
         catch(Exception e) {
             throw new RuntimeException(e);
@@ -110,17 +122,20 @@ public class BeanWrapperImpl implements BeanWrapper {
 
     public void setPropertyValue(String property, Object value) {
 
+        System.out.println("SET PROPERTY="+property + " " + value);
         if(property == null)
             throw new IllegalArgumentException("property == null");
         if(value == null)
             throw new IllegalArgumentException("value == null");
 
         try {
-            String key;
+            String name;
 
-            if(map.containsKey(key = ("set" + property).toLowerCase())) {
+            name = (property.toLowerCase());
+            if(setters.containsKey(name)) {
                 Method[] methods;
-                methods = (Method[]) map.get(key);
+
+                methods = (Method[]) setters.get(name);
                 for(int i = methods.length; i-- > 0; ) {
                     PropertyEditor editor;
                     Class parameterType;
@@ -128,11 +143,13 @@ public class BeanWrapperImpl implements BeanWrapper {
                     Object current, next;
 
                     current = null;
-                    next = value;
                     method = methods[i];
                     parameterType = (method.getParameterTypes())[0];
+                    next = value;
+
                     while(current != next) {
                         current = next;
+
 
                         if(current instanceof BeanRef) {
                             next = beanFactory.getBean(((BeanRef) current).getId());
@@ -141,20 +158,47 @@ public class BeanWrapperImpl implements BeanWrapper {
                             BeanImpl bean;
 
                             bean = (BeanImpl) current;
-                            bean.beanFactory = beanFactory;
                             next = bean.newInstance();
                         }
                         else if(current instanceof String &&
                                 (editor = PropertyEditorManager.findEditor(parameterType)) != null) {
                             editor.setAsText((String) current);
-                            method.invoke(instance, new Object[] { editor.getValue() });
-                            return;
-                        }
-                        else if(parameterType.isAssignableFrom(current.getClass())) {
-                            method.invoke(instance, new Object[] { current });
-                            return;
-                        }
 
+                            method.invoke(instance, editor.getValue());
+                            return;
+                        }
+                        //TODO: Add array converter!
+                        else if(parameterType.isAssignableFrom(current.getClass())) {
+                            if(current instanceof List) {
+                                ArrayList list;
+
+                                list = new ArrayList();
+                                for(Iterator iterator = ((List) current).iterator();
+                                    iterator.hasNext(); ) {
+                                    Object entry;
+
+                                    entry = iterator.next();
+                                    if(entry instanceof BeanRef) {
+                                        list.add(beanFactory.getBean(((BeanRef) entry).getId()));
+                                    }
+                                    else if(entry instanceof BeanImpl) {
+                                        BeanImpl bean;
+
+                                        bean = (BeanImpl) entry;
+                                        list.add(bean.newInstance());
+                                    }
+                                    else list.add(entry);
+
+                                }
+                                current = list;
+                            }
+                            else if(current instanceof Map) {
+                                //TODO: Add implementation
+                            }
+
+                            method.invoke(instance, current);
+                            return;
+                        }
                     }
                 }
             }
@@ -181,6 +225,6 @@ public class BeanWrapperImpl implements BeanWrapper {
             setPropertyValue((String) entry.getKey(),
                              entry.getValue());
         }
-
     }
+ 
 }

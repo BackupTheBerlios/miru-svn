@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.TestPerfProcessingContextImpl
+  org.iterx.miru.context.PerfTestProcessingContextImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -30,7 +30,7 @@ import com.clarkware.junitperf.LoadTest;
 import org.iterx.miru.context.http.MockHttpRequestContext;
 import org.iterx.miru.context.http.MockHttpResponseContext;
 
-public class TestPerfProcessingContextImpl extends TestCase {
+public class PerfTestProcessingContextImpl extends TestCase {
 
     public static final int ITERATIONS  = 100;
     public static final int CONCURRENCY = 100;

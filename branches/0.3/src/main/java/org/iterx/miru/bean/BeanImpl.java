@@ -26,20 +26,22 @@ import java.util.Iterator;
 
 import org.iterx.util.KeyValue;
 
-public class BeanImpl implements Bean {
+public abstract class BeanImpl implements Bean {
 
     protected BeanFactory beanFactory;
+
     protected String id;
     protected Class cls;
+    protected boolean singleton;
 
     private Map propertyValues;
     private Object object;
-    private boolean singleton;
 
     {
         propertyValues = new HashMap();
     }
 
+    /*
     public BeanImpl(String id, Class cls, boolean singleton) {
 
         if(cls == null)
@@ -49,6 +51,7 @@ public class BeanImpl implements Bean {
         this.cls = cls;
         this.singleton = singleton;
     }
+    */
 
     protected Object newInstance() {
 
@@ -56,11 +59,13 @@ public class BeanImpl implements Bean {
             Object instance;
 
             if(singleton) {
-                if(object == null) object = cls.newInstance();
-                instance = object;
+                if(object != null) return object;
+
+                instance = object = cls.newInstance();
             }
             else instance = cls.newInstance();
 
+            System.out.println("<>" +toString());
             if(!propertyValues.isEmpty()) {
                 BeanWrapper bean;
 
@@ -71,8 +76,10 @@ public class BeanImpl implements Bean {
 
                     keyValue = (KeyValue) iterator.next();
 
+                    System.out.println("****" + keyValue);
                     bean.setPropertyValue((String) keyValue.getKey(),
                                           keyValue.getValue());
+                    System.out.println(bean);
                 }
                 ((BeanWrapperAware) beanFactory).recycleBeanWrapper(bean);
             }
@@ -99,7 +106,6 @@ public class BeanImpl implements Bean {
     }
 
     public KeyValue getPropertyValue(String name) {
-
         return (KeyValue) propertyValues.get(name);
     }
 
@@ -107,6 +113,7 @@ public class BeanImpl implements Bean {
 
         if(keyValue == null)
             throw new IllegalArgumentException("keyValue == null");
+
         propertyValues.put(keyValue.getKey(), keyValue);
     }
 
@@ -122,7 +129,7 @@ public class BeanImpl implements Bean {
         buffer.append("[id='");
         buffer.append(id);
         buffer.append("',class='");
-        buffer.append(cls.getName());
+        buffer.append((cls == null)? null : cls.getName());
         buffer.append("',singleton='");
         buffer.append(singleton);
         buffer.append("',properties=[");

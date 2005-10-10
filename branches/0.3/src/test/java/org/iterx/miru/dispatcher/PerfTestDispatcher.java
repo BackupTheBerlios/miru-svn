@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.pipeline.TestPerfDispatcher
+  org.iterx.miru.pipeline.PerfTestDispatcher
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -45,7 +45,7 @@ import org.iterx.miru.dispatcher.handler.ContentHandler;
 import org.iterx.miru.dispatcher.handler.HandlerChainFactoryImpl;
 
 
-public class TestPerfDispatcher extends TestCase {
+public class PerfTestDispatcher extends TestCase {
 
     public static final int ITERATIONS  = 100;
     public static final int CONCURRENCY = 100;

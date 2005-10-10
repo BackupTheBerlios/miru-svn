@@ -33,7 +33,6 @@ public class BeanFactoryImpl extends BeanFactory implements BeanWrapperAware {
     {
         beans = new HashMap();
     }
-
     public BeanFactoryImpl() {}
 
     public BeanFactoryImpl(BeanProvider parent) {
@@ -55,24 +54,33 @@ public class BeanFactoryImpl extends BeanFactory implements BeanWrapperAware {
     }
 
     public Bean createBeanDefinition(String id, Class cls, boolean singleton) {
+        BeanImpl bean;
 
-        return new BeanImpl(id, cls, singleton);
+        if(cls == null)
+            throw new IllegalArgumentException("cls == null");
+
+        bean = new BeanImpl() {};
+        bean.id = id;
+        bean.cls = cls;
+        bean.singleton = singleton;
+        bean.beanFactory = this;
+
+        return bean;
     }
 
     public void addBeanDefinition(Bean bean) {
-        BeanImpl beanImpl;
+        String id;
 
         if(bean == null)
             throw new IllegalArgumentException("bean == null");
-        if(!(bean instanceof BeanImpl))
+        if(!(bean instanceof BeanImpl) || ((BeanImpl) bean).beanFactory != this)
             throw new IllegalArgumentException
-                ("Unsupported Bean implementation [" + bean.getClass() + "].");
-        if((beanImpl = (BeanImpl) bean).id == null)
+                ("Foreign Bean instance [" + bean + "].");
+        if((id = bean.getId()) == null)
             throw new IllegalArgumentException("Anonymous Bean Definition.");
 
         synchronized(beans) {
-            beanImpl.beanFactory = this;
-            beans.put(beanImpl.id, bean);
+            beans.put(id, bean);
         }
 
     }

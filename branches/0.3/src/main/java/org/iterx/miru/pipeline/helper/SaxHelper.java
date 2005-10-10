@@ -85,8 +85,9 @@ public class SaxHelper {
             }
 
             public String getSystemId() {
+                URI uri;
 
-                return (request.getURI()).toString();
+                return ((uri = request.getURI()) != null)? uri.toString() : null;
             }
 
             public void setByteStream(InputStream byteStream) {

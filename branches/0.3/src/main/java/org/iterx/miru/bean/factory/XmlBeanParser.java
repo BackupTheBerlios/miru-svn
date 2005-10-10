@@ -24,6 +24,8 @@ package org.iterx.miru.bean.factory;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.SAXParser;
@@ -50,11 +52,16 @@ public class XmlBeanParser extends DefaultHandler {
 
     private static final String TAG_BEANS           = "beans";
     private static final String TAG_BEAN            = "bean";
+    private static final String TAG_LIST            = "list";
+    private static final String TAG_MAP             = "map";
+    private static final String TAG_ENTRY           = "entry";
+
 
     private static final int STATE_UNKNOWN          = 0;
     private static final int STATE_BEANS            = 1;
     private static final int STATE_BEAN             = 2;
     private static final int STATE_PROPERTY         = 3;
+    private static final int STATE_COLLECTION       = 4;
 
 
     protected static final Log LOGGER = LogFactory.getLog(XmlBeanParser.class);
@@ -64,9 +71,8 @@ public class XmlBeanParser extends DefaultHandler {
 
     private List stack;
 
-    private BeanWrapper bean;
-    private Object value;
-
+    private Object bean;
+    private Object key, value;
 
     public XmlBeanParser(XmlBeanFactory beanFactory) {
 
@@ -115,15 +121,44 @@ public class XmlBeanParser extends DefaultHandler {
                 if(TAG_BEANS.equals(localName) &&
                    MIRU_NS.equals(uri)) state = STATE_BEANS;
                 break;
-            case STATE_PROPERTY:
-                if(TAG_BEAN.equals(localName) &&
+            case STATE_COLLECTION:
+                if(TAG_ENTRY.equals(localName) &&
                    MIRU_NS.equals(uri)) {
+                    Object value;
 
-                    stack.add(bean);
-                    bean = null;
-                    value = null;
+                    if((value = attributes.getValue("value")) != null)
+                        this.value = value;
+                    else if((value = attributes.getValue("ref")) != null)
+                        this.value = new BeanRef((String) value);
+                    key = attributes.getValue("key");
+                    state = STATE_PROPERTY;
+                    break;
+                }
+                throw new SAXException("Invalid element '" + qName + "'.");
+            case STATE_PROPERTY:
+                if(MIRU_NS.equals(uri)) {
+                    if(TAG_BEAN.equals(localName)) {
+                        stack.add(bean);
+                        bean = null;
+                        value = null;
+                        state = STATE_BEANS;
+                    }
+                    else if(TAG_LIST.equals(localName)) {
+                        stack.add(bean);
 
-                    state = STATE_BEANS;
+                        bean = new ArrayList();
+                        value = null;
+                        state = STATE_COLLECTION;
+                        break;
+                    }
+                    else if(TAG_MAP.equals(localName)) {
+                        stack.add(bean);
+
+                        bean = new HashMap();
+                        value = null;
+                        state = STATE_COLLECTION;
+                        break;
+                    }
                 }
                 else throw new SAXException("Invalid element '" + qName + "'.");
             case STATE_BEANS:
@@ -151,19 +186,18 @@ public class XmlBeanParser extends DefaultHandler {
                 throw new SAXException("Invalid element '" + qName + "'.");
             case STATE_BEAN:
                 if(MIRU_NS.equals(uri)) {
-                    Object object;
+                    Object value;
 
-                    if((object = attributes.getValue("value")) != null)
-                        value = object;
-                    else if((object = attributes.getValue("ref")) != null)
-                        value = new BeanRef((String) object);
-
+                    if((value = attributes.getValue("value")) != null)
+                        this.value = value;
+                    else if((value = attributes.getValue("ref")) != null)
+                        this.value = new BeanRef((String) value);
                     state = STATE_PROPERTY;
                     break;
                 }
                 throw new SAXException("Invalid element '" + qName + "'.");
-        }
 
+        }
     }
 
     public void characters(char ch[],
@@ -171,10 +205,9 @@ public class XmlBeanParser extends DefaultHandler {
                            int length) throws SAXException {
         switch(state) {
             case STATE_PROPERTY:
-
                 value = ((value == null)?
-                         new String(ch, start, length) :
-                         value + new String(ch, start, length));
+                          new String(ch, start, length) :
+                          value + new String(ch, start, length));
                 break;
         }
 
@@ -200,22 +233,22 @@ public class XmlBeanParser extends DefaultHandler {
                     MIRU_NS.equals(uri)) {
 
                      if(stack.isEmpty()) {
-                         System.out.println(bean.getWrappedInstance());
+                         BeanWrapper bean;
 
+                         bean = (BeanWrapper) this.bean;
                          beanFactory.addBeanDefinition((Bean) bean.getWrappedInstance());
                          beanFactory.recycleBeanWrapper(bean);
                          bean = null;
                          state = STATE_BEANS;
                      }
                      else {
-                         BeanWrapper parent;
+                         BeanWrapper bean;
 
-                         parent = (BeanWrapper) stack.remove(stack.size() - 1);
-
+                         bean = (BeanWrapper) this.bean;
                          value = bean.getWrappedInstance();
                          beanFactory.recycleBeanWrapper(bean);
 
-                         bean = parent;
+                         this.bean = stack.remove(stack.size() - 1);
                          state = STATE_PROPERTY;
                      }
                      break;
@@ -223,12 +256,39 @@ public class XmlBeanParser extends DefaultHandler {
                  throw new SAXException("Invalid element '" + qName + "'.");
              case STATE_PROPERTY:
                  if(MIRU_NS.equals(uri)) {
+                     if(bean instanceof BeanWrapper) {
+                         BeanWrapper bean;
 
-                     bean.setPropertyValue
-                         ("propertyValue", new KeyValue(localName, value));
-                     value = null;
+                         bean = (BeanWrapper) this.bean;
+                         bean.setPropertyValue
+                             ("propertyValue", new KeyValue(localName, value));
+                         value = null;
 
-                     state = STATE_BEAN;
+                         state = STATE_BEAN;
+                         break;
+                     }
+                     state = STATE_COLLECTION;
+                 }
+                 else throw new SAXException("Invalid element '" + qName + "'.");
+             case STATE_COLLECTION:
+                 if(MIRU_NS.equals(uri)) {
+                     if(TAG_ENTRY.equals(localName)) {
+                         if(bean instanceof List)
+                             ((List) bean).add(value);
+                         else if(bean instanceof Map)
+                             ((Map) bean).put(key,value);
+
+                         value = null;
+                         key = null;
+                     }
+                     else if(TAG_LIST.equals(localName) ||
+                             TAG_MAP.equals(localName)) {
+
+                         key = null;
+                         value = bean;
+                         bean = stack.remove(stack.size() - 1);
+                         state = STATE_PROPERTY;
+                     }
                      break;
                  }
                  throw new SAXException("Invalid element '" + qName + "'.");
@@ -238,7 +298,9 @@ public class XmlBeanParser extends DefaultHandler {
 
     public void endDocument() throws SAXException {
 
+        stack = null;
         bean = null;
+        value = null;
     }
 
 

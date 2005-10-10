@@ -26,4 +26,6 @@ public interface ResponseContext {
 
     public int getStatus();
 
+    public void setStatus(int status);
+
 }

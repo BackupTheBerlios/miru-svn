@@ -25,6 +25,6 @@ public interface BeanWrapperAware {
 
     public BeanWrapper assignBeanWrapper(Object object);
 
-     public void recycleBeanWrapper(BeanWrapper wrapper);
+    public void recycleBeanWrapper(BeanWrapper wrapper);
    
 }

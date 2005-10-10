@@ -66,14 +66,14 @@ public class TestPipelineChainImpl extends TestCase {
         
         try {
             pipelineChain = new PipelineChainImpl(null,
-                                             new SerializerImpl());
+                                                  new SerializerImpl());
             fail("Failed to detect null Generator");
         }
         catch(IllegalArgumentException e) {}
 
         try {
             pipelineChain = new PipelineChainImpl(new GeneratorImpl(),
-                                             null);
+                                                  null);
             fail("Failed to detect null Generator");
         }
         catch(IllegalArgumentException e) {}
