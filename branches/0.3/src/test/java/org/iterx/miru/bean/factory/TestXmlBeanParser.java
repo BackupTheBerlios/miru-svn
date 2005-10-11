@@ -32,6 +32,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.iterx.miru.io.resource.MockResource;
 import org.iterx.miru.bean.BeanException;
+import org.xml.sax.SAXException;
 
 public class TestXmlBeanParser extends TestCase  {
 
@@ -238,12 +239,34 @@ public class TestXmlBeanParser extends TestCase  {
           "</bean>" +
           "<bean id=\"b\" class=\"" + (MyObject.class).getName()  + "\">" +
           "<string value=\"b\"/>" +
-           "</bean>" +
+          "</bean>" +
           "</beans>",
           "a",
           MyObject.class,
           Boolean.TRUE,
           new MyList(new Object[] { "a", new MyObject("b"), new MyObject("c") })
+        },
+        {
+          "<beans xmlns=\"" + NS + "\">" +
+          "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
+          "<object ref=\"list\"/>" +
+          "</bean>" +
+          "<bean id=\"list\" class=\"" + (MyList.class).getName() + "\">" +
+          "<addAll><list>" +
+          "<entry>" +
+          "<bean class=\"" + (MyList.class).getName()  + "\">" +
+          "<addAll><list>" +
+          "<entry>a</entry>" +
+          "</list></addAll>" +
+          "</bean>" +
+          "</entry>" +
+          "</list></addAll>" +
+          "</bean>" +
+          "</beans>",
+          "a",
+          MyObject.class,
+          Boolean.TRUE,
+          new MyList(new Object[] { new MyList(new Object[] { "a" }) })
         },
         {
           "<beans xmlns=\"" + NS + "\">" +
@@ -281,6 +304,74 @@ public class TestXmlBeanParser extends TestCase  {
           Boolean.TRUE,
           new MyMap(new String[] { "1", "a", "2", "b", "3", "c" })
         },
+        {
+          "<beans xmlns=\"" + NS + "\">" +
+          "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
+          "<object ref=\"map\"/>" +
+          "</bean>" +
+          "<bean id=\"map\" class=\"" + (MyMap.class).getName() + "\">" +
+          "<putAll><map>" +
+          "<entry key=\"1\">a</entry>" +
+          "<entry key=\"2\" ref=\"b\"/>" +
+          "<entry key=\"3\">" +
+          "<bean class=\"" + (MyObject.class).getName()  + "\">" +
+          "<string value=\"c\"/>" +
+          "</bean>" +
+          "</entry>" +
+          "</map></putAll>" +
+          "</bean>" +
+          "<bean id=\"b\" class=\"" + (MyObject.class).getName()  + "\">" +
+          "<string value=\"b\"/>" +
+          "</bean>" +
+          "</beans>",
+          "a",
+          MyObject.class,
+          Boolean.TRUE,
+          new MyMap(new Object[] { "1", "a",
+                                   "2", new MyObject("b"),
+                                   "3", new MyObject("c")})
+        },
+
+        {
+          "<beans xmlns=\"" + NS + "\">" +
+          "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
+          "<object ref=\"map\"/>" +
+          "</bean>" +
+          "<bean id=\"map\" class=\"" + (MyMap.class).getName() + "\">" +
+          "<putAll><map>" +
+          "<entry key=\"1\">" +
+          "<bean class=\"" + (MyMap.class).getName() + "\">" +
+          "<putAll><map>" +
+          "<entry key=\"1\" value=\"a\"/>" +
+          "</map></putAll>" +
+          "</bean>" +
+          "</entry>" +
+          "</map></putAll>" +
+          "</bean>" +
+          "</beans>",
+          "a",
+          MyObject.class,
+          Boolean.TRUE,
+          new MyMap(new Object[] { "1", new MyMap(new Object[] { "1", "a" })  })
+        },
+        {
+          "<beans xmlns=\"" + NS + "\">" +
+          "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
+          "<array>" +
+          "<list>" +
+          "<entry value=\"a\"/>" +
+          "<entry value=\"b\"/>" +
+          "<entry value=\"c\"/>" +
+          "</list>" +
+          "</array>" +
+          "</bean>" +
+          "</beans>",
+          "a",
+          MyObject.class,
+          Boolean.TRUE,
+          new MyList(new String[] { "a", "b", "c" })
+        },
+
     };
 
 
@@ -311,26 +402,49 @@ public class TestXmlBeanParser extends TestCase  {
             "</beans>",
             BeanException.class
         },
-
+        {
+            "<beans xmlns=\"" + NS + "\">" +
+            "<bean id=\"bean\" class=\"" + (MyObject.class).getName()  + "\">" +
+            "<string value=\"value\">value</string>" +
+            "</bean>" +
+            "</beans>",
+            IOException.class
+        },
+        {
+            "<beans xmlns=\"" + NS + "\">" +
+            "<my-bean id=\"bean\" class=\"" + (MyObject.class).getName()  + "\">" +
+            "<string value=\"value\">value</string>" +
+            "</my-bean>" +
+            "</beans>",
+            IOException.class
+        },
+        {
+            "<beans xmlns=\"" + NS + "\">" +
+            "<bean id=\"bean\" class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean class=\"" + (MyObject.class).getName()  + "\"/>" +
+            "</bean>" +
+            "</beans>",
+            BeanException.class
+        },
     };
 
     private XmlBeanFactory beanFactory;
     private XmlBeanParser beanParser;
     private Object[] data;
-   
+
     public static Test suite() {
-        TestSuite suite;
+          TestSuite suite;
 
-        suite = new TestSuite();
+          suite = new TestSuite();
 
-        for(int i = 0; i < BEANS.length; i++) {
-            suite.addTest(new TestXmlBeanParser("testParse", BEANS[i]));
-        }
-//        for(int i = 0; i < BAD_BEANS.length; i++) {
-//            suite.addTest(new TestXmlBeanParser("testFailure", BAD_BEANS[i]));
-//        }
-        return suite;
-    }
+          for(int i = 0; i < BEANS.length; i++) {
+              suite.addTest(new TestXmlBeanParser("testParse", BEANS[i]));
+          }
+          for(int i = 0; i < BAD_BEANS.length; i++) {
+              suite.addTest(new TestXmlBeanParser("testFailure", BAD_BEANS[i]));
+          }
+          return suite;
+      }
 
     private TestXmlBeanParser(String name, Object[] data) {
 
@@ -364,7 +478,6 @@ public class TestXmlBeanParser extends TestCase  {
         resource.setData(((String) data[0]).getBytes());
         beanParser.parse(resource);
 
-        System.out.println("*********************");
         assertNotNull(bean = beanFactory.getBean(id));
         assertEquals(data[2], bean.getClass());
         if(beanFactory.isSingleton(id)) {
@@ -375,9 +488,6 @@ public class TestXmlBeanParser extends TestCase  {
             assertEquals(Boolean.FALSE, data[3]);
             assertFalse(bean == beanFactory.getBean(id));
         }
-
-        System.out.println("**>"+data[4]);
-        System.out.println("**>"+((MyObject) bean).getObject());
         assertEquals(data[4], ((MyObject) bean).getObject());
 
      }
@@ -393,9 +503,7 @@ public class TestXmlBeanParser extends TestCase  {
             fail("Failed to detect invalid Bean.");
         }
         catch(Exception e) {
-            e.printStackTrace();
             assertEquals(data[1], e.getClass());
-
         }
 
     }
@@ -434,6 +542,11 @@ public class TestXmlBeanParser extends TestCase  {
         public void setString(String string) {
 
             this.object = string;
+        }
+
+        public void setArray(Object[] array) {
+
+            this.object = new MyList(array);
         }
 
         public int hashCode() {

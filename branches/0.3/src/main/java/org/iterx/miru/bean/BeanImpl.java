@@ -40,19 +40,7 @@ public abstract class BeanImpl implements Bean {
     {
         propertyValues = new HashMap();
     }
-
-    /*
-    public BeanImpl(String id, Class cls, boolean singleton) {
-
-        if(cls == null)
-            throw new IllegalArgumentException("cls == null");
-
-        this.id = id;
-        this.cls = cls;
-        this.singleton = singleton;
-    }
-    */
-
+  
     protected Object newInstance() {
 
         try {
@@ -65,7 +53,6 @@ public abstract class BeanImpl implements Bean {
             }
             else instance = cls.newInstance();
 
-            System.out.println("<>" +toString());
             if(!propertyValues.isEmpty()) {
                 BeanWrapper bean;
 
@@ -75,11 +62,8 @@ public abstract class BeanImpl implements Bean {
                     KeyValue keyValue;
 
                     keyValue = (KeyValue) iterator.next();
-
-                    System.out.println("****" + keyValue);
                     bean.setPropertyValue((String) keyValue.getKey(),
                                           keyValue.getValue());
-                    System.out.println(bean);
                 }
                 ((BeanWrapperAware) beanFactory).recycleBeanWrapper(bean);
             }

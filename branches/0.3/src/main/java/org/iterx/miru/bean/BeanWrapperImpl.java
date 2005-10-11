@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.lang.reflect.Method;
+import java.lang.reflect.Array;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 
@@ -122,7 +123,7 @@ public class BeanWrapperImpl implements BeanWrapper {
 
     public void setPropertyValue(String property, Object value) {
 
-        System.out.println("SET PROPERTY="+property + " " + value);
+
         if(property == null)
             throw new IllegalArgumentException("property == null");
         if(value == null)
@@ -147,6 +148,7 @@ public class BeanWrapperImpl implements BeanWrapper {
                     parameterType = (method.getParameterTypes())[0];
                     next = value;
 
+
                     while(current != next) {
                         current = next;
 
@@ -167,9 +169,12 @@ public class BeanWrapperImpl implements BeanWrapper {
                             method.invoke(instance, editor.getValue());
                             return;
                         }
-                        //TODO: Add array converter!
-                        else if(parameterType.isAssignableFrom(current.getClass())) {
-                            if(current instanceof List) {
+                        else if(parameterType.isAssignableFrom(current.getClass()) ||
+                                (parameterType.isArray() &&
+                                 current instanceof List &&
+                                 (parameterType.getComponentType()).isAssignableFrom(current.getClass()))) {
+
+                            if(current instanceof List ) {
                                 ArrayList list;
 
                                 list = new ArrayList();
@@ -188,14 +193,38 @@ public class BeanWrapperImpl implements BeanWrapper {
                                         list.add(bean.newInstance());
                                     }
                                     else list.add(entry);
-
                                 }
-                                current = list;
+                                current = ((parameterType.isArray())?
+                                           list.toArray((Object[]) Array.newInstance
+                                               (parameterType.getComponentType(), list.size())) :
+                                           list);
                             }
                             else if(current instanceof Map) {
-                                //TODO: Add implementation
-                            }
+                                HashMap map;
 
+                                map = new HashMap();
+                                for(Iterator iterator = ((Map) current).entrySet().iterator();
+                                    iterator.hasNext(); ) {
+                                    Map.Entry entry;
+                                    Object object;
+
+                                    entry = (Map.Entry) iterator.next();
+                                    object = entry.getValue();
+                                    if(object instanceof BeanRef) {
+                                        map.put(entry.getKey(),
+                                                beanFactory.getBean(((BeanRef) object).getId()));
+                                    }
+                                    else if(object instanceof BeanImpl) {
+                                        BeanImpl bean;
+
+                                        bean = (BeanImpl) object;
+                                        map.put(entry.getKey(), bean.newInstance());
+                                    }
+                                    else map.put(entry.getKey(), object);
+
+                                }
+                                current = map;
+                            }
                             method.invoke(instance, current);
                             return;
                         }
