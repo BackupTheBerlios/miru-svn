@@ -24,7 +24,7 @@ package org.iterx.miru.dispatcher.handler.factory;
 import java.io.IOException;
 
 import junit.framework.TestCase;
-import org.iterx.miru.bean.MockBeanFactory;
+import org.iterx.miru.bean.factory.MockBeanFactory;
 import org.iterx.miru.bean.BeanProvider;
 import org.iterx.miru.io.resource.MockResource;
 import org.iterx.miru.io.Resource;

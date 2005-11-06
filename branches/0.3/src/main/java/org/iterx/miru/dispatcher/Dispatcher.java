@@ -87,12 +87,12 @@ public class Dispatcher {
                       handlerChainMap.iterator() :
                       handlerResolver.resolve(handlerChainMap,
                                               processingContext))) != null) {
-
             while(chains.hasNext()) {
                 HandlerChain handlerChain;
 
                 handlerChain = (HandlerChain) chains.next();
-                if((status = handlerChain.execute(processingContext)) != DECLINE) break;
+                if(handlerChain.hasMatches(processingContext) &&
+                   (status = handlerChain.execute(processingContext)) != DECLINE) break;
             }
         }
         return status;

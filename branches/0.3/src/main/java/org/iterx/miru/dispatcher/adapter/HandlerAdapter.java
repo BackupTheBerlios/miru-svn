@@ -27,7 +27,7 @@ public interface HandlerAdapter {
 
     public boolean supports(Object handler);
 
-    public int process(ProcessingContext processingContext,
+    public int execute(ProcessingContext processingContext,
                        Object handler);
 
 

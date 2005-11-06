@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.XMLReader;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.XMLFilterImpl;
 
@@ -40,6 +41,9 @@ import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.pipeline.Stage;
 import org.iterx.miru.pipeline.SerializerImpl;
 import org.iterx.miru.pipeline.PipelineChainException;
+import org.iterx.miru.pipeline.XmlProducer;
+import org.iterx.miru.pipeline.XmlConsumer;
+import org.iterx.miru.pipeline.generator.SaxGenerator;
 import org.iterx.miru.pipeline.helper.SaxHelper;
 
 public class SaxSerializer extends SerializerImpl {
@@ -112,6 +116,7 @@ public class SaxSerializer extends SerializerImpl {
         }
     }
 
+    //TODO: Need to add getParent wrapper for all Sax type stages.    
     private static class StageXmlFilterAdapter extends XMLFilterImpl {
 
         private Stage stage;
@@ -119,6 +124,19 @@ public class SaxSerializer extends SerializerImpl {
         private StageXmlFilterAdapter(Stage stage) {
 
             this.stage = stage;
+        }
+
+        public XMLReader getParent() {
+
+            XmlProducer parent = (XmlProducer) stage;
+            while(true) {
+                if(parent instanceof SaxGenerator)
+                    return ((SaxGenerator) parent).getXMLReader();
+                else if (!(parent instanceof XmlConsumer) ||
+                         (parent = ((XmlConsumer) parent).getParent()) == null) break;
+            }
+
+            return null;
         }
 
         public void parse(org.xml.sax.InputSource inputSource)

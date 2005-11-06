@@ -87,22 +87,22 @@ public class TestSpringBeanWrapper extends TestCase {
 
 	beanWrapper = new SpringBeanWrapper
 	    (beanFactory.assignBeanWrapper(object = new MockObject()));
-	assertNull(beanWrapper.getPropertyValue("string"));
+	assertNull(beanWrapper.getValue("string"));
 	assertNull(object.getString());
 
-	beanWrapper.setPropertyValue("string", (value = "value"));
-	assertEquals(value, beanWrapper.getPropertyValue("string"));
+	beanWrapper.setValue("string", (value = "value"));
+	assertEquals(value, beanWrapper.getValue("string"));
 	assertEquals(value, object.getString());
 
 	map = new HashMap();
 	map.put("string", (value = "map"));
 
-	beanWrapper.setPropertyValues(map);
-	assertEquals(value, beanWrapper.getPropertyValue("string"));
+	beanWrapper.setValues(map);
+	assertEquals(value, beanWrapper.getValue("string"));
 	assertEquals(value, object.getString());	
 
 	try {
-	    beanWrapper.getPropertyValue("method-does-not-exist");
+	    beanWrapper.getValue("method-does-not-exist");
 	    fail("Failed to detect non-existant property");
 	}
 	catch(Exception e) {}
@@ -111,7 +111,7 @@ public class TestSpringBeanWrapper extends TestCase {
 	map.put("method-does-not-exist", "value");
 	try {
 
-	    beanWrapper.setPropertyValues(map);
+	    beanWrapper.setValues(map);
 	    fail("Failed to detect non-existant property");
 	}
 	catch(Exception e) {}

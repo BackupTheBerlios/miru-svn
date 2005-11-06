@@ -28,11 +28,11 @@ public interface BeanWrapper {
     public Object getWrappedInstance();
 
     public void setWrappedInstance(Object object);
-       
-    public Object getPropertyValue(String property);
 
-    public void setPropertyValue(String property, Object value);
+    public Object getValue(String property);
 
-    public void setPropertyValues(Map map);
+    public void setValue(String property, Object value);
+
+    public void setValues(Map map);
 
 }

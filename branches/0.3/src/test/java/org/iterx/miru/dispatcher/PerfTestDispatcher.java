@@ -42,7 +42,7 @@ import org.iterx.miru.context.http.HttpResponseContextImpl;
 import org.iterx.miru.context.ProcessingContextFactory;
 
 import org.iterx.miru.dispatcher.handler.ContentHandler;
-import org.iterx.miru.dispatcher.handler.HandlerChainFactoryImpl;
+import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactoryImpl;
 
 
 public class PerfTestDispatcher extends TestCase {

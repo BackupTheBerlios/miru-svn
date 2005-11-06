@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.bean.BeanWrapperImpl
+  org.iterx.miru.bean.factory.BeanWrapperImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,7 @@
   All Rights Reserved.
 */
 
-package org.iterx.miru.bean;
+package org.iterx.miru.bean.factory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,20 +32,24 @@ import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 
 import org.iterx.util.ArrayUtils;
+import org.iterx.miru.bean.BeanWrapper;
+import org.iterx.miru.bean.BeanFactory;
+import org.iterx.miru.bean.BeanRef;
+import org.iterx.miru.bean.BeanProvider;
 
 public class BeanWrapperImpl implements BeanWrapper {
 
-    protected BeanFactory beanFactory;
+    private BeanProvider beanProvider;
 
     private Object instance;
-    private HashMap getters;
-    private HashMap setters;
+    private Map getters;
+    private Map setters;
 
-    public BeanWrapperImpl() {}
+    public BeanWrapperImpl(BeanProvider beanProvider) {
+        if(beanProvider == null)
+            throw new IllegalArgumentException("beanProvider == null");
 
-    public BeanWrapperImpl(Object object) {
-
-        setWrappedInstance(object);
+        this.beanProvider = beanProvider;
     }
 
     private void initialise() {
@@ -101,7 +105,7 @@ public class BeanWrapperImpl implements BeanWrapper {
         else initialise();
     }
 
-    public Object getPropertyValue(String property) {
+    public Object getValue(String property) {
 
         if(property == null)
             throw new IllegalArgumentException("property == null");
@@ -121,7 +125,7 @@ public class BeanWrapperImpl implements BeanWrapper {
     }
 
 
-    public void setPropertyValue(String property, Object value) {
+    public void setValue(String property, Object value) {
 
 
         if(property == null)
@@ -154,7 +158,7 @@ public class BeanWrapperImpl implements BeanWrapper {
 
 
                         if(current instanceof BeanRef) {
-                            next = beanFactory.getBean(((BeanRef) current).getId());
+                            next = beanProvider.getBean(((BeanRef) current).getId());
                         }
                         else if(current instanceof BeanImpl) {
                             BeanImpl bean;
@@ -184,7 +188,7 @@ public class BeanWrapperImpl implements BeanWrapper {
 
                                     entry = iterator.next();
                                     if(entry instanceof BeanRef) {
-                                        list.add(beanFactory.getBean(((BeanRef) entry).getId()));
+                                        list.add(beanProvider.getBean(((BeanRef) entry).getId()));
                                     }
                                     else if(entry instanceof BeanImpl) {
                                         BeanImpl bean;
@@ -197,7 +201,7 @@ public class BeanWrapperImpl implements BeanWrapper {
                                 current = ((parameterType.isArray())?
                                            list.toArray((Object[]) Array.newInstance
                                                (parameterType.getComponentType(), list.size())) :
-                                           list);
+                                                                                                list);
                             }
                             else if(current instanceof Map) {
                                 HashMap map;
@@ -212,7 +216,7 @@ public class BeanWrapperImpl implements BeanWrapper {
                                     object = entry.getValue();
                                     if(object instanceof BeanRef) {
                                         map.put(entry.getKey(),
-                                                beanFactory.getBean(((BeanRef) object).getId()));
+                                                beanProvider.getBean(((BeanRef) object).getId()));
                                     }
                                     else if(object instanceof BeanImpl) {
                                         BeanImpl bean;
@@ -241,7 +245,7 @@ public class BeanWrapperImpl implements BeanWrapper {
 
     }
 
-    public void setPropertyValues(Map map) {
+    public void setValues(Map map) {
 
         if(map == null)
             throw new IllegalArgumentException("map == null");
@@ -251,9 +255,9 @@ public class BeanWrapperImpl implements BeanWrapper {
             Map.Entry entry;
 
             entry = (Map.Entry) iterator.next();
-            setPropertyValue((String) entry.getKey(),
-                             entry.getValue());
+            setValue((String) entry.getKey(),
+                     entry.getValue());
         }
     }
- 
+
 }

@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.handler.HandlerChainWrapper
+  org.iterx.miru.aop.Poolable
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,32 +18,12 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
+package org.iterx.miru.aop;
 
+public interface Poolable {
 
-package org.iterx.miru.dispatcher.handler;
+    public Object getInstance() throws Exception;
 
-import org.iterx.miru.dispatcher.matcher.Matcher;
-
-public interface HandlerChainWrapper {
-
-    public String getId();
-
-    public void setId(String id);
-
-    public Matcher getMatcher();
-
-    public void setMatcher(Matcher matcher);
-
-    public void addHandler(Object handler);
-
-    public Object[] getHandlers();
-
-    public void setHandlers(Object[] handlers);
-
-    public void removeHandler(Object handler);
-
-    public Object getWrappedInstance();
-
-    public void setWrappedInstance(Object object);
+    public void recycleInstance(Object object) throws Exception;
 
 }

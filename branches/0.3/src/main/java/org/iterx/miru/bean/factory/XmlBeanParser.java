@@ -64,7 +64,7 @@ public class XmlBeanParser extends DefaultHandler {
     private static final int STATE_COLLECTION       = 4;
 
 
-    protected static final Log LOGGER = LogFactory.getLog(XmlBeanParser.class);
+    private static final Log LOGGER = LogFactory.getLog(XmlBeanParser.class);
 
     private XmlBeanFactory beanFactory;
     private int state;
@@ -273,7 +273,7 @@ public class XmlBeanParser extends DefaultHandler {
                          BeanWrapper bean;
 
                          bean = (BeanWrapper) this.bean;
-                         bean.setPropertyValue
+                         bean.setValue
                              ("propertyValue", new KeyValue(localName, value));
 
                          value = null;

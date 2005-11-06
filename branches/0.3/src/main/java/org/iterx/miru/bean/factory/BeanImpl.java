@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.bean.BeanImpl
+  org.iterx.miru.bean.factory.BeanImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,13 +18,18 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
-package org.iterx.miru.bean;
+package org.iterx.miru.bean.factory;
 
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import org.iterx.util.KeyValue;
+import org.iterx.miru.bean.Bean;
+import org.iterx.miru.bean.BeanFactory;
+import org.iterx.miru.bean.BeanWrapper;
+import org.iterx.miru.bean.BeanWrapperAware;
+import org.iterx.miru.bean.BeanException;
 
 public abstract class BeanImpl implements Bean {
 
@@ -34,13 +39,13 @@ public abstract class BeanImpl implements Bean {
     protected Class cls;
     protected boolean singleton;
 
-    private Map propertyValues;
+    private Map values;
     private Object object;
 
     {
-        propertyValues = new HashMap();
+        values = new HashMap();
     }
-  
+
     protected Object newInstance() {
 
         try {
@@ -53,17 +58,17 @@ public abstract class BeanImpl implements Bean {
             }
             else instance = cls.newInstance();
 
-            if(!propertyValues.isEmpty()) {
+            if(!values.isEmpty()) {
                 BeanWrapper bean;
 
                 bean = ((BeanWrapperAware) beanFactory).assignBeanWrapper(instance);
-                for(Iterator iterator = (propertyValues.values()).iterator();
+                for(Iterator iterator = (values.values()).iterator();
                     iterator.hasNext();) {
                     KeyValue keyValue;
 
                     keyValue = (KeyValue) iterator.next();
-                    bean.setPropertyValue((String) keyValue.getKey(),
-                                          keyValue.getValue());
+                    bean.setValue((String) keyValue.getKey(),
+                                  keyValue.getValue());
                 }
                 ((BeanWrapperAware) beanFactory).recycleBeanWrapper(bean);
             }
@@ -90,7 +95,7 @@ public abstract class BeanImpl implements Bean {
     }
 
     public KeyValue getPropertyValue(String name) {
-        return (KeyValue) propertyValues.get(name);
+        return (KeyValue) values.get(name);
     }
 
     public void setPropertyValue(KeyValue keyValue) {
@@ -98,7 +103,7 @@ public abstract class BeanImpl implements Bean {
         if(keyValue == null)
             throw new IllegalArgumentException("keyValue == null");
 
-        propertyValues.put(keyValue.getKey(), keyValue);
+        values.put(keyValue.getKey(), keyValue);
     }
 
     public String toString() {
@@ -118,7 +123,7 @@ public abstract class BeanImpl implements Bean {
         buffer.append(singleton);
         buffer.append("',properties=[");
 
-        iterator = (propertyValues.values()).iterator();
+        iterator = (values.values()).iterator();
         next = iterator.hasNext();
         while(next) {
             buffer.append(iterator.next());

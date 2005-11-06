@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.handler.HandlerChainImpl
+  org.iterx.miru.dispatcher.adapter.HandlerAdapter
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,27 +18,15 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
-package org.iterx.miru.dispatcher.handler;
+package org.iterx.miru.dispatcher.adapter;
 
-import java.util.Map;
-import java.util.Iterator;
+import org.iterx.miru.context.ProcessingContext;
 
-public class HandlerChainMapImpl implements HandlerChainMap {
-    private Map handlerChains;
+public interface MatcherAdapter {
 
-    public HandlerChainMapImpl(Map handlerChains) {
+    public boolean supports(Object matcher);
 
-        this.handlerChains = handlerChains;
-    }
+    public boolean hasMatches(ProcessingContext context, Object matcher);
 
-    public HandlerChain get(String key) {
-        
-        return ((key != null)?
-                (HandlerChain) handlerChains.get(key) : null);
-    }
-
-    public Iterator iterator() {
-
-        return (handlerChains.values()).iterator();
-    }
+    public Object[] getMatches(ProcessingContext context, Object matcher);
 }

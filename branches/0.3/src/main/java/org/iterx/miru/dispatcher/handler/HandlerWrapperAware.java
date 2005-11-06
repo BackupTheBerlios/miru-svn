@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.bean.MockBeanFactory
+  org.iterx.miru.dispatcher.handler.HandlerWrapperAware
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,9 +19,14 @@
   All Rights Reserved.
 */
 
-package org.iterx.miru.bean;
 
-public class MockBeanFactory extends BeanFactoryImpl {
+package org.iterx.miru.dispatcher.handler;
 
+
+public interface HandlerWrapperAware {
+
+    public HandlerWrapper assignHandlerWrapper(Object object);
+
+    public void recycleHandlerWrapper(HandlerWrapper wrapper);
 
 }

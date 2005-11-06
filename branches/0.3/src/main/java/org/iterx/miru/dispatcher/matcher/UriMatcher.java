@@ -90,21 +90,21 @@ public class UriMatcher implements org.iterx.miru.dispatcher.matcher.Matcher {
 
 
     public boolean hasMatches(ProcessingContext context) {
-        assert (regex != null) : "regex == null";
-        assert (context != null) : "context == null";
-        URI uri;
-        RequestContext request;
+          assert (regex != null) : "regex == null";
+          assert (context != null) : "context == null";
+          URI uri;
+          RequestContext request;
 
-        request = context.getRequestContext();
-        if((uri = request.getURI()) != null) {
-            Matcher matcher;
+          request = context.getRequestContext();
+          if((uri = request.getURI()) != null) {
+              Matcher matcher;
 
-            matcher = regex.matcher(uriToString(uri, mask));
-            return matcher.matches();
-        }
-        return false;
-    }
-
+              matcher = regex.matcher(uriToString(uri, mask));
+              return matcher.matches();
+          }
+          return false;
+      }
+  
 
     public Object[] getMatches(ProcessingContext context) {
         assert (regex != null) : "regex == null";

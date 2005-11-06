@@ -21,5 +21,6 @@
 
 package org.iterx.miru.dispatcher.handler;
 
-public interface SecurityHandler extends Handler {
+public interface SecurityHandler {
+
 }

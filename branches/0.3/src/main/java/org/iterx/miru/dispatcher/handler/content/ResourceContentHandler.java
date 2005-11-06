@@ -93,7 +93,6 @@ public class ResourceContentHandler implements ContentHandler {
         this.resourceResolver = resourceResolver;
     }
 
-
     public int execute(ProcessingContext processingContext) {
         assert (resourceResolver != null) : "resourceResolver == null";
 

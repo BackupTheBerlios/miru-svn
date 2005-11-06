@@ -22,6 +22,8 @@
 
 package org.iterx.miru.dispatcher.handler;
 
+import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactoryImpl;
+
 public abstract class HandlerChainFactory implements HandlerChainProvider {
 
     private static HandlerChainFactory handlerChainFactory;

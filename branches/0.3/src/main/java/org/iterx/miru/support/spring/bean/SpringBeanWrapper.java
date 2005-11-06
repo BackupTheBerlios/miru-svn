@@ -32,33 +32,33 @@ public class SpringBeanWrapper implements org.iterx.miru.bean.BeanWrapper {
     public SpringBeanWrapper(BeanWrapper wrapper) {
 
 	if(wrapper == null) 
-	    throw new IllegalArgumentException("wrapper == null");
+        throw new IllegalArgumentException("wrapper == null");
 
-	this.wrapper = wrapper;
+        this.wrapper = wrapper;
     }
 
     public Object getWrappedInstance() {
 
-	return wrapper.getWrappedInstance();
+        return wrapper.getWrappedInstance();
     }
 
     public void setWrappedInstance(Object object) {
 	
-	wrapper.setWrappedInstance(object);
+        wrapper.setWrappedInstance(object);
     }
     
-    public Object getPropertyValue(String property) {
+    public Object getValue(String property) {
 
-	return wrapper.getPropertyValue(property);
+        return wrapper.getPropertyValue(property);
     }
 
-    public void setPropertyValue(String property, Object value) {
+    public void setValue(String property, Object value) {
 
-	wrapper.setPropertyValue(property, value);
+        wrapper.setPropertyValue(property, value);
     }
 
-    public void setPropertyValues(Map map) {
+    public void setValues(Map map) {
 
-	wrapper.setPropertyValues(map);
+        wrapper.setPropertyValues(map);
     }
 }

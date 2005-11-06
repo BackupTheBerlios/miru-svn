@@ -22,7 +22,9 @@
 package org.iterx.miru.dispatcher.handler.factory;
 
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.SAXParser;
@@ -39,9 +41,9 @@ import org.iterx.miru.io.Resource;
 import org.iterx.miru.bean.BeanProvider;
 import org.iterx.miru.bean.BeanWrapperAware;
 import org.iterx.miru.bean.BeanWrapper;
-import org.iterx.miru.dispatcher.handler.HandlerChainWrapper;
+import org.iterx.miru.bean.BeanException;
+import org.iterx.miru.dispatcher.handler.HandlerWrapper;
 import org.iterx.miru.dispatcher.handler.HandlerChain;
-import org.iterx.miru.dispatcher.matcher.Matcher;
 
 
 public class XmlHandlerChainParser extends DefaultHandler {
@@ -50,28 +52,27 @@ public class XmlHandlerChainParser extends DefaultHandler {
 
     private static final String TAG_CHAINS          = "chains";
     private static final String TAG_CHAIN           = "chain";
-    private static final String TAG_HANDLERS        = "handlers";
+    private static final String TAG_MATCHER         = "matcher";
+    private static final String TAG_HANDLER         = "handler";
+    private static final String TAG_LIST            = "list";
+    private static final String TAG_MAP             = "map";
 
     private static final int STATE_UNKNOWN          = 0;
-    private static final int STATE_CHAINS           = 1;
-    private static final int STATE_CHAIN            = 2;
-    private static final int STATE_MATCHER          = 3;
-    private static final int STATE_HANDLERS         = 4;
-    private static final int STATE_HANDLER          = 5;
+    private static final int STATE_CHAIN            = 1;
+    private static final int STATE_MATCHER          = 2;
+    private static final int STATE_HANDLER          = 3;
 
 
-    protected static final Log LOGGER = LogFactory.getLog(XmlHandlerChainParser.class);
-
-
-    private int state;
+    private static final Log LOGGER = LogFactory.getLog(XmlHandlerChainParser.class);
 
     private XmlHandlerChainFactory handlerChainFactory;
     private BeanWrapperAware beanWrapper;
     private BeanProvider beanProvider;
 
+    private List stack;
+    private Object object;
 
-    private HandlerChainWrapper handlerChain;
-    private LinkedList beans;
+    private int state;
 
     public XmlHandlerChainParser(XmlHandlerChainFactory handlerChainFactory) {
 
@@ -100,6 +101,7 @@ public class XmlHandlerChainParser extends DefaultHandler {
             throw new RuntimeException(e);
         }
         catch(SAXException e) {
+            e.printStackTrace();
             if(LOGGER.isErrorEnabled()) LOGGER.error(e);
             throw new IOException("Invalid xml stream [" + resource + "]. " + e.getMessage());
         }
@@ -108,8 +110,7 @@ public class XmlHandlerChainParser extends DefaultHandler {
     public void startDocument() throws SAXException {
 
         state = STATE_UNKNOWN;
-
-        beans = new LinkedList();
+        stack = new ArrayList();
     }
 
 
@@ -121,64 +122,77 @@ public class XmlHandlerChainParser extends DefaultHandler {
         switch(state) {
             case STATE_UNKNOWN:
                 if(TAG_CHAINS.equals(localName) &&
-                   MIRU_NS.equals(uri)) state = STATE_CHAINS;
+                   MIRU_NS.equals(uri)) state = STATE_CHAIN;
                 break;
-            case STATE_CHAINS:
-                if(TAG_CHAIN.equals(localName) &&
-                   MIRU_NS.equals(uri)) {
-
-                    handlerChain = handlerChainFactory.assignHandlerChainWrapper
-                        (handlerChainFactory.createHandlerChain());
-                    handlerChain.setId(attributes.getValue("id"));
-
-                    state = STATE_CHAIN;
-                    break;
-                }
-                throw new SAXException("Invalid element '" + qName + "'.");
             case STATE_CHAIN:
                 if(MIRU_NS.equals(uri)) {
-                    Object object;
+                    if(TAG_CHAIN.equals(localName)) {
+                        HandlerChain handlerChain;
 
-                    if(TAG_HANDLERS.equals(localName)) {
-                        state = STATE_HANDLERS;
-                        break;
-                    }
-                    else if((object = beanProvider.getBean(localName)) != null) {
-                        BeanWrapper bean;
+                        handlerChain = handlerChainFactory.createHandlerChain();
+                        handlerChain.setId(attributes.getValue("id"));
 
-                        bean = beanWrapper.assignBeanWrapper(object);
-                        //applyAttributes(bean, attributes);
+                        stack.add
+                            (handlerChainFactory.assignHandlerWrapper(handlerChain));
+                        object = null;
 
-                        beans.add(bean);
-                        state = STATE_MATCHER;
+                        state = STATE_HANDLER;
                         break;
                     }
                 }
                 throw new SAXException("Invalid element '" + qName + "'.");
-            case STATE_MATCHER:
+            case STATE_HANDLER:
+            //case STATE_MATCHER:
                 if(MIRU_NS.equals(uri)) {
-                    Object object;
+                    Object bean;
 
-                    if((object = beanProvider.getBean(localName)) != null) {
-                        BeanWrapper bean;
+                    if(TAG_HANDLER.equals(localName)) {
+                        if(object != null) {
+                            //if(object instanceof List ||
+                            // object instanceof Map) stack.add(object);
+                            //else
+                            stack.add
+                                (handlerChainFactory.assignHandlerWrapper(object));
+                        }
+                        object = null;
+                        break;
+                    }
+                    else if(TAG_LIST.equals(localName)) {
 
-                        bean = beanWrapper.assignBeanWrapper(object);
-                        beans.add(bean);
+                        stack.add(new ArrayList());
+                        object = null;
+                        break;
+                    }
+                    else if((bean = beanProvider.getBean(localName)) != null) {
+                        int length;
+
+                        if((length = attributes.getLength()) > 0) {
+                            BeanWrapper wrapper;
+
+                            if(beanProvider.isSingleton(localName))
+                                throw new BeanException
+                                    ("Singleton beans are not mutable.");
+
+                            wrapper = beanWrapper.assignBeanWrapper(bean);
+                            for(int i = length; i-- > 0; ) {
+                                wrapper.setValue(attributes.getLocalName(i),
+                                                 attributes.getValue(i));
+                            }
+                            beanWrapper.recycleBeanWrapper(wrapper);
+                        }
+
+
+                        object = bean;
                         break;
                     }
                 }
                 throw new SAXException("Invalid element '" + qName + "'.");
-            case STATE_HANDLERS:
-                break;
         }
-
     }
 
     public void characters(char ch[],
                            int start,
-                           int length) throws SAXException {
-
-    }
+                           int length) throws SAXException {}
 
     public void endElement(String uri,
                            String localName,
@@ -188,73 +202,84 @@ public class XmlHandlerChainParser extends DefaultHandler {
          switch(state) {
              case STATE_UNKNOWN:
                  break;
-             case STATE_CHAINS:
-                 if(TAG_CHAINS.equals(localName) &&
-                    MIRU_NS.equals(uri)) {
-
-                     state = STATE_UNKNOWN;
-                     break;
-                 }
-                 throw new SAXException("Invalid element '" + qName + "'.");
-             case STATE_HANDLERS:
-                 if(TAG_HANDLERS.equals(localName) &&
-                    MIRU_NS.equals(uri)) {
-
-                     state = STATE_CHAIN;
-                     break;
-                 }
              case STATE_CHAIN:
-                 if(TAG_CHAIN.equals(localName) &&
-                    MIRU_NS.equals(uri)) {
-                     HandlerChainWrapper handlerChain;
-
-                     handlerChain = this.handlerChain;
-                     this.handlerChain = null;
-
-                     handlerChainFactory.addHandlerChain
-                         ((HandlerChain) handlerChain.getWrappedInstance());
-                     handlerChainFactory.recycleHandlerChainWrapper(handlerChain);
-
-                     state = STATE_CHAINS;
-                     break;
+                 if(MIRU_NS.equals(uri)) {
+                     if(TAG_CHAINS.equals(localName)) {
+                         state = STATE_UNKNOWN;
+                         break;
+                     }
                  }
                  throw new SAXException("Invalid element '" + qName + "'.");
-             case STATE_MATCHER:
+             //case STATE_MATCHER:
+             case STATE_HANDLER:
+                 System.out.println(stack);
                  if(MIRU_NS.equals(uri)) {
-                     BeanWrapper bean;
 
-                     bean = (BeanWrapper) beans.removeLast();
-                     if(beans.isEmpty()) {
-                         handlerChain.setMatcher((Matcher) bean.getWrappedInstance());
+                     if(TAG_CHAIN.equals(localName)) {
+                         HandlerWrapper wrapper;
+                         wrapper = (HandlerWrapper) stack.remove(stack.size() - 1);
+
+                         handlerChainFactory.addHandlerChain((HandlerChain) wrapper.getWrappedInstance());
+                         handlerChainFactory.recycleHandlerWrapper(wrapper);
+                         state = STATE_CHAIN;
+                         object = null;
+                     }
+                     else if(TAG_HANDLER.equals(localName)) {
+                         Object parent;
+
+                         parent = stack.remove(stack.size() - 1);
+                         if(parent != null) {
+                             //always true
+                             HandlerWrapper wrapper;
+                             wrapper = (HandlerWrapper) parent;
+
+                             object = wrapper.getWrappedInstance();
+                             handlerChainFactory.recycleHandlerWrapper(wrapper);
+                         }
+                     }
+                     else if(TAG_LIST.equals(localName)) {
+
+                         Object parent;
+
+                         object = stack.remove(stack.size() - 1);
+                         parent = stack.get(stack.size() - 1);
+                         if(parent instanceof HandlerWrapper ) {
+                             HandlerWrapper wrapper;
+
+                             wrapper = (HandlerWrapper) parent;
+                             wrapper.setValue("handler", object);
+                         }
+                         object = null;
 
                      }
                      else {
-                         ((BeanWrapper) beans.getLast()).setPropertyValue
-                             (localName, bean.getWrappedInstance());
-                     }
+                         Object parent;
 
-                     beanWrapper.recycleBeanWrapper(bean);
-                     state = STATE_HANDLERS;
+                         parent = stack.get(stack.size() - 1);
+                         if(parent instanceof List) {
+                             ((List) parent).add(object);
+
+
+                         }
+                         else if(parent instanceof HandlerWrapper ) {
+                             HandlerWrapper wrapper;
+
+                             wrapper = (HandlerWrapper) parent;
+                             wrapper.setValue("handler", object);
+                         }
+                         object = null;
+                     }
                      break;
                  }
                  throw new SAXException("Invalid element '" + qName + "'.");
          }
     }
 
-
     public void endDocument() throws SAXException {
 
-        handlerChain = null;
-        beans = null;
+        stack = null;
     }
 
-
-    private static final void applyAttributes(BeanWrapper bean,
-                                              Attributes attributes) {
-
-
-
-    }
 
 
 }

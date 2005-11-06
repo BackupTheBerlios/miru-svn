@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.handler.HandlerChainFactoryImpl
+  org.iterx.miru.dispatcher.handler.factory.HandlerChainFactoryImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,25 +18,59 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
-package org.iterx.miru.dispatcher.handler;
+package org.iterx.miru.dispatcher.handler.factory;
 
 import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.Iterator;
 
 import org.iterx.miru.dispatcher.adapter.HandlerAdapter;
+import org.iterx.miru.dispatcher.handler.factory.HandlerWrapperImpl;
+import org.iterx.miru.dispatcher.handler.factory.HandlerChainMapImpl;
+import org.iterx.miru.dispatcher.handler.HandlerChainFactory;
+import org.iterx.miru.dispatcher.handler.HandlerWrapperAware;
+import org.iterx.miru.dispatcher.handler.HandlerChainMap;
+import org.iterx.miru.dispatcher.handler.HandlerChain;
+import org.iterx.miru.dispatcher.handler.HandlerWrapper;
+import org.iterx.miru.bean.BeanProvider;
+import org.iterx.miru.bean.BeanWrapperAware;
 import org.iterx.util.ArrayUtils;
 
 public class HandlerChainFactoryImpl extends HandlerChainFactory
-    implements HandlerChainWrapperAware {
+    implements HandlerWrapperAware {
 
     private HandlerAdapter[] handlerAdapters;
     private HandlerChainMap handlerChainMap;
+    private BeanProvider beanProvider;
     private Map handlerChains;
 
-    public HandlerChainFactoryImpl() {
-
+    {
         handlerAdapters = new HandlerAdapter[0];
         handlerChains = new LinkedHashMap();
+    }
+
+    public HandlerChainFactoryImpl() {}
+
+    public HandlerChainFactoryImpl(BeanProvider beanProvider){
+
+        setBeanProvider(beanProvider);
+    }
+
+    public BeanProvider getBeanProvider() {
+
+        return beanProvider;
+    }
+
+    public void setBeanProvider(BeanProvider beanProvider) {
+
+        if(beanProvider == null)
+            throw new IllegalArgumentException("beanProvider == null");
+        if(!(beanProvider instanceof BeanWrapperAware))
+            throw new IllegalArgumentException("beanProvider is not BeanWrapperAware.");
+
+        synchronized(this)  {
+            this.beanProvider = beanProvider;
+        }
     }
 
     public HandlerAdapter[] getHandlerAdapters() {
@@ -68,17 +102,6 @@ public class HandlerChainFactoryImpl extends HandlerChainFactory
         }
     }
 
-    public HandlerChainMap getHandlerChains() {
-
-        if(handlerChainMap == null) {
-            synchronized(this) {
-                if(handlerChainMap == null)
-                    handlerChainMap = new HandlerChainMapImpl(new LinkedHashMap(handlerChains));
-            }
-        }
-        return handlerChainMap;
-    }
-
     public HandlerChain createHandlerChain() {
 
         return new HandlerChainImpl();
@@ -99,6 +122,31 @@ public class HandlerChainFactoryImpl extends HandlerChainFactory
         }
     }
 
+    public HandlerChainMap getHandlerChains() {
+
+        if(handlerChainMap == null) {
+            synchronized(this) {
+                if(handlerChainMap == null)
+                    handlerChainMap = new HandlerChainMapImpl(new LinkedHashMap(handlerChains));
+            }
+        }
+        return handlerChainMap;
+    }
+
+    public void setHandlerChains(HandlerChainMap handlerChainMap) {
+
+        if(handlerChainMap == null)
+            throw new IllegalArgumentException("handlerChainMap == null");
+
+        synchronized(this) {
+            handlerChains.clear();
+            for(Iterator iterator = handlerChainMap.iterator();
+                iterator.hasNext(); ) {
+                addHandlerChain((HandlerChain) iterator.next());
+            }
+        }
+    }
+
     public void removeHandlerChain(HandlerChain handler) {
 
         if(handler == null)
@@ -109,18 +157,20 @@ public class HandlerChainFactoryImpl extends HandlerChainFactory
         }
     }
 
-    public HandlerChainWrapper assignHandlerChainWrapper(Object object) {
-        HandlerChainWrapper wrapper;
+    public HandlerWrapper assignHandlerWrapper(Object object) {
+        assert (beanProvider != null) : "beanProvider == null";
+        HandlerWrapperImpl wrapper;
 
-        wrapper = new HandlerChainWrapperImpl(this);
+        wrapper = new HandlerWrapperImpl(this, beanProvider);
         wrapper.setWrappedInstance(object);
         return wrapper;
     }
 
-    public void recycleHandlerChainWrapper(HandlerChainWrapper wrapper) {
+    public void recycleHandlerWrapper(HandlerWrapper wrapper) {
+        assert (wrapper == null ||
+                wrapper instanceof HandlerWrapperImpl) : "Invalid instance.";
 
         wrapper.setWrappedInstance(null);        
     }
-
 
 }

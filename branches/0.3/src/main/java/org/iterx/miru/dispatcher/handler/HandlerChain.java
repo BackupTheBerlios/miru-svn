@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.handler.HandlerChain;
+  org.iterx.miru.dispatcher.handler.HandlerChain
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -21,8 +21,12 @@
 
 package org.iterx.miru.dispatcher.handler;
 
-public interface HandlerChain extends Handler {
+import org.iterx.miru.dispatcher.matcher.Matcher;
+
+public interface HandlerChain extends Handler, Matcher {
 
     public String getId();
+
+    public void setId(String id);
 
 }

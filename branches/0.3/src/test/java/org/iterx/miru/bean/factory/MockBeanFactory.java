@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.handler.HandlerChainMap
+  org.iterx.miru.bean.factory.MockBeanFactory
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,15 +19,6 @@
   All Rights Reserved.
 */
 
+package org.iterx.miru.bean.factory;
 
-package org.iterx.miru.dispatcher.handler;
-
-import java.util.Iterator;
-
-public interface HandlerChainMap  {
-
-    public Iterator iterator();
-
-    public HandlerChain get(String id);
-
-}
+public class MockBeanFactory extends BeanFactoryImpl {}

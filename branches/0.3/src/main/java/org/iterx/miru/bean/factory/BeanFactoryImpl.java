@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.bean.BeanFactoryImpl
+  org.iterx.miru.bean.factory.BeanFactoryImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,10 +19,18 @@
   All Rights Reserved.
 */
 
-package org.iterx.miru.bean;
+package org.iterx.miru.bean.factory;
 
 import java.util.Iterator;
 import java.util.HashMap;
+
+import org.iterx.miru.bean.factory.BeanWrapperImpl;
+import org.iterx.miru.bean.factory.BeanImpl;
+import org.iterx.miru.bean.BeanFactory;
+import org.iterx.miru.bean.BeanWrapperAware;
+import org.iterx.miru.bean.BeanProvider;
+import org.iterx.miru.bean.Bean;
+import org.iterx.miru.bean.BeanWrapper;
 
 public class BeanFactoryImpl extends BeanFactory implements BeanWrapperAware {
 
@@ -163,8 +171,8 @@ public class BeanFactoryImpl extends BeanFactory implements BeanWrapperAware {
     public BeanWrapper assignBeanWrapper(Object object) {
         BeanWrapperImpl wrapper;
 
-        wrapper = new BeanWrapperImpl(object);
-        wrapper.beanFactory = this;
+        wrapper = new BeanWrapperImpl(this);
+        wrapper.setWrappedInstance(object);
         return wrapper;
     }
 
@@ -174,7 +182,6 @@ public class BeanFactoryImpl extends BeanFactory implements BeanWrapperAware {
                 wrapper instanceof BeanWrapperImpl) : "Invalid instance.";
 
         wrapper.setWrappedInstance(null);
-        ((BeanWrapperImpl) wrapper).beanFactory = null;
     }
 
 }

@@ -24,7 +24,6 @@ package org.iterx.miru.dispatcher.handler.factory;
 
 import java.io.IOException;
 
-import org.iterx.miru.dispatcher.handler.HandlerChainFactoryImpl;
 import org.iterx.miru.bean.BeanProvider;
 import org.iterx.miru.bean.BeanWrapperAware;
 
@@ -33,34 +32,15 @@ import org.iterx.miru.io.resource.UriResource;
 
 public class XmlHandlerChainFactory extends HandlerChainFactoryImpl {
 
-    private BeanProvider beanProvider;
-
     public XmlHandlerChainFactory() {}
 
     public XmlHandlerChainFactory(BeanProvider beanProvider){
 
-        setBeanProvider(beanProvider);
-    }
-
-    public BeanProvider getBeanProvider() {
-
-        return beanProvider;
-    }
-
-    public void setBeanProvider(BeanProvider beanProvider) {
-
-        if(beanProvider == null)
-            throw new IllegalArgumentException("beanProvider == null");
-        if(!(beanProvider instanceof BeanWrapperAware))
-            throw new IllegalArgumentException("beanProvider is not BeanWrapperAware.");
-
-        synchronized(this)  {
-            this.beanProvider = beanProvider;
-        }
+        super(beanProvider);
     }
 
     public void load(String uri) throws IOException {
-        assert (beanProvider != null) : "beanProvider == null";
+        assert (getBeanProvider() != null) : "beanProvider == null";
         Resource resource;
 
         if((resource = new UriResource(uri)).exists()) load(resource);
@@ -70,7 +50,7 @@ public class XmlHandlerChainFactory extends HandlerChainFactoryImpl {
 
 
     public void load(Resource resource) throws IOException {
-        assert (beanProvider != null) : "beanProvider == null";
+        assert (getBeanProvider() != null) : "beanProvider == null";
         XmlHandlerChainParser parser;
 
         if(resource == null)

@@ -22,7 +22,6 @@ package org.iterx.miru.bean.factory;
 
 import java.io.IOException;
 
-import org.iterx.miru.bean.BeanFactoryImpl;
 import org.iterx.miru.bean.BeanProvider;
 import org.iterx.miru.io.Resource;
 import org.iterx.miru.io.resource.UriResource;

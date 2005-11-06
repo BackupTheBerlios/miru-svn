@@ -23,6 +23,8 @@ package org.iterx.miru.bean;
 
 import java.beans.PropertyEditorManager;
 
+import org.iterx.miru.bean.factory.BeanFactoryImpl;
+
 public abstract class BeanFactory implements BeanProvider {
 
     private static BeanFactory beanFactory;

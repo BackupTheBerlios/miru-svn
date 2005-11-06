@@ -557,7 +557,7 @@ public class TestXmlBeanParser extends TestCase  {
         public boolean equals(Object object) {
 
             return ((object instanceof MyObject) &&
-                    (((MyObject) object).getObject()).equals(this.object));
+                    (((MyObject) object).object).equals(this.object));
 
         }
 
