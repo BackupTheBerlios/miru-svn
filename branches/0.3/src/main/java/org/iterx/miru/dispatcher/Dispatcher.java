@@ -89,10 +89,14 @@ public class Dispatcher {
                                               processingContext))) != null) {
             while(chains.hasNext()) {
                 HandlerChain handlerChain;
+                Object[] matches;
 
                 handlerChain = (HandlerChain) chains.next();
-                if(handlerChain.hasMatches(processingContext) &&
-                   (status = handlerChain.execute(processingContext)) != DECLINE) break;
+                if((matches = handlerChain.getMatches(processingContext)) != null) {
+
+                    if((status = handlerChain.execute(processingContext)) != DECLINE)
+                        break; 
+                }
             }
         }
         return status;

@@ -240,7 +240,7 @@ public class XmlBeanParser extends DefaultHandler {
                          bean = (BeanWrapper) this.bean;
                          beanFactory.addBeanDefinition((Bean) bean.getWrappedInstance());
                          beanFactory.recycleBeanWrapper(bean);
-                         bean = null;
+                         this.bean = null;
                          state = STATE_BEANS;
                      }
                      else {

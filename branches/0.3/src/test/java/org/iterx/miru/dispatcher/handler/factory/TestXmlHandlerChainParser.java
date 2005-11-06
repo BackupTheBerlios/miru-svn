@@ -107,7 +107,6 @@ public class TestXmlHandlerChainParser extends TestCase {
           new String[] { "a" },
           new Handler[] { new MyHandler(new MyHandler(new MyHandler())) }
         },
-        /*
         {
           "<chains xmlns=\"" + NS + "\">" +
           "<chain id=\"a\">" +
@@ -125,7 +124,54 @@ public class TestXmlHandlerChainParser extends TestCase {
           new String[] { "a" },
           new Handler[] { new MyHandler(new MyList(new MyHandler[] { new MyHandler(), new MyHandler()})) }
         },
-        */
+        {
+          "<chains xmlns=\"" + NS + "\">" +
+          "<chain id=\"a\">" +
+          "<my-handler>" +
+          "<handler>" +
+          "<list>" +
+          "<my-handler>" +
+          "<handler>" +
+          "<my-handler/>" +
+          "</handler>" +
+          "</my-handler>" +
+          "<my-handler/>" +
+          "</list>" +
+          "</handler>" +
+          "</my-handler>" +
+          "</chain>" +
+          "</chains>",
+          new Integer(1),
+          new String[] { "a" },
+          new Handler[] { new MyHandler(new MyList
+              (new MyHandler[] { new MyHandler(new MyHandler()), new MyHandler()})) }
+        },
+        {
+          "<chains xmlns=\"" + NS + "\">" +
+          "<chain id=\"a\">" +
+          "<my-handler>" +
+          "<handler>" +
+          "<list>" +
+          "<my-handler>" +
+          "<handler>" +
+          "<list>" +
+          "<my-handler/>" +
+          "<my-handler/>" +
+          "</list>" +
+          "</handler>" +
+          "</my-handler>" +
+          "<my-handler/>" +
+          "</list>" +
+          "</handler>" +
+          "</my-handler>" +
+          "</chain>" +
+          "</chains>",
+          new Integer(1),
+          new String[] { "a" },
+          new Handler[] { new MyHandler(new MyList
+              (new MyHandler[] { new MyHandler(new MyList
+                  (new MyHandler[] { new MyHandler(), new MyHandler() })), new MyHandler()})) }
+        },
     };
 
     private XmlHandlerChainFactory handlerChainFactory;
@@ -238,7 +284,6 @@ public class TestXmlHandlerChainParser extends TestCase {
 
         public boolean equals(Object object) {
 
-            System.out.println(((MyHandler) object).object + "<>" + this.object);
             return ((object instanceof MyHandler) &&
                     (((MyHandler) object).object == this.object ||
                      (((MyHandler) object).object).equals(this.object)) &&

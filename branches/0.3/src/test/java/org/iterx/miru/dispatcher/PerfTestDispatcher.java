@@ -36,12 +36,16 @@ import com.clarkware.junitperf.TimedTest;
 import org.iterx.miru.io.StreamSource;
 import org.iterx.miru.io.StreamTarget;
 
+import org.iterx.miru.bean.factory.BeanFactoryImpl;
+
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.http.HttpRequestContextImpl;
 import org.iterx.miru.context.http.HttpResponseContextImpl;
 import org.iterx.miru.context.ProcessingContextFactory;
 
 import org.iterx.miru.dispatcher.handler.ContentHandler;
+import org.iterx.miru.dispatcher.handler.HandlerChain;
+import org.iterx.miru.dispatcher.handler.HandlerWrapper;
 import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactoryImpl;
 
 
@@ -76,8 +80,13 @@ public class PerfTestDispatcher extends TestCase {
               System.gc();
               memory = runtime.freeMemory();
 
-              handlerChainFactory = new HandlerChainFactoryImpl();
-              //handlerChainFactory.addHandlerChain();
+
+              handlerChainFactory = new HandlerChainFactoryImpl(new BeanFactoryImpl());
+              HandlerWrapper handlerWrapper = handlerChainFactory.assignHandlerWrapper
+                  (handlerChainFactory.createHandlerChain());
+              handlerWrapper.setHandler(new SimpleHandler());
+              handlerChainFactory.addHandlerChain((HandlerChain) handlerWrapper.getWrappedInstance());
+              handlerChainFactory.recycleHandlerWrapper(handlerWrapper);
 
               dispatcher = new Dispatcher(handlerChainFactory.getHandlerChains());
 
@@ -124,21 +133,6 @@ public class PerfTestDispatcher extends TestCase {
           }
       }
 
-
-    /*
-    private static class SimpleHandlerInterceptor implements HandlerInterceptor {
-
-        public boolean preHandle(ProcessingContext processingContext) {
-
-            return (processingContext.getRequestContext() instanceof StreamSource &&
-                    processingContext.getResponseContext() instanceof StreamTarget);
-        }
-
-        public void postHandle(ProcessingContext processingContext) {}
-
-
-    }
-    */
 
     private static class SimpleHandler implements ContentHandler {
 

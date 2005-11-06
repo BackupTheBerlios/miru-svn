@@ -28,6 +28,9 @@ import org.iterx.miru.bean.BeanWrapper;
 public interface HandlerWrapper extends BeanWrapper {
 
 
-    public void setHandler(Object value);
+    public void setHandler(Object handler);
+
+    public void setHandlers(Object handlers);
+
 }
 

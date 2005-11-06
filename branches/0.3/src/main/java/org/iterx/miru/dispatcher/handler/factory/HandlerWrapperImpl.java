@@ -23,6 +23,9 @@ package org.iterx.miru.dispatcher.handler.factory;
 
 import java.util.Map;
 import java.util.List;
+import java.util.Iterator;
+import java.util.ArrayList;
+import java.lang.reflect.Proxy;
 
 import org.iterx.miru.dispatcher.handler.HandlerWrapper;
 import org.iterx.miru.dispatcher.handler.Handler;
@@ -87,287 +90,64 @@ public class HandlerWrapperImpl implements HandlerWrapper {
         beanWrapper.setValues(map);
     }
 
-    public void setHandler(Object value) {
+    public void setHandler(Object handler) {
 
-        //wrap if not handler!
-        if(value instanceof Handler) setValue("handler", value);
-        if(value instanceof List) {
-            //iterate over list, wrapping
-        }
+        if(handler != null &&
+           !(handler instanceof Handler)) {
+            HandlerAdapter[] adapters;
+            adapters = handlerChainFactory.getHandlerAdapters();
 
-    }
-
-    /*
-    private Object instance;
-    private Map getters;
-    private Map setters;
-
-    public HandlerWrapperImpl() {}
-
-    public HandlerWrapperImpl(Object object) {
-
-        setWrappedInstance(object);
-    }
-
-    private void initialise() {
-        assert (instance != null) : "instance == null";
-
-        Method[] methods;
-
-        getters = new HashMap();
-        setters = new HashMap();
-        methods = (instance.getClass()).getMethods();
-
-        for(int i = 0; i < methods.length; i++) {
-            Method method;
-            String key;
-
-            method = methods[i];
-            key = (method.getName()).toLowerCase();
-
-            if(key.startsWith("get")) {
-                if((method.getParameterTypes()).length  == 0)
-                    getters.put(key.substring(3), method);
-            }
-            else if(key.startsWith("set") ||
-                    key.startsWith("add")) {
-
-                if((method.getParameterTypes()).length  == 1) {
-                    for(int j = 0; j < 2; j++) {
-                        if(setters.containsKey(key))
-                            setters.put(key,
-                                        ArrayUtils.add((Method[]) setters.get(key), method));
-                        else setters.put(key, new Method[] { method });
-
-                        if(key.length() > 3) key = key.substring(3);
-                        else break;
-                    }
+            for(int i = 0; i < adapters.length; i++) {
+                if(adapters[i].supports(handler)) {
+                    handler = new HandlerProxy(adapters[i], handler);
+                    break;
                 }
             }
         }
+        beanWrapper.setValue("handler", handler);
     }
 
-    public Object getWrappedInstance() {
+    public void setHandlers(Object handlers) {
+        Object[] values;
 
-        return instance;
-    }
+        values = null;
+        if(handlers instanceof Object[]) values = (Object[]) handlers;
+        else if(handlers instanceof List)  values = ((List) handlers).toArray();
+        if(values != null) {
 
-    public void setWrappedInstance(Object object) {
+            HandlerAdapter[] adapters;
+            List array;
+            Object value;
 
-        instance = object;
-        if(instance == null) getters = setters = null;
-        else initialise();
-    }
-
-
-    public Object getValue(String property) {
-
-        if(property == null)
-            throw new IllegalArgumentException("property == null");
-
-        try {
-            String name;
-
-            if(getters.containsKey(name = property.toLowerCase())) {
-                Object object;
-
-                object = ((Method) getters.get(name)).invoke(instance);
-                if(object instanceof AdapterAdapter)
-                    object = ((AdapterAdapter) object).getInstance();
-                return object;
-            }
-        }
-        catch(Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        throw new IllegalArgumentException
-            ("Invalid getter property '" + property + "'");
-    }
-
-    public void setValue(String property, Object value) {
-
-        if(property == null)
-            throw new IllegalArgumentException("property == null");
-        if(value == null)
-            throw new IllegalArgumentException("value == null");
-
-
-        try {
-            String name;
-
-            System.out.println(">>>>" + instance + " " + value);
-            if(setters.containsKey(name = property.toLowerCase())) {
-                Method[] methods;
-
-                methods = (Method[]) setters.get(name);
-                for(int i = methods.length; i-- > 0; ) {
-                    Class parameterType;
-                    Method method;
-                    Object current, next;
-
-                    current = null;
-                    method = methods[i];
-                    parameterType = (method.getParameterTypes())[0];
-                    next = value;
-
-                    while(current != next) {
-                        current = next;
-                        System.out.println("TYPE=>" + parameterType);
-
-                        if(parameterType.isAssignableFrom(current.getClass()) ||
-                           (parameterType.isArray() &&
-                            current instanceof List &&
-                            (parameterType.getComponentType()).isAssignableFrom(current.getClass()))) {
-
-                            System.out.println("***************");
-
-                            if(current instanceof List ) {
-                                List list;
-
-                                list = (List) current;
-                                current = ((parameterType.isArray())?
-                                           list.toArray((Object[]) Array.newInstance
-                                               (parameterType.getComponentType(), list.size())) :
-                                           list);
-
-                            }
-                            else if(current instanceof Map) {
-
-                            }
-
-
-                            method.invoke(instance, current);
-                            return;
+            array = new ArrayList();
+            adapters = handlerChainFactory.getHandlerAdapters();
+            for(int i = 0; i < values.length; i++) {
+                value = values[i];
+                if(!(value instanceof Handler)) {
+                    for(int j = 0; j < adapters.length; j++) {
+                        if(adapters[j].supports(value)) {
+                            value = new HandlerProxy(adapters[j], value);
+                            break;
                         }
                     }
                 }
+                array.add(value);
             }
-
-
-            //object = ((Method) setters.get(name)).invoke(instance);
-            // if(object instanceof AdapterAdapter)
-            //     object = ((AdapterAdapter) object).getInstance();
-
+            handlers = array;
         }
-        catch(Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-
-        throw new IllegalArgumentException
-            ("Invalid setter property '" + property + "'");
-
-
-    }
-
-    public void setValues(Map map) {
-
-        if(map == null)
-            throw new IllegalArgumentException("map == null");
-
-        for(Iterator iterator = (map.entrySet()).iterator();
-            iterator.hasNext(); ) {
-            Map.Entry entry;
-
-            entry = (Map.Entry) iterator.next();
-            setValue((String) entry.getKey(), entry.getValue());
-        }
+        beanWrapper.setValue("handlers", handlers);
     }
 
 
-
-
-
-    /*
-        public void addHandler(Object object) {
-            HandlerAdapter[] adapters;
-            adapters = provider.getHandlerAdapters();
-            for(int i = 0; i < adapters.length; i++) {
-                final HandlerAdapter adapter;
-                final Object handler;
-
-
-                handler = object;
-                if((adapter = adapters[i]).supports(handler)) {
-                    //delegate to bean wrapper
-                    instance.addHandler
-                        (new HandlerWrapper() {
-
-                            public Object unwrap() {
-
-                                return handler;
-                            }
-
-                            public int execute(ProcessingContext processingContext) {
-
-                                return adapter.process(processingContext, handler);
-                            }
-
-                            public int hashCode() {
-
-                                return handler.hashCode();
-                            }
-
-                            public boolean equals(Object object) {
-
-                                return handler.equals(object);
-                            }
-                        });
-                    return;
-                }
-            }
-            if(object instanceof Handler) {
-                instance.addHandler(object);
-                return;
-            }
-
-            throw new IllegalArgumentException
-                ("Unsupported handler ' " + object.getClass() + "'.");
-        }
-
-        public Object[] getHandlers() {
-            Object[] handlers;
-
-            handlers = null; // instance.getHandlers();
-            for(int i = 0; i < handlers.length; i++) {
-                Object handler;
-
-                if(((handler = handlers[i]) instanceof HandlerWrapper))
-                    handlers[i] = ((HandlerWrapper) handler).unwrap();
-            }
-            return handlers;
-        }
-
-        public void setHandlers(Object[] objects) {
-
-            for(int i = 0; i < objects.length; i++) {
-                addHandler(objects[i]);
-            }
-        }
-
-        public void removeHandler(Object object) {
-
-            //instance.removeHandler(object);
-        }
-    */
-
-
-
-    private static class HandlerAdapterAdapter implements Handler, AdapterAdapter {
+    private static class HandlerProxy implements Handler {
 
         private HandlerAdapter adapter;
         private Object handler;
 
-        private HandlerAdapterAdapter(HandlerAdapter adapter, Object handler) {
+        private HandlerProxy(HandlerAdapter adapter, Object handler) {
 
             this.adapter = adapter;
             this.handler = handler;
-        }
-
-        public Object getInstance() {
-
-            return handler;
         }
 
         public int execute(ProcessingContext processingContext) {
@@ -375,10 +155,5 @@ public class HandlerWrapperImpl implements HandlerWrapper {
             return adapter.execute(processingContext, handler);
         }
 
-    }
-
-    private interface AdapterAdapter {
-
-        Object getInstance();
     }
 }
