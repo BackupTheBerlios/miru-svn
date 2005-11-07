@@ -23,9 +23,7 @@ package org.iterx.miru.dispatcher.handler.factory;
 
 import java.util.Map;
 import java.util.List;
-import java.util.Iterator;
 import java.util.ArrayList;
-import java.lang.reflect.Proxy;
 
 import org.iterx.miru.dispatcher.handler.HandlerWrapper;
 import org.iterx.miru.dispatcher.handler.Handler;
@@ -80,7 +78,6 @@ public class HandlerWrapperImpl implements HandlerWrapper {
     }
 
     public void setValue(String property, Object value) {
-
 
         beanWrapper.setValue(property, value);
     }

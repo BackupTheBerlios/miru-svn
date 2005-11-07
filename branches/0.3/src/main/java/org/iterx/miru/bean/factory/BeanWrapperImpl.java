@@ -121,7 +121,7 @@ public class BeanWrapperImpl implements BeanWrapper {
         }
 
         throw new IllegalArgumentException
-            ("Invalid getter property '" + property + "'");
+            ("Invalid getter property '" + property + "' for " + instance.getClass() + "");
     }
 
 
@@ -151,7 +151,6 @@ public class BeanWrapperImpl implements BeanWrapper {
                     method = methods[i];
                     parameterType = (method.getParameterTypes())[0];
                     next = value;
-
 
                     while(current != next) {
                         current = next;
@@ -241,7 +240,7 @@ public class BeanWrapperImpl implements BeanWrapper {
         }
 
         throw new IllegalArgumentException
-            ("Invalid setter property '" + property + "'.");
+            ("Invalid setter property '" + property + "' for " + instance.getClass() +".");
 
     }
 

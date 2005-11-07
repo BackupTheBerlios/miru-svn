@@ -69,7 +69,6 @@ public class OutputTarget implements Iterable {
         return  iterator;
     }
 
-
     public OutputStream getByteStream() {
 
         return byteStream;

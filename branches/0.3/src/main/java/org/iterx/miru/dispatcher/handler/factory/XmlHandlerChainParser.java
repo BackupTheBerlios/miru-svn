@@ -24,8 +24,6 @@ package org.iterx.miru.dispatcher.handler.factory;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.SAXParser;
@@ -45,7 +43,6 @@ import org.iterx.miru.bean.BeanWrapper;
 import org.iterx.miru.bean.BeanException;
 import org.iterx.miru.dispatcher.handler.HandlerWrapper;
 import org.iterx.miru.dispatcher.handler.HandlerChain;
-
 
 public class XmlHandlerChainParser extends DefaultHandler {
 
@@ -135,6 +132,7 @@ public class XmlHandlerChainParser extends DefaultHandler {
                     }
                 }
                 throw new SAXException("Invalid element '" + qName + "'.");
+            case STATE_MATCHER:
             case STATE_HANDLER:
                 if(MIRU_NS.equals(uri)) {
                     Object object;
@@ -142,12 +140,12 @@ public class XmlHandlerChainParser extends DefaultHandler {
                     if(TAG_HANDLER.equals(localName)) {
                         stack.add(this.object);
                         this.object = null;
+                        state = STATE_HANDLER;
                         break;
                     }
                     else if(TAG_MATCHER.equals(localName)) {
                         stack.add(this.object);
                         this.object = null;
-
                         state = STATE_MATCHER;
                         break;
                     }
@@ -157,21 +155,25 @@ public class XmlHandlerChainParser extends DefaultHandler {
                         break;
                     }
                     else if((object = beanProvider.getBean(localName)) != null) {
-                        HandlerWrapper handlerWrapper;
+                        BeanWrapper beanWrapper;
                         int length;
 
-                        handlerWrapper = handlerChainFactory.assignHandlerWrapper(object);
+
+                        beanWrapper = ((state == STATE_MATCHER)?
+                                       ((BeanWrapperAware) beanProvider).assignBeanWrapper(object) :
+                                       handlerChainFactory.assignHandlerWrapper(object));
+
                         if((length = attributes.getLength()) > 0) {
                             if(beanProvider.isSingleton(localName))
                                 throw new BeanException
                                     ("Singleton beans are not mutable.");
 
                             for(int i = length; i-- > 0; ) {
-                                handlerWrapper.setValue(attributes.getLocalName(i),
-                                                        attributes.getValue(i));                            }
+                                beanWrapper.setValue(attributes.getLocalName(i),
+                                                     attributes.getValue(i));                            }
 
                         }
-                        this.object = handlerWrapper;
+                        this.object = beanWrapper;
                         break;
 
                     }
@@ -183,6 +185,7 @@ public class XmlHandlerChainParser extends DefaultHandler {
     public void characters(char ch[],
                            int start,
                            int length) throws SAXException {}
+
 
     public void endElement(String uri,
                            String localName,
@@ -201,8 +204,39 @@ public class XmlHandlerChainParser extends DefaultHandler {
                  }
                  throw new SAXException("Invalid element '" + qName + "'.");
              case STATE_MATCHER:
+                 if(MIRU_NS.equals(uri)) {
+                     Object parent;
+
+                     if(TAG_MATCHER.equals(localName)) {
+                         object = stack.remove(stack.size() - 1);
+                         if(object instanceof HandlerWrapper)
+                             state = STATE_HANDLER;
+                     }
+                     else if(TAG_LIST.equals(localName)) {
+                         Object object;
+
+                         object = stack.remove(stack.size() - 1);
+                         parent = stack.get(stack.size() - 1);
+                         ((BeanWrapper) parent).setValue("matchers", object);
+                     }
+                     else {
+                         BeanWrapper object;
+
+                         object = (BeanWrapper) this.object;
+                         parent = stack.get(stack.size() - 1);
+
+                         if(parent instanceof List)
+                             ((List) parent).add(object.getWrappedInstance());
+                         else if(parent instanceof BeanWrapper)
+                             ((BeanWrapper) parent).setValue("matcher", object.getWrappedInstance());
+
+                         ((BeanWrapperAware) beanProvider).recycleBeanWrapper(object);
+                         this.object = null;
+                     }
+                     break;
+                 }
+                 throw new SAXException("Invalid element '" + qName + "'.");
              case STATE_HANDLER:
-                 System.out.println(stack);
                  if(MIRU_NS.equals(uri)) {
                      Object parent;
 
@@ -218,6 +252,7 @@ public class XmlHandlerChainParser extends DefaultHandler {
                      }
                      else if(TAG_HANDLER.equals(localName)) {
                          object = stack.remove(stack.size() - 1);
+                         state = STATE_HANDLER;
                      }
                      else if(TAG_LIST.equals(localName)) {
                          Object object;
@@ -251,62 +286,4 @@ public class XmlHandlerChainParser extends DefaultHandler {
         stack = null;
     }
 
-
-                     /*
-                     if(TAG_CHAIN.equals(localName)) {
-                         HandlerWrapper wrapper;
-                         wrapper = (HandlerWrapper) stack.remove(stack.size() - 1);
-
-                         handlerChainFactory.addHandlerChain((HandlerChain) wrapper.getWrappedInstance());
-                         handlerChainFactory.recycleHandlerWrapper(wrapper);
-                         state = STATE_CHAIN;
-                         object = null;
-                     }
-                     else if(TAG_HANDLER.equals(localName)) {
-                         Object parent;
-
-                         parent = stack.remove(stack.size() - 1);
-                         if(parent != null) {
-                             //always true
-                             HandlerWrapper wrapper;
-                             wrapper = (HandlerWrapper) parent;
-
-                             object = wrapper.getWrappedInstance();
-                             handlerChainFactory.recycleHandlerWrapper(wrapper);
-                         }
-                     }
-                     else if(TAG_LIST.equals(localName)) {
-
-                         Object parent;
-
-                         object = stack.remove(stack.size() - 1);
-                         parent = stack.get(stack.size() - 1);
-                         if(parent instanceof HandlerWrapper ) {
-                             HandlerWrapper wrapper;
-
-                             wrapper = (HandlerWrapper) parent;
-                             wrapper.setValue("handler", object);
-                         }
-                         object = null;
-
-                     }
-                     else {
-                         Object parent;
-
-                         parent = stack.get(stack.size() - 1);
-                         if(parent instanceof List) {
-                             ((List) parent).add(object);
-
-
-                         }
-                         else if(parent instanceof HandlerWrapper ) {
-                             HandlerWrapper wrapper;
-
-                             wrapper = (HandlerWrapper) parent;
-                             wrapper.setValue("handler", object);
-                         }
-                         object = null;
-                     }
-                     break;
-                     */
 }

@@ -35,7 +35,6 @@ import org.iterx.miru.io.resource.MockResource;
 import org.iterx.miru.dispatcher.matcher.Matcher;
 import org.iterx.miru.dispatcher.handler.Handler;
 import org.iterx.miru.dispatcher.handler.HandlerChainMap;
-import org.iterx.miru.dispatcher.handler.factory.HandlerChainImpl;
 import org.iterx.miru.dispatcher.Dispatcher;
 import org.iterx.miru.context.ProcessingContext;
 
@@ -172,6 +171,76 @@ public class TestXmlHandlerChainParser extends TestCase {
               (new MyHandler[] { new MyHandler(new MyList
                   (new MyHandler[] { new MyHandler(), new MyHandler() })), new MyHandler()})) }
         },
+        {
+          "<chains xmlns=\"" + NS + "\">" +
+          "<chain id=\"a\">" +
+          "<my-handler>" +
+          "<matcher>" +
+          "<my-matcher/>" +
+          "</matcher>" +
+          "</my-handler>" +
+          "</chain>" +
+          "</chains>",
+          new Integer(1),
+          new String[] { "a" },
+          new Handler[] { new MyHandler(new MyMatcher(), null) }
+        },
+        {
+          "<chains xmlns=\"" + NS + "\">" +
+          "<chain id=\"a\">" +
+          "<my-handler>" +
+          "<matcher>" +
+          "<my-matcher/>" +
+          "</matcher>" +
+          "<handler>" +
+          "<my-handler/>" +
+          "</handler>" +
+          "</my-handler>" +
+          "</chain>" +
+          "</chains>",
+          new Integer(1),
+          new String[] { "a" },
+          new Handler[] { new MyHandler(new MyMatcher(), new MyHandler()) }
+        },
+        {
+          "<chains xmlns=\"" + NS + "\">" +
+          "<chain id=\"a\">" +
+          "<my-handler>" +
+          "<matcher>" +
+          "<my-matcher>" +
+          "<matcher>" +
+          "<my-matcher/>" +
+          "</matcher>" +
+          "</my-matcher>" +
+          "</matcher>" +
+          "</my-handler>" +
+          "</chain>" +
+          "</chains>",
+          new Integer(1),
+          new String[] { "a" },
+          new Handler[] { new MyHandler(new MyMatcher(new MyMatcher()), null) }
+        },
+        {
+          "<chains xmlns=\"" + NS + "\">" +
+          "<chain id=\"a\">" +
+          "<my-handler>" +
+          "<matcher>" +
+          "<my-matcher>" +
+          "<matcher>" +
+          "<list>" +
+          "<my-matcher/>" +
+          "<my-matcher/>" +
+          "</list>" +
+          "</matcher>" +
+          "</my-matcher>" +
+          "</matcher>" +
+          "</my-handler>" +
+          "</chain>" +
+          "</chains>",
+          new Integer(1),
+          new String[] { "a" },
+          new Handler[] { new MyHandler(new MyMatcher(new MyList(new MyMatcher[]{ new MyMatcher(), new MyMatcher()})), null) }
+        },
     };
 
     private XmlHandlerChainFactory handlerChainFactory;
@@ -244,7 +313,7 @@ public class TestXmlHandlerChainParser extends TestCase {
 
     }
 
-    public static class MyHandler implements Handler {
+    public static class MyHandler implements Handler, Matcher {
 
         private Matcher matcher;
         private Object object;
@@ -276,6 +345,17 @@ public class TestXmlHandlerChainParser extends TestCase {
 
             object = handlers;
         }
+
+        public Object[] getMatches(ProcessingContext processingContext) {
+
+            return matcher.getMatches(processingContext);
+        }
+
+        public boolean hasMatches(ProcessingContext processingContext) {
+
+            return matcher.hasMatches(processingContext);
+        }
+
 
         public int execute(ProcessingContext processingContext) {
 
@@ -311,18 +391,23 @@ public class TestXmlHandlerChainParser extends TestCase {
             object = string;
         }
 
+        public void setMatcher(Matcher matcher) {
+
+            object = matcher;
+        }
+
         public void setMatchers(List matchers) {
 
             object = matchers;
         }
 
 
-        public Object[] getMatches(ProcessingContext context) {
+        public Object[] getMatches(ProcessingContext prcoessingContext) {
 
             return new Object[0];
         }
 
-        public boolean hasMatches(ProcessingContext context) {
+        public boolean hasMatches(ProcessingContext processingContext) {
 
             return false;
         }
@@ -355,15 +440,4 @@ public class TestXmlHandlerChainParser extends TestCase {
         }
     }
 
-    public static class MyMap extends LinkedHashMap {
-
-        public MyMap() {}
-
-        public MyMap(Object[] objects) {
-
-            for(int i = 0; i < objects.length; i += 2) {
-                put(objects[i], objects[i + 1]);
-            }
-        }
-    }
 }
