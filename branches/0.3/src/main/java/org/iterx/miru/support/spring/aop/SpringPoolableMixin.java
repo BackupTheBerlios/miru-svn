@@ -21,12 +21,12 @@
 
 package org.iterx.miru.support.spring.aop;
 
+import org.aopalliance.intercept.MethodInvocation;
+
 import org.springframework.aop.support.DelegatingIntroductionInterceptor;
 import org.springframework.aop.TargetSource;
 
 import org.iterx.miru.aop.Poolable;
-import org.aopalliance.intercept.MethodInvocation;
-
 
 public class SpringPoolableMixin extends DelegatingIntroductionInterceptor
     implements Poolable {

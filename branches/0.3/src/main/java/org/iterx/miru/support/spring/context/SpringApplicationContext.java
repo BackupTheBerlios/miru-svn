@@ -1,27 +1,28 @@
 /*
-  org.iterx.miru.spring.context.SpringApplicationContext
+  org.iterx.miru.support.spring.context.SpringApplicationContext
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2.1 of the License, or (at your option) any later version.
-  
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
-  All Rights Reserved.  
+  All Rights Reserved.
 */
 package org.iterx.miru.support.spring.context;
 
 import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.context.ApplicationContextAware;
+import org.iterx.miru.context.ProcessingContextFactory;
 import org.iterx.miru.io.ResourceFactory;
 import org.iterx.miru.dispatcher.handler.HandlerChainFactory;
 
@@ -32,9 +33,10 @@ import org.iterx.miru.support.spring.bean.factory.SpringBeanFactory;
 public class SpringApplicationContext extends SpringBeanFactory
     implements ApplicationContext {
 
-    protected ApplicationContext parent;
+    private ProcessingContextFactory processingContextFactory;
     private ResourceFactory resourceFactory;
-    private HandlerChainFactory handlerMappingFactory;
+
+    private ApplicationContext parent;
 
     public SpringApplicationContext()  {
 
@@ -54,7 +56,7 @@ public class SpringApplicationContext extends SpringBeanFactory
 
 
     public SpringApplicationContext
-    (org.springframework.beans.factory.BeanFactory beanFactory)  {
+        (org.springframework.beans.factory.BeanFactory beanFactory)  {
 
         super(beanFactory);
     }
@@ -72,18 +74,18 @@ public class SpringApplicationContext extends SpringBeanFactory
                 throw new BeanException();
 
         }
-
         return resourceFactory;
     }
 
-    public HandlerChainFactory getHandlerChainFactory() {
+    public ProcessingContextFactory getProcessingContextFactory() {
 
-        if(handlerMappingFactory == null) {
-            if((handlerMappingFactory =
-                (HandlerChainFactory) getBeanOfType(HandlerChainFactory.class)) == null)
+        if(processingContextFactory == null) {
+            if((processingContextFactory =
+                (ProcessingContextFactory) getBeanOfType(ProcessingContextFactory.class)) == null)
                 throw new BeanException();
+
         }
-        return handlerMappingFactory;
+        return processingContextFactory;
     }
 
     public Object getBean(String name) {

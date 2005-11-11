@@ -32,7 +32,7 @@ import org.iterx.util.ArrayUtils;
 
 public class ResourceFactoryImpl extends ResourceFactory {
 
-    protected final Log logger = LogFactory.getLog(ResourceFactoryImpl.class);
+    private final static Log LOGGER = LogFactory.getLog(ResourceFactoryImpl.class);
 
     protected ResourceResolver[] resourceResolvers;
 
@@ -76,7 +76,7 @@ public class ResourceFactoryImpl extends ResourceFactory {
         }
 
 
-        logger.warn("Resource [" + uri + "] not found.");
+        LOGGER.warn("Resource [" + uri + "] not found.");
         return null;
     }
 }

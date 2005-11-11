@@ -22,30 +22,42 @@ package org.iterx.miru.context;
 
 import org.iterx.miru.bean.BeanException;
 import org.iterx.miru.bean.BeanProvider;
+import org.iterx.miru.bean.BeanFactory;
+
 import org.iterx.miru.io.ResourceFactory;
-import org.iterx.miru.dispatcher.handler.HandlerChainFactory;
 
 public class ApplicationContextImpl implements ApplicationContext {
 
-    protected HandlerChainFactory handlerChainFactory;
-    protected ResourceFactory resourceFactory;
+    private ProcessingContextFactory processingContextFactory;
+    private ResourceFactory resourceFactory;
+
+    private ApplicationContext parent;
+
     protected BeanProvider beanProvider;
 
-    protected ApplicationContext parent;
+    protected ApplicationContextImpl() {
 
-    protected ApplicationContextImpl() {}
+        this.beanProvider = BeanFactory.getBeanFactory();
+    }
 
     public ApplicationContextImpl(BeanProvider beanProvider) {
 
-        if (beanProvider == null)
+        if(beanProvider == null)
             throw new IllegalArgumentException("beanFactory == null");
         this.beanProvider = beanProvider;
     }
 
+    public ApplicationContextImpl(ApplicationContext parent) {
+
+        this.beanProvider = BeanFactory.getBeanFactory();
+        this.parent = parent;
+    }
+
+
     public ApplicationContextImpl(BeanProvider beanProvider,
                                   ApplicationContext parent) {
 
-        if (beanProvider == null)
+        if(beanProvider == null)
             throw new IllegalArgumentException("beanFactory == null");
         this.beanProvider = beanProvider;
         this.parent = parent;
@@ -63,49 +75,47 @@ public class ApplicationContextImpl implements ApplicationContext {
     }
 
     public ResourceFactory getResourceFactory() {
-        if (resourceFactory == null) {
-            if ((resourceFactory =
-                 (ResourceFactory) getBeanOfType(ResourceFactory.class)) == null)
-                throw new BeanException("Invalid bean type 'ResourceFactory'.");
 
+        if(resourceFactory == null) {
+            if((resourceFactory =
+                (ResourceFactory) getBeanOfType(ResourceFactory.class)) == null)
+                resourceFactory = ResourceFactory.getResourceFactory();
         }
         return resourceFactory;
     }
 
     public void setResourceFactory(ResourceFactory resourceFactory) {
 
-        if (resourceFactory == null)
+        if(resourceFactory == null)
             throw new IllegalArgumentException("resourceFactory == null");
         this.resourceFactory = resourceFactory;
     }
 
-    public HandlerChainFactory getHandlerChainFactory() {
+    public ProcessingContextFactory getProcessingContextFactory() {
 
-        if (handlerChainFactory == null) {
-            if ((handlerChainFactory =
-                 (HandlerChainFactory) getBeanOfType(HandlerChainFactory.class)) == null)
-                throw new BeanException("Invalid bean type 'HandlerChainFactory'");
-
+        if(processingContextFactory == null) {
+            if((processingContextFactory =
+                (ProcessingContextFactory) getBeanOfType(ProcessingContextFactory.class)) == null)
+                processingContextFactory = ProcessingContextFactory.getProcessingContextFactory();
         }
-
-        return handlerChainFactory;
+        return processingContextFactory;
     }
 
-    public void setHandlerChainFactory(HandlerChainFactory handlerChainFactory) {
+    public void setProcessingContextFactory(ProcessingContextFactory processingContextFactory) {
 
-        if (handlerChainFactory == null)
-            throw new IllegalArgumentException("handlerChainFactory == null");
+        if(processingContextFactory == null)
+            throw new IllegalArgumentException("processingContextFactory == null");
 
-        this.handlerChainFactory = handlerChainFactory;
+        this.processingContextFactory = processingContextFactory;
     }
 
     public Object getBean(String name) {
         Object object;
 
-        if (((object = beanProvider.getBean(name)) == null) &&
+        if(((object = beanProvider.getBean(name)) == null) &&
             parent != null) object = parent.getBean(name);
 
-        if (object instanceof ApplicationContextAware)
+        if(object instanceof ApplicationContextAware)
             ((ApplicationContextAware) object).setApplicationContext(this);
         return object;
     }
@@ -113,10 +123,10 @@ public class ApplicationContextImpl implements ApplicationContext {
     public Object getBeanOfType(Class type) {
         Object object;
 
-        if (((object = beanProvider.getBeanOfType(type)) == null) &&
-            parent != null) object = parent.getBeanOfType(type);
+        if(((object = beanProvider.getBeanOfType(type)) == null) &&
+           parent != null) object = parent.getBeanOfType(type);
 
-        if (object instanceof ApplicationContextAware)
+        if(object instanceof ApplicationContextAware)
             ((ApplicationContextAware) object).setApplicationContext(this);
         return object;
     }
@@ -124,10 +134,10 @@ public class ApplicationContextImpl implements ApplicationContext {
     public Object getBeanOfType(Class[] types) {
         Object object;
 
-        if (((object = beanProvider.getBeanOfType(types)) == null) &&
-            parent != null) object = parent.getBeanOfType(types);
+        if(((object = beanProvider.getBeanOfType(types)) == null) &&
+           parent != null) object = parent.getBeanOfType(types);
 
-        if (object instanceof ApplicationContextAware)
+        if(object instanceof ApplicationContextAware)
             ((ApplicationContextAware) object).setApplicationContext(this);
         return object;
     }
@@ -140,9 +150,9 @@ public class ApplicationContextImpl implements ApplicationContext {
 
     public boolean isSingleton(String name) {
 
-        if (beanProvider.containsBean(name))
+        if(beanProvider.containsBean(name))
             return beanProvider.isSingleton(name);
-        else if (parent != null && parent.containsBean(name))
+        else if(parent != null && parent.containsBean(name))
             return parent.isSingleton(name);
         throw new BeanException("Invalid bean name '" + name + "'");
     }

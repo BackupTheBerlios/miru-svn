@@ -22,7 +22,9 @@
 
 package org.iterx.miru.dispatcher.handler;
 
-import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactoryImpl;
+import org.iterx.miru.dispatcher.handler.factory.XmlHandlerChainFactory;
+import org.iterx.util.SystemUtils;
+
 
 public abstract class HandlerChainFactory implements HandlerChainProvider {
 
@@ -30,9 +32,22 @@ public abstract class HandlerChainFactory implements HandlerChainProvider {
 
     public static HandlerChainFactory getHandlerChainFactory() {
 
-        if(handlerChainFactory == null)
-            handlerChainFactory = new HandlerChainFactoryImpl();
+        if(handlerChainFactory == null) {
 
+            String cls;
+
+            if((cls = SystemUtils.getProperty((HandlerChainFactory.class).getName())) != null) {
+                try {
+                    handlerChainFactory =
+                        (HandlerChainFactory) (Class.forName(cls)).newInstance();
+                }
+                catch(Exception e) {
+                    throw new RuntimeException
+                        ("Failed to create HandlerChainFactory '" + cls + "'.", e);
+                }
+            }
+            else handlerChainFactory = new XmlHandlerChainFactory();
+        }
         return handlerChainFactory;
     }
 

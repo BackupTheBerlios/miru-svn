@@ -24,16 +24,15 @@ package org.iterx.miru.io.resource;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URISyntaxException;
 
 import java.io.Reader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 
-import org.iterx.miru.io.Resource;
+import org.iterx.miru.io.ReadableResource;
 
-public class UriResource implements Resource {
+public class UriResource implements ReadableResource {
 
     protected URLConnection _connection;
 
@@ -59,16 +58,16 @@ public class UriResource implements Resource {
 
 
     public URI getURI() {
-	
+
         return uri;
     }
 
     public String getProperty(String key) {
-	
+
         if(_connection == null) init();
 
         return _connection.getHeaderField(key);
-    }   
+    }
 
     public int getContentLength() {
 
@@ -106,9 +105,9 @@ public class UriResource implements Resource {
         if(reader != null) return reader;
         else if(in != null) return null;
         else if(_connection == null) init();
-	
-	
-	
+
+
+
         encoding = _connection.getContentEncoding();
         reader = ((encoding != null)?
                   new InputStreamReader(_connection.getInputStream(), encoding) :
@@ -119,7 +118,7 @@ public class UriResource implements Resource {
 
 
     public boolean exists() {
-	
+
         if(_connection != null) return true;
         else {
             try {
@@ -132,11 +131,11 @@ public class UriResource implements Resource {
     }
 
     public void reset() {
-		
+
         if(in != null) {
             try {
                 in.close();
-	    } 
+        }
             catch(Exception e){}
             in = null;
         }
@@ -177,7 +176,7 @@ public class UriResource implements Resource {
     }
 
     protected void init() {
-	
+
         if(_connection == null) {
             try {
                 URL url;

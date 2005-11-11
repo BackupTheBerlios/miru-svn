@@ -27,9 +27,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 
-import org.iterx.miru.io.Resource;
+import org.iterx.miru.io.ReadableResource;
 
-public class ClassPathResource implements Resource {
+public class ClassPathResource implements ReadableResource {
 
     private static final String SCHEME = "classpath";
 
@@ -40,20 +40,20 @@ public class ClassPathResource implements Resource {
     private URI uri;
 
     public ClassPathResource(String uri) {
-	
+
         this(URI.create(uri));
     }
-    
+
     public ClassPathResource(String uri, ClassLoader classLoader) {
 
         this(URI.create(uri), classLoader);
     }
 
     public ClassPathResource(URI uri) {
-        
+
         this(uri, null);
     }
-    
+
     public ClassPathResource(URI uri, ClassLoader classLoader) {
         String scheme;
 
@@ -65,20 +65,20 @@ public class ClassPathResource implements Resource {
 
         this.classLoader = ((classLoader == null)?
                             (Thread.currentThread()).getContextClassLoader() :
-                            classLoader);	
+                            classLoader);
         this.uri = uri;
     }
 
 
     public URI getURI() {
-	
+
         return uri;
     }
 
     public String getProperty(String key) {
-	
+
         return null;
-    }   
+    }
 
     public int getContentLength() {
 
@@ -87,7 +87,7 @@ public class ClassPathResource implements Resource {
 
     public String getContentType() {
 
-        
+
         return null;
     }
 
@@ -132,17 +132,17 @@ public class ClassPathResource implements Resource {
     }
 
     public int hashCode() {
-	
-	return uri.hashCode();
+
+    return uri.hashCode();
     }
 
     public boolean equals(Object object) {
 
-	return ((this == object) ||
-		((object instanceof ClassPathResource) &&
-		 uri.equals(((ClassPathResource) object).uri) &&
-                 classLoader.equals((((ClassPathResource) object).classLoader))));
-                
+    return ((this == object) ||
+            ((object instanceof ClassPathResource) &&
+             uri.equals(((ClassPathResource) object).uri) &&
+             classLoader.equals((((ClassPathResource) object).classLoader))));
+
     }
 
     public String toString() {

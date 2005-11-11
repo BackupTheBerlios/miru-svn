@@ -25,12 +25,13 @@ package org.iterx.miru.dispatcher.handler.factory;
 import java.io.IOException;
 
 import org.iterx.miru.bean.BeanProvider;
-import org.iterx.miru.bean.BeanWrapperAware;
 
 import org.iterx.miru.io.Resource;
+import org.iterx.miru.io.StreamSource;
+import org.iterx.miru.io.Loadable;
 import org.iterx.miru.io.resource.UriResource;
 
-public class XmlHandlerChainFactory extends HandlerChainFactoryImpl {
+public class XmlHandlerChainFactory extends HandlerChainFactoryImpl implements Loadable {
 
     public XmlHandlerChainFactory() {}
 
@@ -55,9 +56,12 @@ public class XmlHandlerChainFactory extends HandlerChainFactoryImpl {
 
         if(resource == null)
             throw new IllegalArgumentException("resource == null");
+        if(!(resource instanceof StreamSource))
+            throw new IllegalArgumentException("resource is not a 'StreamSource'");
+
 
         parser = new XmlHandlerChainParser(this);
-        parser.parse(resource);
+        parser.parse((StreamSource) resource);
     }
 
 }

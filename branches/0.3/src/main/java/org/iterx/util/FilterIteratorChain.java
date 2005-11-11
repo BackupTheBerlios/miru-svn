@@ -1,5 +1,5 @@
 /*
-  org.iterx.util.IteratorFilterImpl
+  org.iterx.util.FilterIteratorChain
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -23,44 +23,45 @@ package org.iterx.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class IteratorFilterImpl implements IteratorFilter {
+public class FilterIteratorChain extends IteratorChainImpl {
 
-    private Iterator parent;
+    private Filter filter;
+    private Object next;
 
-    public IteratorFilterImpl() {}
-
-    public IteratorFilterImpl(Iterator parent) {
-
-        this.parent = parent;
-    }
-
-    public Iterator getParent() {
-
-        return parent;
-    }
-
-    public void setParent(Iterator parent) {
-
-        this.parent = parent;
+    public FilterIteratorChain(Iterator parent,
+                               Filter filter) {
+        super(parent);
+        this.filter = filter;
     }
 
     public boolean hasNext() {
+        Iterator parent;
 
-        return (parent != null)? parent.hasNext() : false;
+        parent = getParent();
+        if(next == null && parent.hasNext()) {
+            do {
+                Object object;
+
+                object = parent.next();
+                if(filter.equals(object)) {
+                    next = object;
+                    break;
+                }
+            }
+            while(parent.hasNext());
+        }
+        return (next != null);
     }
 
     public Object next() {
 
-        if(parent == null)
-            throw new NoSuchElementException();
-        return parent.next();
+        if(next != null || hasNext()) {
+            Object next;
+
+            next = this.next;
+            this.next = null;
+            return next;
+        }
+        throw new NoSuchElementException();
     }
-
-    public void remove() {
-
-        if(parent == null)
-            throw new UnsupportedOperationException();
-        parent.remove();
-    }
-
 }

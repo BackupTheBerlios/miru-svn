@@ -29,9 +29,9 @@ import java.io.IOException;
 
 import java.net.URI;
 
-import org.iterx.miru.io.Resource;
+import org.iterx.miru.io.ReadableResource;
 
-public class MockResource implements Resource {
+public class MockResource implements ReadableResource {
 
     private String type, encoding;
     private InputStream in;
@@ -41,7 +41,7 @@ public class MockResource implements Resource {
 
     {
         data = new byte[0];
-    }    
+    }
 
     public MockResource() {}
 
@@ -76,10 +76,10 @@ public class MockResource implements Resource {
 
 
     public boolean exists() {
-	
+
         return true;
     }
-    
+
     public void reset() {
 
         reader = null;
@@ -96,7 +96,7 @@ public class MockResource implements Resource {
 
         return data.length;
     }
-    
+
     public String getContentType() {
 
         return type;
@@ -137,6 +137,6 @@ public class MockResource implements Resource {
         }
         return reader;
     }
-    
+
 }
                                      

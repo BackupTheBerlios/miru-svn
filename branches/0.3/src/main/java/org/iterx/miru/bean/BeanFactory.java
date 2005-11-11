@@ -24,9 +24,12 @@ package org.iterx.miru.bean;
 import java.beans.PropertyEditorManager;
 
 import org.iterx.miru.bean.factory.BeanFactoryImpl;
+import org.iterx.miru.bean.factory.XmlBeanFactory;
+import org.iterx.util.SystemUtils;
 
 public abstract class BeanFactory implements BeanProvider {
 
+    private static final String EDITORS = "org.iterx.miru.bean.editor";
     private static BeanFactory beanFactory;
 
     static {
@@ -34,15 +37,26 @@ public abstract class BeanFactory implements BeanProvider {
 
         paths = PropertyEditorManager.getEditorSearchPath();
         clone = new String[paths.length + 1];
-        clone[0] = "org.iterx.miru.bean.editor";
+        clone[0] = EDITORS;
         System.arraycopy(paths, 0, clone, 1, paths.length);
         PropertyEditorManager.setEditorSearchPath(clone);
     }
 
     public static BeanFactory getBeanFactory() {
 
-        if(beanFactory == null)
-            beanFactory = new BeanFactoryImpl();
+        if(beanFactory == null) {
+            String cls;
+
+            if((cls = SystemUtils.getProperty((BeanFactory.class).getName())) != null) {
+                try {
+                    beanFactory = (BeanFactory) (Class.forName(cls)).newInstance();
+                }
+                catch(Exception e) {
+                    throw new RuntimeException("Failed to create BeanFactory '" + cls + "'.", e);
+                }
+            }
+            else beanFactory = new XmlBeanFactory();
+        }
         return beanFactory;
     }
 

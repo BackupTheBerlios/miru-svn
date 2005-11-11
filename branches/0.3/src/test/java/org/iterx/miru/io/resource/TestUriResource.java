@@ -30,14 +30,15 @@ import java.net.URISyntaxException;
 import junit.framework.TestCase;
 
 import org.iterx.miru.io.Resource;
+import org.iterx.miru.io.ReadableResource;
 
 
 public class TestUriResource extends TestCase {
 
-    private static final String CLASS_URI = 
+    private static final String CLASS_URI =
         "org/iterx/miru/io/resource/TestUriResource.class";
 
-    private Resource resource, bogus;
+    private ReadableResource resource, bogus;
     private URI resourceUri, bogusUri;
 
     protected void setUp() throws URISyntaxException {
@@ -57,7 +58,7 @@ public class TestUriResource extends TestCase {
         bogusUri = null;
         bogus = null;
     }
-   
+
     public void testConstructors() throws URISyntaxException {
         UriResource resource;
 
@@ -102,7 +103,7 @@ public class TestUriResource extends TestCase {
         catch(Exception e){}
 
         try {
-            Resource resource;
+            ReadableResource resource;
 
             resource = new UriResource(new URI(".bogus"));
             resource.getInputStream();
@@ -123,7 +124,7 @@ public class TestUriResource extends TestCase {
         catch(Exception e){}
 
         try {
-            Resource resource;
+            ReadableResource resource;
 
             resource = new UriResource(new URI(".bogus"));
             resource.getReader();
@@ -132,23 +133,23 @@ public class TestUriResource extends TestCase {
         catch(Exception e) {}
 
     }
-    
-    public void testReset() throws IOException {
-	InputStream a, b;
 
-	assertNotNull((a = resource.getInputStream()));
-	resource.reset();
-	assertNotNull((b = resource.getInputStream()));
-	assertFalse(a == b);
+    public void testReset() throws IOException {
+    InputStream a, b;
+
+    assertNotNull((a = resource.getInputStream()));
+    resource.reset();
+    assertNotNull((b = resource.getInputStream()));
+    assertFalse(a == b);
     }
 
     public void testExists() {
 
-	assertTrue(resource.exists());
-	assertFalse(bogus.exists());
+    assertTrue(resource.exists());
+    assertFalse(bogus.exists());
     }
 
 
-    
+
 
 }

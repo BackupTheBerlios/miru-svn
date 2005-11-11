@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.resolver.TestHttpLocaleContextResolver
+  org.iterx.miru.resolver.http.TestHttpLocaleContextResolver
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,7 @@
   All Rights Reserved.
 */
 
-package org.iterx.miru.resolver;
+package org.iterx.miru.resolver.http;
 
 import java.util.Locale;
 
@@ -29,6 +29,7 @@ import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.MockProcessingContext;
 import org.iterx.miru.context.http.MockHttpRequestContext;
 import org.iterx.miru.context.http.MockHttpResponseContext;
+import org.iterx.miru.resolver.http.HttpLocaleContextResolver;
 
 public class TestHttpLocaleContextResolver extends TestCase {
 

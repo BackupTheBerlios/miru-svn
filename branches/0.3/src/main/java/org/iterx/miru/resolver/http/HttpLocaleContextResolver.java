@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.resolver.HttpLocaleContextResolver
+  org.iterx.miru.resolver.http.HttpLocaleContextResolver
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,12 +19,13 @@
   All Rights Reserved.
 */
 
-package org.iterx.miru.resolver;
+package org.iterx.miru.resolver.http;
 
 import java.util.Locale;
 
 import org.iterx.miru.context.http.HttpRequestContext;
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.resolver.ContextResolver;
 
 public class HttpLocaleContextResolver implements ContextResolver {
 

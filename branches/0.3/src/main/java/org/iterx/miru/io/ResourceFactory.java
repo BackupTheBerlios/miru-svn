@@ -21,6 +21,8 @@
 
 package org.iterx.miru.io;
 
+import org.iterx.util.SystemUtils;
+
 
 public abstract class ResourceFactory implements ResourceProvider {
 
@@ -28,8 +30,21 @@ public abstract class ResourceFactory implements ResourceProvider {
 
     public static ResourceFactory getResourceFactory() {
 
-        if(resourceFactory == null)
-            resourceFactory = new ResourceFactoryImpl();
+        if(resourceFactory == null) {
+             String cls;
+
+            if((cls = SystemUtils.getProperty((ResourceFactory.class).getName())) != null) {
+                try {
+                    resourceFactory =
+                        (ResourceFactory) (Class.forName(cls)).newInstance();
+                }
+                catch(Exception e) {
+                    throw new RuntimeException
+                        ("Failed to create ResourceFactory '" + cls + "'.", e);
+                }
+            }
+            else resourceFactory = new ResourceFactoryImpl();
+        }
         return resourceFactory;
     }
 

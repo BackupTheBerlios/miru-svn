@@ -36,11 +36,13 @@ import org.xml.sax.Attributes;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.iterx.miru.io.Resource;
+import org.iterx.miru.io.StreamSource;
+
 import org.iterx.miru.bean.BeanProvider;
 import org.iterx.miru.bean.BeanWrapperAware;
 import org.iterx.miru.bean.BeanWrapper;
 import org.iterx.miru.bean.BeanException;
+
 import org.iterx.miru.dispatcher.handler.HandlerWrapper;
 import org.iterx.miru.dispatcher.handler.HandlerChain;
 
@@ -79,7 +81,7 @@ public class XmlHandlerChainParser extends DefaultHandler {
         this.beanProvider = handlerChainFactory.getBeanProvider();
     }
 
-    public void parse(Resource resource) throws IOException {
+    public void parse(StreamSource source) throws IOException {
         try {
             SAXParserFactory factory;
             SAXParser parser;
@@ -89,15 +91,14 @@ public class XmlHandlerChainParser extends DefaultHandler {
             factory.setValidating(true);
 
             parser = factory.newSAXParser();
-            parser.parse(resource.getInputStream(), this);
+            parser.parse(source.getInputStream(), this);
         }
         catch(ParserConfigurationException e) {
             throw new RuntimeException(e);
         }
         catch(SAXException e) {
-            e.printStackTrace();
             if(LOGGER.isErrorEnabled()) LOGGER.error(e);
-            throw new IOException("Invalid xml stream [" + resource + "]. " + e.getMessage());
+            throw new IOException("Invalid xml stream [" + source + "]. " + e.getMessage());
         }
     }
 

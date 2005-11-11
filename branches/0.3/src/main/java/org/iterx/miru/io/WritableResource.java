@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.support.servlet.interceptor.HttpServletInterceptor
+  org.iterx.miru.io.WritableResource
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,17 +19,6 @@
   All Rights Reserved.
 */
 
-package org.iterx.miru.support.servlet.interceptor;
+package org.iterx.miru.io;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-public interface HttpServletInterceptor {
-
-    public boolean preService(HttpServletRequest request,
-                              HttpServletResponse response);
-
-    public void postService(HttpServletRequest request,
-                            HttpServletResponse response);
-
-}
+public interface WritableResource extends Resource, StreamTarget {}

@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.servlet.spring.context.SpringServletApplicationContext
+  org.iterx.miru.support.spring.dispatcher.context.SpringServletDispatcherApplicationContext
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,81 +18,74 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.  
 */
-package org.iterx.miru.support.servlet.spring.context;
+package org.iterx.miru.support.spring.dispatcher.context;
 
 import javax.servlet.ServletContext;
 
 import org.iterx.miru.context.ApplicationContext;
-
 import org.iterx.miru.bean.BeanFactory;
 
-import org.iterx.miru.support.spring.context.SpringApplicationContext;
+public class SpringServletDispatcherApplicationContext extends SpringDispatcherApplicationContext {
 
-public class SpringServletApplicationContext extends SpringApplicationContext {
+    private ServletContext servletContext;
 
-    protected ServletContext m_servletContext;
+    public SpringServletDispatcherApplicationContext() {}
 
-    public SpringServletApplicationContext() {    
+    public SpringServletDispatcherApplicationContext(ServletContext servletContext) {
 
-        super();
-    }
-
-    public SpringServletApplicationContext(ServletContext servletContext) {
-
-        super();
         if(servletContext == null)
             throw new IllegalArgumentException("servletContext == null");
-        m_servletContext = servletContext;
+        this.servletContext = servletContext;
     }
 
-    public SpringServletApplicationContext(ApplicationContext parent) {
+    public SpringServletDispatcherApplicationContext(ApplicationContext parent) {
 
         super(parent);
     }
 
-    public SpringServletApplicationContext(ApplicationContext parent,
-                                           ServletContext servletContext)  {
+    public SpringServletDispatcherApplicationContext(ApplicationContext parent,
+                                                     ServletContext servletContext)  {
 	
         super(parent);
         if(servletContext == null)
             throw new IllegalArgumentException("servletContext == null");
-        m_servletContext = servletContext;
+        this.servletContext = servletContext;
     }
 
-    public SpringServletApplicationContext(BeanFactory beanFactory) {
+    public SpringServletDispatcherApplicationContext(BeanFactory beanFactory) {
 
         super(beanFactory);
     }
 
-    public SpringServletApplicationContext(BeanFactory beanFactory,
-                                           ServletContext servletContext) {
+    public SpringServletDispatcherApplicationContext(BeanFactory beanFactory,
+                                                     ServletContext servletContext) {
         super(beanFactory);
         if(servletContext == null)
             throw new IllegalArgumentException("servletContext == null");
-        m_servletContext = servletContext;
+        this.servletContext = servletContext;
 
     }
 
-    public SpringServletApplicationContext
+    public SpringServletDispatcherApplicationContext
         (org.springframework.beans.factory.BeanFactory beanFactory) {
 
         super(beanFactory);
     }
 
-    public SpringServletApplicationContext
+    public SpringServletDispatcherApplicationContext
         (org.springframework.beans.factory.BeanFactory beanFactory,
          ServletContext servletContext) {
 
         super(beanFactory);
         if(servletContext == null)
             throw new IllegalArgumentException("servletContext == null");
-        m_servletContext = servletContext;        
+        this.servletContext = servletContext;
     }
 
 
     public ServletContext getServletContext() {
 
-        return m_servletContext;
+        return servletContext;
     }
 
     public void setServletContext(ServletContext servletContext) {
@@ -100,7 +93,7 @@ public class SpringServletApplicationContext extends SpringApplicationContext {
             throw new IllegalArgumentException("servletContext == null");
 
         synchronized(this) {
-            m_servletContext = servletContext;
+            this.servletContext = servletContext;
         }
     }
 

@@ -1,5 +1,5 @@
 /*
-  org.iterx.util.IteratorFilter
+  org.iterx.miru.dispatcher.handler.FlowHandler
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,14 +18,12 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
-package org.iterx.util;
 
-import java.util.Iterator;
+package org.iterx.miru.dispatcher.handler;
 
-public interface IteratorFilter extends Iterator {
+import org.iterx.miru.dispatcher.matcher.Matcher;
 
-    public Iterator getParent();
+public interface FlowHandler extends Handler, Matcher {
 
-    public void setParent(Iterator parent);
-
+    
 }

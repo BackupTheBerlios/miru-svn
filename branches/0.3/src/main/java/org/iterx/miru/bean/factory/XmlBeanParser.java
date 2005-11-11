@@ -38,7 +38,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.iterx.miru.io.Resource;
+import org.iterx.miru.io.StreamSource;
 
 import org.iterx.miru.bean.Bean;
 import org.iterx.miru.bean.BeanWrapper;
@@ -83,7 +83,7 @@ public class XmlBeanParser extends DefaultHandler {
         this.beanFactory = beanFactory;
     }
 
-    public void parse(Resource resource) throws IOException {
+    public void parse(StreamSource source) throws IOException {
         try {
             SAXParserFactory factory;
             SAXParser parser;
@@ -93,14 +93,14 @@ public class XmlBeanParser extends DefaultHandler {
             factory.setValidating(true);
 
             parser = factory.newSAXParser();
-            parser.parse(resource.getInputStream(), this);
+            parser.parse(source.getInputStream(), this);
         }
         catch(ParserConfigurationException e) {
             throw new RuntimeException(e);
         }
         catch(SAXException e) {
             if(LOGGER.isErrorEnabled()) LOGGER.error(e, e);
-            throw new IOException("Invalid xml stream [" + resource + "]. " + e.getMessage());
+            throw new IOException("Invalid xml stream [" + source + "]. " + e.getMessage());
         }
     }
 

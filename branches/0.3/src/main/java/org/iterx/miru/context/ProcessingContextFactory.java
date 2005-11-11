@@ -21,14 +21,29 @@
 
 package org.iterx.miru.context;
 
+import org.iterx.util.SystemUtils;
+
 public abstract class ProcessingContextFactory implements ProcessingContextProvider {
 
     private static ProcessingContextFactory processingContextFactory;
 
     public static ProcessingContextFactory getProcessingContextFactory() {
 
-        if(processingContextFactory == null)
-            processingContextFactory = new ProcessingContextFactoryImpl();
+        if(processingContextFactory == null) {
+            String cls;
+
+            if((cls = SystemUtils.getProperty((ProcessingContextFactory.class).getName())) != null) {
+                try {
+                    processingContextFactory =
+                        (ProcessingContextFactory) (Class.forName(cls)).newInstance();
+                }
+                catch(Exception e) {
+                    throw new RuntimeException
+                        ("Failed to create ProcessingContextFactory '" + cls + "'.", e);
+                }
+            }
+            else processingContextFactory = new ProcessingContextFactoryImpl();
+        }
         return processingContextFactory;
     }
 

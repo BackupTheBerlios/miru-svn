@@ -23,13 +23,17 @@ package org.iterx.miru.io;
 
 import java.net.URI;
 
-import org.iterx.miru.io.StreamSource;
-
-public interface Resource extends StreamSource {
+public interface Resource {
 
     public URI getURI();
 
     public String getProperty(String key);
+
+    public int getContentLength();
+
+    public String getContentType();
+
+    public String getCharacterEncoding();
 
     public boolean exists();
 

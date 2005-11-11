@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.support.servlet.HttpServletInterceptable
+  org.iterx.util.Filter
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,19 +18,9 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
+package org.iterx.util;
 
-package org.iterx.miru.support.servlet;
+public interface Filter {
 
-import org.iterx.miru.support.servlet.interceptor.HttpServletInterceptor;
-
-public interface HttpServletInterceptable {
-
-    public HttpServletInterceptor[] getHttpServletInterceptors();
-
-    public HttpServletInterceptor addHttpServletInterceptor
-          (HttpServletInterceptor interceptor);
-
-    public void removeHttpServletInterceptor(HttpServletInterceptor interceptor);
-
-
+    public boolean accept(Object object);
 }

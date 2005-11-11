@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.spring.beans.XmlSpringBeanFactory
+  org.iterx.miru.support.spring.bean.XmlSpringBeanFactory
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -24,24 +24,21 @@ package org.iterx.miru.support.spring.bean.factory;
 import java.io.InputStream;
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 
 import org.iterx.miru.io.Resource;
+import org.iterx.miru.io.Loadable;
+import org.iterx.miru.io.StreamSource;
+import org.iterx.miru.io.resource.UriResource;
 import org.iterx.miru.bean.BeanFactory;
 import org.iterx.miru.bean.BeanWrapper;
-import org.iterx.miru.support.spring.bean.factory.SpringBeanFactory;
 import org.iterx.miru.support.spring.bean.SpringBeanWrapper;
 
-public class XmlSpringBeanFactory extends SpringBeanFactory  {
+public class XmlSpringBeanFactory extends SpringBeanFactory implements Loadable  {
 
-    protected static final Log logger =
-        LogFactory.getLog(XmlSpringBeanFactory.class);
 
     public XmlSpringBeanFactory()  {
 
@@ -66,10 +63,22 @@ public class XmlSpringBeanFactory extends SpringBeanFactory  {
         beanFactory = new XmlSpringBeanFactoryProxy(parent);
     }
 
-    public void load(Resource resource) throws IOException {
-        assert (resource != null) : "resource == null";
+    public void load(String uri) throws IOException {
+        Resource resource;
 
-        ((XmlSpringBeanFactoryProxy) beanFactory).load(resource);
+        if((resource = new UriResource(uri)).exists()) load(resource);
+        else throw new IllegalArgumentException
+                       ("Resource [" + uri + "] does not exist.");
+    }
+
+
+    public void load(Resource resource) throws IOException {
+
+        if(resource == null)
+            throw new IllegalArgumentException("resource == null");
+        if(!(resource instanceof StreamSource))
+            throw new IllegalArgumentException("resource is not a 'StreamSource'");
+        ((XmlSpringBeanFactoryProxy) beanFactory).parse((StreamSource) resource);
     }
 
 
@@ -93,17 +102,12 @@ public class XmlSpringBeanFactory extends SpringBeanFactory  {
         super(parent);
         }
 
-        private void load(Resource resource) throws IOException {
+        private void parse(StreamSource source) throws IOException {
             InputStream in;
 
-            if((in = resource.getInputStream()) != null)
+            if((in = source.getInputStream()) != null)
                 reader.loadBeanDefinitions(new InputStreamResource(in));
-            else {
-                if(logger.isDebugEnabled())
-                    logger.debug("Invalid resource InputStream [" +
-                                 resource +  "]");
-                throw new RuntimeException("Invalid resource InputStream");
-            }
+            else throw new IOException("Invalid xml stream [" + source + "].");
         }
 
         private SpringBeanWrapper assignBeanWrapper(Object object) {

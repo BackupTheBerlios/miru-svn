@@ -22,9 +22,6 @@ package org.iterx.miru.dispatcher;
 
 import java.util.Iterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.iterx.miru.context.ProcessingContext;
 
 import org.iterx.miru.dispatcher.handler.HandlerChain;
@@ -38,13 +35,11 @@ public class Dispatcher {
     public static final int DECLINE = 1;
     public static final int DONE    = 2;
 
-    protected final Log logger = LogFactory.getLog(Dispatcher.class);
 
     private HandlerResolver handlerResolver;
     private HandlerChainMap handlerChainMap;
 
     public Dispatcher() {}
-
 
     public Dispatcher(HandlerChainMap handlerChainMap) {
 

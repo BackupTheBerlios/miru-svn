@@ -36,6 +36,7 @@ import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.io.Resource;
 import org.iterx.miru.io.StreamTarget;
+import org.iterx.miru.io.StreamSource;
 import org.iterx.util.URIUtils;
 
 
@@ -44,7 +45,6 @@ public class ResourceContentHandler implements ContentHandler {
     private ResourceResolver resourceResolver;
     private String uri;
     private URI base;
-
 
     {
         uri = "{0}";
@@ -109,7 +109,8 @@ public class ResourceContentHandler implements ContentHandler {
                                base,
                                new String[] { (request.getURI()).getPath() });
 
-        if((resource = resourceResolver.resolve(uri)) != null) {
+        if((resource = resourceResolver.resolve(uri)) != null &&
+            resource instanceof StreamSource) {
             ReadableByteChannel reader;
             WritableByteChannel writer;
 
@@ -122,7 +123,7 @@ public class ResourceContentHandler implements ContentHandler {
                 ByteBuffer buffer;
                 buffer = ByteBuffer.allocate(8096);
 
-                reader = Channels.newChannel(resource.getInputStream());
+                reader = Channels.newChannel(((StreamSource) resource).getInputStream());
                 writer = Channels.newChannel(((StreamTarget) response).getOutputStream());
                 while(reader.read(buffer) != -1 || buffer.position() > 0) {
                     buffer.flip();
