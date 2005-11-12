@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.context.DispatcherApplicationContext
+  org.iterx.miru.support.servlet.context.ServletApplicationContext
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,14 +18,18 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
-package org.iterx.miru.dispatcher.context;
+
+
+package org.iterx.miru.support.servlet.context;
+
+import javax.servlet.ServletContext;
 
 import org.iterx.miru.context.ApplicationContext;
-import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactory;
 
-public interface DispatcherApplicationContext extends ApplicationContext {
+public interface ServletApplicationContext extends ApplicationContext {
 
-    public HandlerChainFactory getHandlerChainFactory();
+    
 
+    public ServletContext getServletContext();
 
 }

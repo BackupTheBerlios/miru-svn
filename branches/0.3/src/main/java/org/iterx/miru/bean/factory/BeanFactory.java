@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.bean.BeanFactory
+  org.iterx.miru.bean.factory.BeanFactory
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,18 +19,24 @@
   All Rights Reserved.  
 */
 
-package org.iterx.miru.bean;
+package org.iterx.miru.bean.factory;
 
 import java.beans.PropertyEditorManager;
 
-import org.iterx.miru.bean.factory.BeanFactoryImpl;
-import org.iterx.miru.bean.factory.XmlBeanFactory;
+import org.iterx.miru.bean.BeanProvider;
+import org.iterx.miru.bean.BeanProviderListenerAware;
+import org.iterx.miru.bean.BeanProviderListener;
 import org.iterx.util.SystemUtils;
+import org.iterx.util.ArrayUtils;
 
-public abstract class BeanFactory implements BeanProvider {
+public abstract class BeanFactory implements BeanProvider,  BeanProviderListenerAware {
 
     private static final String EDITORS = "org.iterx.miru.bean.editor";
     private static BeanFactory beanFactory;
+
+    private BeanProviderListener[] beanProviderListeners =  new BeanProviderListener[0];
+
+
 
     static {
         String[] paths, clone;
@@ -66,6 +72,29 @@ public abstract class BeanFactory implements BeanProvider {
             throw new IllegalArgumentException("beanFactory == null");
 
         BeanFactory.beanFactory = beanFactory;
+    }
+
+
+    public void addListener(BeanProviderListener beanProviderListener) {
+
+        beanProviderListeners =
+            (BeanProviderListener[]) ArrayUtils.add(beanProviderListeners,
+                                                                   beanProviderListener);
+    }
+
+
+    public void removeListener(BeanProviderListener beanProviderListener) {
+
+        beanProviderListeners =
+            (BeanProviderListener[]) ArrayUtils.remove(beanProviderListeners,
+                                                       beanProviderListener);
+    }
+
+    protected void notifyListeners(BeanProviderListener.Event event, Object data) {
+
+        for(int i = beanProviderListeners.length; i-- > 0; ) {
+            beanProviderListeners[i].beanProviderEvent(this, event, data);
+        }
     }
 
 

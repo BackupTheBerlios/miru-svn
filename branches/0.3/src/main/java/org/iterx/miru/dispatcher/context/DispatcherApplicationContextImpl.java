@@ -20,13 +20,15 @@
 */
 package org.iterx.miru.dispatcher.context;
 
-import org.iterx.miru.dispatcher.handler.HandlerChainFactory;
+import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactory;
 import org.iterx.miru.context.ApplicationContextImpl;
 import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.bean.BeanProvider;
+import org.iterx.miru.bean.BeanWrapperAware;
+import org.iterx.miru.bean.BeanWrapper;
 
 public class DispatcherApplicationContextImpl extends ApplicationContextImpl
-    implements DispatcherApplicationContext {
+    implements DispatcherApplicationContext, BeanWrapperAware {
 
     private HandlerChainFactory handlerChainFactory;
 
@@ -35,20 +37,25 @@ public class DispatcherApplicationContextImpl extends ApplicationContextImpl
     public DispatcherApplicationContextImpl(BeanProvider beanProvider) {
 
         super(beanProvider);
+        if(!(beanProvider instanceof BeanWrapperAware))
+            throw new IllegalArgumentException("beanProvider is not BeanWrapperAware.");
+
     }
 
     public DispatcherApplicationContextImpl(BeanProvider beanProvider,
                                             ApplicationContext parent) {
         super(beanProvider, parent);
+        if(!(beanProvider instanceof BeanWrapperAware))
+            throw new IllegalArgumentException("beanProvider is not BeanWrapperAware.");
     }
-
 
     public HandlerChainFactory getHandlerChainFactory() {
 
         if(handlerChainFactory == null) {
             if((handlerChainFactory =
                 (HandlerChainFactory) getBeanOfType(HandlerChainFactory.class)) == null)
-            handlerChainFactory = HandlerChainFactory.getHandlerChainFactory();
+                handlerChainFactory = HandlerChainFactory.getHandlerChainFactory();
+            handlerChainFactory.setBeanProvider(this);
         }
         return handlerChainFactory;
     }
@@ -61,4 +68,14 @@ public class DispatcherApplicationContextImpl extends ApplicationContextImpl
         this.handlerChainFactory = handlerChainFactory;
     }
 
+
+    public BeanWrapper assignBeanWrapper(Object object) {
+
+        return ((BeanWrapperAware) beanProvider).assignBeanWrapper(object);
+    }
+
+    public void recycleBeanWrapper(BeanWrapper wrapper) {
+
+        ((BeanWrapperAware) beanProvider).recycleBeanWrapper(wrapper);
+    }
 }

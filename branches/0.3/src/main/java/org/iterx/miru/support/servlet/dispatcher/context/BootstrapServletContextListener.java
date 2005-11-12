@@ -20,12 +20,15 @@
 */
 package org.iterx.miru.support.servlet.dispatcher.context;
 
+import java.util.Map;
+import java.net.URL;
+import java.io.IOException;
+
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContext;
 
 import org.iterx.miru.io.Loadable;
-import org.iterx.miru.io.Resource;
 import org.iterx.miru.io.resource.UriResource;
 import org.iterx.miru.dispatcher.context.DispatcherApplicationContext;
 
@@ -36,7 +39,7 @@ public class BootstrapServletContextListener implements ServletContextListener {
 
     private static final Log LOGGER = LogFactory.getLog(BootstrapServletContextListener.class);
 
-
+    //TODO: Add context heirarchy -> based on servlet path
     public void contextInitialized(ServletContextEvent servletContextEvent) {
 
         try {
@@ -49,10 +52,12 @@ public class BootstrapServletContextListener implements ServletContextListener {
             applicationContext = new ServletDispatcherApplicationContext(servletContext);
             if((parameter = servletContext.getInitParameter(ServletDispatcherApplicationContext.BEANS)) != null &&
                applicationContext instanceof Loadable) {
-                Resource resource;
+                URL url;
 
-                resource = new UriResource((servletContext.getResource(parameter)).toURI());
-                ((Loadable) applicationContext).load(resource);
+                if((url = (servletContext.getResource(parameter))) != null)
+                    ((Loadable) applicationContext).load(new UriResource(url.toURI()));
+                else throw new IOException("Invalid resource ["+  parameter + "]");
+
             }
             servletContext.setAttribute((DispatcherApplicationContext.class).getName(),
                                         applicationContext);

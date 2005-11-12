@@ -41,7 +41,7 @@ import org.iterx.miru.context.ProcessingContext;
 
 public class TestXmlHandlerChainParser extends TestCase {
 
-    private static final String NS = "http://iterx.org/miru/1.0";
+    private static final String NS = "http://iterx.org/miru/1.0/chains";
 
 
     private static final Object[][] CHAINS = {

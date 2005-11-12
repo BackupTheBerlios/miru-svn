@@ -26,7 +26,7 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import junit.framework.TestCase;
 
-import org.iterx.miru.bean.BeanFactory;
+import org.iterx.miru.bean.factory.BeanFactory;
 import org.iterx.miru.bean.BeanWrapper;
 import org.iterx.miru.bean.BeanWrapperAware;
 import org.iterx.miru.support.spring.bean.factory.SpringBeanFactory;

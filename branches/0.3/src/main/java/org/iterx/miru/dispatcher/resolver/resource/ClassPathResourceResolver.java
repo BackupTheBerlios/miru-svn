@@ -42,7 +42,7 @@ public class ClassPathResourceResolver implements ResourceResolver {
 
         return classLoader;
     }
-    
+
     public void setClassLoader(ClassLoader classLoader) {
         if(classLoader == null)
             throw new IllegalArgumentException("classLoader == null");

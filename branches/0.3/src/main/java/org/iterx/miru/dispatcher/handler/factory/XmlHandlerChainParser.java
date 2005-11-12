@@ -48,7 +48,7 @@ import org.iterx.miru.dispatcher.handler.HandlerChain;
 
 public class XmlHandlerChainParser extends DefaultHandler {
 
-    public static final String MIRU_NS              = "http://iterx.org/miru/1.0";
+    public static final String MIRU_CHAINS_NS       = "http://iterx.org/miru/1.0/chains";
 
     private static final String TAG_CHAINS          = "chains";
     private static final String TAG_CHAIN           = "chain";
@@ -113,14 +113,14 @@ public class XmlHandlerChainParser extends DefaultHandler {
                              String localName,
                              String qName,
                              Attributes attributes) throws SAXException {
-        System.out.println("start " + qName + " " + state);
+
         switch(state) {
             case STATE_UNKNOWN:
                 if(TAG_CHAINS.equals(localName) &&
-                   MIRU_NS.equals(uri)) state = STATE_CHAIN;
+                   MIRU_CHAINS_NS.equals(uri)) state = STATE_CHAIN;
                 break;
             case STATE_CHAIN:
-                if(MIRU_NS.equals(uri)) {
+                if(MIRU_CHAINS_NS.equals(uri)) {
                     if(TAG_CHAIN.equals(localName)) {
                         HandlerChain handlerChain;
 
@@ -135,7 +135,7 @@ public class XmlHandlerChainParser extends DefaultHandler {
                 throw new SAXException("Invalid element '" + qName + "'.");
             case STATE_MATCHER:
             case STATE_HANDLER:
-                if(MIRU_NS.equals(uri)) {
+                if(MIRU_CHAINS_NS.equals(uri)) {
                     Object object;
 
                     if(TAG_HANDLER.equals(localName)) {
@@ -191,13 +191,12 @@ public class XmlHandlerChainParser extends DefaultHandler {
     public void endElement(String uri,
                            String localName,
                            String qName) throws SAXException {
-        System.out.println("end " + qName + " " + state);
 
          switch(state) {
              case STATE_UNKNOWN:
                  break;
              case STATE_CHAIN:
-                 if(MIRU_NS.equals(uri)) {
+                 if(MIRU_CHAINS_NS.equals(uri)) {
                      if(TAG_CHAINS.equals(localName)) {
                          state = STATE_UNKNOWN;
                          break;
@@ -205,7 +204,7 @@ public class XmlHandlerChainParser extends DefaultHandler {
                  }
                  throw new SAXException("Invalid element '" + qName + "'.");
              case STATE_MATCHER:
-                 if(MIRU_NS.equals(uri)) {
+                 if(MIRU_CHAINS_NS.equals(uri)) {
                      Object parent;
 
                      if(TAG_MATCHER.equals(localName)) {
@@ -238,7 +237,7 @@ public class XmlHandlerChainParser extends DefaultHandler {
                  }
                  throw new SAXException("Invalid element '" + qName + "'.");
              case STATE_HANDLER:
-                 if(MIRU_NS.equals(uri)) {
+                 if(MIRU_CHAINS_NS.equals(uri)) {
                      Object parent;
 
                      if(TAG_CHAIN.equals(localName)) {

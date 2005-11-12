@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.context.DispatcherApplicationContext
+  org.iterx.miru.bean.BeanProviderListenerAware
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,14 +18,13 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
-package org.iterx.miru.dispatcher.context;
 
-import org.iterx.miru.context.ApplicationContext;
-import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactory;
+package org.iterx.miru.bean;
 
-public interface DispatcherApplicationContext extends ApplicationContext {
+public interface BeanProviderListenerAware {
 
-    public HandlerChainFactory getHandlerChainFactory();
+    public void addListener(BeanProviderListener beanProviderListener);
 
+    public void removeListener(BeanProviderListener beanProviderListener);
 
 }

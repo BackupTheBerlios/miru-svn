@@ -36,7 +36,7 @@ import org.xml.sax.SAXException;
 
 public class TestXmlBeanParser extends TestCase  {
 
-    private static final String NS = "http://iterx.org/miru/1.0";
+    private static final String NS = "http://iterx.org/miru/1.0/beans";
 
     private static final Object[][] BEANS = {
         //singletons

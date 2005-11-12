@@ -21,6 +21,7 @@
 package org.iterx.miru.support.servlet;
 
 import java.io.IOException;
+import java.net.URL;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,17 +30,16 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletContext;
 
+import org.iterx.miru.io.Loadable;
+import org.iterx.miru.io.resource.UriResource;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.ProcessingContextFactory;
 import org.iterx.miru.dispatcher.Dispatcher;
 import org.iterx.miru.dispatcher.context.DispatcherApplicationContext;
-import org.iterx.miru.dispatcher.handler.HandlerChainFactory;
+import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactory;
 import org.iterx.miru.support.servlet.context.http.HttpServletRequestContext;
 import org.iterx.miru.support.servlet.context.http.HttpServletResponseContext;
 import org.iterx.miru.support.servlet.dispatcher.context.ServletDispatcherApplicationContext;
-import org.iterx.miru.io.Loadable;
-import org.iterx.miru.io.Resource;
-import org.iterx.miru.io.resource.UriResource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -97,22 +97,27 @@ public class HttpDispatcherServlet extends HttpServlet {
             applicationContext = new ServletDispatcherApplicationContext(servletContext);
             if((parameter = servletConfig.getInitParameter(ServletDispatcherApplicationContext.BEANS)) != null &&
                applicationContext instanceof Loadable) {
-                Resource resource;
+                URL url;
 
-                resource = new UriResource((servletContext.getResource(parameter)).toURI());
-                ((Loadable) applicationContext).load(resource);
+                if((url = (servletContext.getResource(parameter))) != null)
+                    ((Loadable) applicationContext).load(new UriResource(url.toURI()));
+                else throw new IOException("Invalid resource ["+  parameter + "]");
             }
 
             handlerChainFactory = applicationContext.getHandlerChainFactory();
             if((parameter = servletConfig.getInitParameter(ServletDispatcherApplicationContext.CHAINS)) != null &&
                handlerChainFactory instanceof Loadable) {
-                    Resource resource;
+                URL url;
 
-                resource = new UriResource((servletContext.getResource(parameter)).toURI());
-                ((Loadable) handlerChainFactory).load(resource);
+                if((url = (servletContext.getResource(parameter))) != null)
+                    ((Loadable) handlerChainFactory).load(new UriResource(url.toURI()));
+                else throw new IOException("Invalid resource ["+  parameter + "]");
             }
 
-            dispatcher = (Dispatcher) applicationContext.getBeanOfType(Dispatcher.class);
+            if(dispatcher == null &&
+               (dispatcher = (Dispatcher) applicationContext.getBeanOfType(Dispatcher.class)) == null)
+                dispatcher = new Dispatcher();
+
             dispatcher.setHandlerChainMap(handlerChainFactory.getHandlerChains());
             processingContextFactory = applicationContext.getProcessingContextFactory();
         }
@@ -158,6 +163,7 @@ public class HttpDispatcherServlet extends HttpServlet {
                     }
                     break;
                 case Dispatcher.ERROR:
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     break;
                 default:
                     break;

@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 import org.iterx.miru.dispatcher.adapter.HandlerAdapter;
 import org.iterx.miru.dispatcher.Dispatcher;
 import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactoryImpl;
-import org.iterx.miru.dispatcher.handler.HandlerChainFactory;
+import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactory;
 import org.iterx.miru.dispatcher.handler.HandlerChainMap;
 import org.iterx.miru.context.ProcessingContext;
 

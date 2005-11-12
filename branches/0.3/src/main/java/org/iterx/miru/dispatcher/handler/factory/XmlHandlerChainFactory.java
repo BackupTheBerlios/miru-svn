@@ -31,7 +31,8 @@ import org.iterx.miru.io.StreamSource;
 import org.iterx.miru.io.Loadable;
 import org.iterx.miru.io.resource.UriResource;
 
-public class XmlHandlerChainFactory extends HandlerChainFactoryImpl implements Loadable {
+public class XmlHandlerChainFactory extends HandlerChainFactoryImpl
+    implements Loadable {
 
     public XmlHandlerChainFactory() {}
 

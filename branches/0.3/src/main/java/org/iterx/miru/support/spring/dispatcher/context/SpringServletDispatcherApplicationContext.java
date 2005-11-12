@@ -23,7 +23,7 @@ package org.iterx.miru.support.spring.dispatcher.context;
 import javax.servlet.ServletContext;
 
 import org.iterx.miru.context.ApplicationContext;
-import org.iterx.miru.bean.BeanFactory;
+import org.iterx.miru.bean.factory.BeanFactory;
 
 public class SpringServletDispatcherApplicationContext extends SpringDispatcherApplicationContext {
 
@@ -45,7 +45,7 @@ public class SpringServletDispatcherApplicationContext extends SpringDispatcherA
 
     public SpringServletDispatcherApplicationContext(ApplicationContext parent,
                                                      ServletContext servletContext)  {
-	
+
         super(parent);
         if(servletContext == null)
             throw new IllegalArgumentException("servletContext == null");

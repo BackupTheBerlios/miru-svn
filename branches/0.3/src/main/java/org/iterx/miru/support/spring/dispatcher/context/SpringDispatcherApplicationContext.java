@@ -23,9 +23,9 @@ package org.iterx.miru.support.spring.dispatcher.context;
 
 import org.iterx.miru.support.spring.context.SpringApplicationContext;
 import org.iterx.miru.dispatcher.context.DispatcherApplicationContext;
-import org.iterx.miru.dispatcher.handler.HandlerChainFactory;
+import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactory;
 import org.iterx.miru.bean.BeanException;
-import org.iterx.miru.bean.BeanFactory;
+import org.iterx.miru.bean.factory.BeanFactory;
 import org.iterx.miru.context.ApplicationContext;
 
 public class SpringDispatcherApplicationContext extends SpringApplicationContext

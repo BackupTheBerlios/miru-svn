@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.handler.HandlerChainFactory
+  org.iterx.miru.dispatcher.handler.factory.HandlerChainFactory
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -20,15 +20,43 @@
 */
 
 
-package org.iterx.miru.dispatcher.handler;
+package org.iterx.miru.dispatcher.handler.factory;
 
 import org.iterx.miru.dispatcher.handler.factory.XmlHandlerChainFactory;
+import org.iterx.miru.dispatcher.handler.HandlerChainProvider;
+import org.iterx.miru.bean.BeanProvider;
+import org.iterx.miru.bean.BeanWrapperAware;
 import org.iterx.util.SystemUtils;
-
 
 public abstract class HandlerChainFactory implements HandlerChainProvider {
 
     private static HandlerChainFactory handlerChainFactory;
+
+    private BeanProvider beanProvider;
+
+    public HandlerChainFactory() {}
+
+    public HandlerChainFactory(BeanProvider beanProvider) {
+
+        setBeanProvider(beanProvider);
+    }
+
+    public BeanProvider getBeanProvider() {
+
+        return beanProvider;
+    }
+
+    public void setBeanProvider(BeanProvider beanProvider) {
+
+        if(beanProvider == null)
+            throw new IllegalArgumentException("beanProvider == null");
+        if(!(beanProvider instanceof BeanWrapperAware))
+            throw new IllegalArgumentException("beanProvider is not BeanWrapperAware.");
+
+        synchronized(this)  {
+            this.beanProvider = beanProvider;
+        }
+    }
 
     public static HandlerChainFactory getHandlerChainFactory() {
 

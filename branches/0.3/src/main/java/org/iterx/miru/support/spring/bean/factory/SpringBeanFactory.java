@@ -35,7 +35,7 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 
-import org.iterx.miru.bean.BeanFactory;
+import org.iterx.miru.bean.factory.BeanFactory;
 import org.iterx.miru.bean.BeanWrapper;
 import org.iterx.miru.bean.BeanWrapperAware;
 import org.iterx.miru.bean.BeanProvider;
@@ -43,7 +43,7 @@ import org.iterx.miru.support.spring.bean.SpringBeanWrapper;
 
 public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {
 
-    protected static final Log logger =
+    private static final Log LOGGER =
         LogFactory.getLog(SpringBeanFactory.class);
 
     protected org.springframework.beans.factory.BeanFactory beanFactory;
@@ -78,9 +78,9 @@ public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {
         try {
             return beanFactory.getBean(name);
         }
-        catch (NoSuchBeanDefinitionException e) {
-            if(logger.isDebugEnabled())
-                logger.debug("Failed to get bean '" + name + "'", e);
+        catch(NoSuchBeanDefinitionException e) {
+            if(LOGGER.isWarnEnabled())
+                LOGGER.warn("Failed to get bean '" + name + "'", e);
         }
         return (parent != null)? parent.getBean(name) : null;
     }
@@ -91,16 +91,16 @@ public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {
         try {
             Map map;
 
-            if ((beanFactory instanceof ListableBeanFactory) &&
-                (map = BeanFactoryUtils.beansOfTypeIncludingAncestors
-                    ((ListableBeanFactory) beanFactory, type, true, false)).size() > 0)
+            if((beanFactory instanceof ListableBeanFactory) &&
+               (map = BeanFactoryUtils.beansOfTypeIncludingAncestors
+                   ((ListableBeanFactory) beanFactory, type, true, false)).size() > 0)
                 return ((map.values()).iterator()).next();
 
         }
-        catch (BeansException e) {
-            if (logger.isDebugEnabled())
-                logger.debug("Failed to create bean implementation [" +
-                             type.toString() + "]", e);
+        catch(BeansException e) {
+            if(LOGGER.isWarnEnabled())
+                LOGGER.warn("Failed to create bean implementation [" +
+                            type.toString() + "]", e);
         }
 
         return (parent != null) ? parent.getBeanOfType(type) : null;
@@ -112,14 +112,13 @@ public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {
         try {
             Map map;
 
-            if ((beanFactory instanceof ListableBeanFactory) &&
-                (map = BeanFactoryUtils.beansOfTypeIncludingAncestors
-                    ((ListableBeanFactory) beanFactory,
-                     types[0], true, false)).size() > 0) {
+            if((beanFactory instanceof ListableBeanFactory) &&
+               (map = BeanFactoryUtils.beansOfTypeIncludingAncestors
+                   ((ListableBeanFactory) beanFactory,
+                    types[0], true, false)).size() > 0) {
 
-
-                for (Iterator beans = (map.values()).iterator();
-                     beans.hasNext();) {
+                for(Iterator beans = (map.values()).iterator();
+                    beans.hasNext();) {
                     Object bean;
                     Class cls;
                     int i;
@@ -134,8 +133,8 @@ public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {
                 }
             }
         }
-        catch (BeansException e) {
-            if (logger.isDebugEnabled()) {
+        catch(BeansException e) {
+            if(LOGGER.isWarnEnabled()) {
                 StringBuffer buffer;
 
                 buffer = new StringBuffer();
@@ -143,8 +142,8 @@ public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {
                     buffer.append(',');
                     buffer.append(types[i]);
                 }
-                logger.debug("Failed to create bean implementation [" +
-                             buffer.substring(1) + "]", e);
+                LOGGER.warn("Failed to create bean implementation [" +
+                            buffer.substring(1) + "]", e);
             }
         }
 
@@ -158,7 +157,6 @@ public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {
 
     }
 
-
     public boolean isSingleton(String name) {
 
         return (beanFactory.isSingleton(name) ||
@@ -171,15 +169,13 @@ public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {
         return ((SpringDefaultListableBeanFactoryProxy) beanFactory).assignBeanWrapper(object);
     }
 
-    public void recycleBeanWrapper(BeanWrapper wrapper) {
-    }
+    public void recycleBeanWrapper(BeanWrapper wrapper) {}
 
 
     private class SpringDefaultListableBeanFactoryProxy
         extends DefaultListableBeanFactory {
 
-        private SpringDefaultListableBeanFactoryProxy() {
-        }
+        private SpringDefaultListableBeanFactoryProxy() {}
 
         private SpringDefaultListableBeanFactoryProxy
             (org.springframework.beans.factory.BeanFactory parent) {

@@ -28,9 +28,11 @@ import org.iterx.miru.io.Loadable;
 import org.iterx.miru.io.Resource;
 import org.iterx.miru.dispatcher.context.DispatcherApplicationContextImpl;
 import org.iterx.miru.context.ApplicationContext;
+import org.iterx.miru.support.servlet.context.ServletApplicationContext;
+import org.iterx.miru.bean.BeanWrapperAware;
 
 public class ServletDispatcherApplicationContext extends DispatcherApplicationContextImpl
-    implements Loadable {
+    implements ServletApplicationContext, Loadable {
 
     public static final String CHAINS = "chains";
     public static final String BEANS  = "beans";
@@ -44,13 +46,8 @@ public class ServletDispatcherApplicationContext extends DispatcherApplicationCo
         this.servletContext = servletContext;
     }
 
-    public ServletDispatcherApplicationContext(ApplicationContext applicationContext) {
-
-        super(applicationContext);
-    }
-
     public ServletDispatcherApplicationContext(ApplicationContext applicationContext,
-                                               ServletContext  servletContext) {
+                                               ServletContext servletContext) {
 
         super(applicationContext);
         if(servletContext == null)

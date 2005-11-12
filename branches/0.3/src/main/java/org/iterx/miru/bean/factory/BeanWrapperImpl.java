@@ -33,7 +33,6 @@ import java.beans.PropertyEditorManager;
 
 import org.iterx.util.ArrayUtils;
 import org.iterx.miru.bean.BeanWrapper;
-import org.iterx.miru.bean.BeanFactory;
 import org.iterx.miru.bean.BeanRef;
 import org.iterx.miru.bean.BeanProvider;
 

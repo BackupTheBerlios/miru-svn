@@ -25,15 +25,11 @@ import java.util.LinkedHashMap;
 import java.util.Iterator;
 
 import org.iterx.miru.dispatcher.adapter.HandlerAdapter;
-import org.iterx.miru.dispatcher.handler.factory.HandlerWrapperImpl;
-import org.iterx.miru.dispatcher.handler.factory.HandlerChainMapImpl;
-import org.iterx.miru.dispatcher.handler.HandlerChainFactory;
 import org.iterx.miru.dispatcher.handler.HandlerWrapperAware;
 import org.iterx.miru.dispatcher.handler.HandlerChainMap;
 import org.iterx.miru.dispatcher.handler.HandlerChain;
 import org.iterx.miru.dispatcher.handler.HandlerWrapper;
 import org.iterx.miru.bean.BeanProvider;
-import org.iterx.miru.bean.BeanWrapperAware;
 import org.iterx.util.ArrayUtils;
 
 public class HandlerChainFactoryImpl extends HandlerChainFactory
@@ -41,7 +37,6 @@ public class HandlerChainFactoryImpl extends HandlerChainFactory
 
     private HandlerAdapter[] handlerAdapters;
     private HandlerChainMap handlerChainMap;
-    private BeanProvider beanProvider;
     private Map handlerChains;
 
     {
@@ -53,24 +48,7 @@ public class HandlerChainFactoryImpl extends HandlerChainFactory
 
     public HandlerChainFactoryImpl(BeanProvider beanProvider){
 
-        setBeanProvider(beanProvider);
-    }
-
-    public BeanProvider getBeanProvider() {
-
-        return beanProvider;
-    }
-
-    public void setBeanProvider(BeanProvider beanProvider) {
-
-        if(beanProvider == null)
-            throw new IllegalArgumentException("beanProvider == null");
-        if(!(beanProvider instanceof BeanWrapperAware))
-            throw new IllegalArgumentException("beanProvider is not BeanWrapperAware.");
-
-        synchronized(this)  {
-            this.beanProvider = beanProvider;
-        }
+        super(beanProvider);
     }
 
     public HandlerAdapter[] getHandlerAdapters() {
@@ -158,10 +136,10 @@ public class HandlerChainFactoryImpl extends HandlerChainFactory
     }
 
     public HandlerWrapper assignHandlerWrapper(Object object) {
-        assert (beanProvider != null) : "beanProvider == null";
+        assert (getBeanProvider() != null) : "beanProvider == null";
         HandlerWrapperImpl wrapper;
 
-        wrapper = new HandlerWrapperImpl(this, beanProvider);
+        wrapper = new HandlerWrapperImpl(this, getBeanProvider());
         wrapper.setWrappedInstance(object);
         return wrapper;
     }

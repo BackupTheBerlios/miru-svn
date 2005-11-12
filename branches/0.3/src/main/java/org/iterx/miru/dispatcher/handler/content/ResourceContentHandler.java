@@ -28,6 +28,9 @@ import java.nio.channels.WritableByteChannel;
 import java.nio.ByteBuffer;
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.iterx.miru.dispatcher.handler.ContentHandler;
 import org.iterx.miru.dispatcher.resolver.ResourceResolver;
 import org.iterx.miru.dispatcher.Dispatcher;
@@ -40,7 +43,10 @@ import org.iterx.miru.io.StreamSource;
 import org.iterx.util.URIUtils;
 
 
+
 public class ResourceContentHandler implements ContentHandler {
+
+    private static final Log LOGGER = LogFactory.getLog(ResourceContentHandler.class);
 
     private ResourceResolver resourceResolver;
     private String uri;
@@ -50,7 +56,7 @@ public class ResourceContentHandler implements ContentHandler {
         uri = "{0}";
     }
 
-    public ResourceContentHandler() {};
+    public ResourceContentHandler() {}
 
     public ResourceContentHandler(ResourceResolver resourceResolver) {
 
@@ -110,7 +116,7 @@ public class ResourceContentHandler implements ContentHandler {
                                new String[] { (request.getURI()).getPath() });
 
         if((resource = resourceResolver.resolve(uri)) != null &&
-            resource instanceof StreamSource) {
+           resource instanceof StreamSource) {
             ReadableByteChannel reader;
             WritableByteChannel writer;
 
@@ -138,14 +144,15 @@ public class ResourceContentHandler implements ContentHandler {
             }
             finally {
                 if(reader != null)
-                    try { reader.close(); } catch(IOException e) {};
+                    try { reader.close(); } catch(IOException e) {}
                 if(writer != null)
-                    try { writer.close(); } catch(IOException e) {};
+                    try { writer.close(); } catch(IOException e) {}
             }
         }
 
         //throw resource not found exception?
         //or set error on response
+        LOGGER.warn("Resource '" + uri + "' not found.");
         return Dispatcher.ERROR;
     }
 

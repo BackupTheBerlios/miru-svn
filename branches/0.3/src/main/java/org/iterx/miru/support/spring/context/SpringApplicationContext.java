@@ -24,9 +24,8 @@ import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.context.ApplicationContextAware;
 import org.iterx.miru.context.ProcessingContextFactory;
 import org.iterx.miru.io.ResourceFactory;
-import org.iterx.miru.dispatcher.handler.HandlerChainFactory;
 
-import org.iterx.miru.bean.BeanFactory;
+import org.iterx.miru.bean.factory.BeanFactory;
 import org.iterx.miru.bean.BeanException;
 import org.iterx.miru.support.spring.bean.factory.SpringBeanFactory;
 
@@ -53,7 +52,6 @@ public class SpringApplicationContext extends SpringBeanFactory
 
         super(beanFactory);
     }
-
 
     public SpringApplicationContext
         (org.springframework.beans.factory.BeanFactory beanFactory)  {

@@ -30,7 +30,6 @@ import org.iterx.miru.io.resource.UriResource;
 
 public class XmlBeanFactory extends BeanFactoryImpl implements Loadable {
 
-
     public XmlBeanFactory() {}
 
     public XmlBeanFactory(BeanProvider parent) {

@@ -26,10 +26,11 @@ import java.util.Iterator;
 
 import org.iterx.util.KeyValue;
 import org.iterx.miru.bean.Bean;
-import org.iterx.miru.bean.BeanFactory;
 import org.iterx.miru.bean.BeanWrapper;
 import org.iterx.miru.bean.BeanWrapperAware;
 import org.iterx.miru.bean.BeanException;
+import org.iterx.miru.bean.BeanProviderListenerAware;
+import org.iterx.miru.bean.BeanProviderListener;
 
 public abstract class BeanImpl implements Bean {
 
@@ -72,6 +73,10 @@ public abstract class BeanImpl implements Bean {
                 }
                 ((BeanWrapperAware) beanFactory).recycleBeanWrapper(bean);
             }
+            if(beanFactory instanceof BeanProviderListenerAware)
+                beanFactory.notifyListeners(BeanProviderListener.Event.BEAN_CREATED,
+                                            instance);
+
             return instance;
         }
         catch(Exception e) {

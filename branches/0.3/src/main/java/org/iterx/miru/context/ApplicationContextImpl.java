@@ -22,11 +22,13 @@ package org.iterx.miru.context;
 
 import org.iterx.miru.bean.BeanException;
 import org.iterx.miru.bean.BeanProvider;
-import org.iterx.miru.bean.BeanFactory;
+import org.iterx.miru.bean.factory.BeanFactory;
+import org.iterx.miru.bean.BeanProviderListener;
+import org.iterx.miru.bean.BeanProviderListenerAware;
 
 import org.iterx.miru.io.ResourceFactory;
 
-public class ApplicationContextImpl implements ApplicationContext {
+public class ApplicationContextImpl implements ApplicationContext, BeanProviderListener {
 
     private ProcessingContextFactory processingContextFactory;
     private ResourceFactory resourceFactory;
@@ -37,20 +39,23 @@ public class ApplicationContextImpl implements ApplicationContext {
 
     protected ApplicationContextImpl() {
 
-        this.beanProvider = BeanFactory.getBeanFactory();
+
+        this(BeanFactory.getBeanFactory());
     }
 
     public ApplicationContextImpl(BeanProvider beanProvider) {
 
         if(beanProvider == null)
             throw new IllegalArgumentException("beanFactory == null");
+        if(beanProvider instanceof BeanProviderListenerAware)
+            ((BeanProviderListenerAware) beanProvider).addListener(this);
+
         this.beanProvider = beanProvider;
     }
 
     public ApplicationContextImpl(ApplicationContext parent) {
 
-        this.beanProvider = BeanFactory.getBeanFactory();
-        this.parent = parent;
+        this(BeanFactory.getBeanFactory(), parent);
     }
 
 
@@ -59,6 +64,9 @@ public class ApplicationContextImpl implements ApplicationContext {
 
         if(beanProvider == null)
             throw new IllegalArgumentException("beanFactory == null");
+        if(beanProvider instanceof BeanProviderListenerAware)
+            ((BeanProviderListenerAware) beanProvider).addListener(this);
+
         this.beanProvider = beanProvider;
         this.parent = parent;
     }
@@ -114,9 +122,6 @@ public class ApplicationContextImpl implements ApplicationContext {
 
         if(((object = beanProvider.getBean(name)) == null) &&
             parent != null) object = parent.getBean(name);
-
-        if(object instanceof ApplicationContextAware)
-            ((ApplicationContextAware) object).setApplicationContext(this);
         return object;
     }
 
@@ -137,8 +142,6 @@ public class ApplicationContextImpl implements ApplicationContext {
         if(((object = beanProvider.getBeanOfType(types)) == null) &&
            parent != null) object = parent.getBeanOfType(types);
 
-        if(object instanceof ApplicationContextAware)
-            ((ApplicationContextAware) object).setApplicationContext(this);
         return object;
     }
 
@@ -157,4 +160,13 @@ public class ApplicationContextImpl implements ApplicationContext {
         throw new BeanException("Invalid bean name '" + name + "'");
     }
 
+    public void beanProviderEvent(BeanProvider source, Event event, Object data) {
+
+        switch(event) {
+            case BEAN_CREATED:
+                if(data instanceof ApplicationContextAware)
+                    ((ApplicationContextAware) data).setApplicationContext(this);
+                break;
+        }
+    }
 }

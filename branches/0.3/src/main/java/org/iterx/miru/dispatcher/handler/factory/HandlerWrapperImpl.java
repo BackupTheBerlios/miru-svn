@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 import org.iterx.miru.dispatcher.handler.HandlerWrapper;
 import org.iterx.miru.dispatcher.handler.Handler;
-import org.iterx.miru.dispatcher.handler.HandlerChainFactory;
 import org.iterx.miru.dispatcher.adapter.HandlerAdapter;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.bean.BeanWrapper;

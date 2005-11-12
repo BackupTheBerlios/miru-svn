@@ -24,23 +24,22 @@ package org.iterx.miru.bean.factory;
 import java.util.Iterator;
 import java.util.HashMap;
 
-import org.iterx.miru.bean.factory.BeanWrapperImpl;
-import org.iterx.miru.bean.factory.BeanImpl;
-import org.iterx.miru.bean.BeanFactory;
 import org.iterx.miru.bean.BeanWrapperAware;
 import org.iterx.miru.bean.BeanProvider;
 import org.iterx.miru.bean.Bean;
 import org.iterx.miru.bean.BeanWrapper;
 
-public class BeanFactoryImpl extends BeanFactory implements BeanWrapperAware {
+public class BeanFactoryImpl extends BeanFactory
+    implements BeanWrapperAware {
 
-    protected BeanProvider parent;
+    private BeanProvider parent;
 
     private final HashMap beans;
 
     {
         beans = new HashMap();
     }
+
     public BeanFactoryImpl() {}
 
     public BeanFactoryImpl(BeanProvider parent) {

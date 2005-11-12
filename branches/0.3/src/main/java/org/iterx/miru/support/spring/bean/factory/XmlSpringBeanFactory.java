@@ -33,7 +33,7 @@ import org.iterx.miru.io.Resource;
 import org.iterx.miru.io.Loadable;
 import org.iterx.miru.io.StreamSource;
 import org.iterx.miru.io.resource.UriResource;
-import org.iterx.miru.bean.BeanFactory;
+import org.iterx.miru.bean.factory.BeanFactory;
 import org.iterx.miru.bean.BeanWrapper;
 import org.iterx.miru.support.spring.bean.SpringBeanWrapper;
 

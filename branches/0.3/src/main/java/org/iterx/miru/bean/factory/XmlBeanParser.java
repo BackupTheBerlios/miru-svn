@@ -48,7 +48,7 @@ import org.iterx.util.KeyValue;
 
 public class XmlBeanParser extends DefaultHandler {
 
-    public static final String MIRU_NS              = "http://iterx.org/miru/1.0";
+    public static final String MIRU_BEANS_NS        = "http://iterx.org/miru/1.0/beans";
 
     private static final String TAG_BEANS           = "beans";
     private static final String TAG_BEAN            = "bean";
@@ -120,11 +120,11 @@ public class XmlBeanParser extends DefaultHandler {
         switch(state) {
             case STATE_UNKNOWN:
                 if(TAG_BEANS.equals(localName) &&
-                   MIRU_NS.equals(uri)) state = STATE_BEANS;
+                   MIRU_BEANS_NS.equals(uri)) state = STATE_BEANS;
                 break;
             case STATE_COLLECTION:
                 if(TAG_ENTRY.equals(localName) &&
-                   MIRU_NS.equals(uri)) {
+                   MIRU_BEANS_NS.equals(uri)) {
                     Object value;
 
                     if((value = attributes.getValue("value")) != null)
@@ -137,7 +137,7 @@ public class XmlBeanParser extends DefaultHandler {
                 }
                 throw new SAXException("Invalid element '" + qName + "'.");
             case STATE_PROPERTY:
-                if(MIRU_NS.equals(uri)) {
+                if(MIRU_BEANS_NS.equals(uri)) {
                     if(TAG_BEAN.equals(localName)) {
                         stack.add(new Object[]{ key, bean });
                         key = null;
@@ -166,7 +166,7 @@ public class XmlBeanParser extends DefaultHandler {
                 else throw new SAXException("Invalid element '" + qName + "'.");
             case STATE_BEANS:
                 if(TAG_BEAN.equals(localName) &&
-                   MIRU_NS.equals(uri)) {
+                   MIRU_BEANS_NS.equals(uri)) {
                     String cls;
 
                     cls = attributes.getValue("class");
@@ -188,7 +188,7 @@ public class XmlBeanParser extends DefaultHandler {
                 }
                 throw new SAXException("Invalid element '" + qName + "'.");
             case STATE_BEAN:
-                if(MIRU_NS.equals(uri)) {
+                if(MIRU_BEANS_NS.equals(uri)) {
                     Object value;
 
                     if((value = attributes.getValue("value")) != null)
@@ -225,14 +225,14 @@ public class XmlBeanParser extends DefaultHandler {
                  break;
              case STATE_BEANS:
                  if(TAG_BEANS.equals(localName) &&
-                    MIRU_NS.equals(uri)) {
+                    MIRU_BEANS_NS.equals(uri)) {
                      state = STATE_UNKNOWN;
                      break;
                  }
                  throw new SAXException("Invalid element '" + qName + "'.");
              case STATE_BEAN:
                  if(TAG_BEAN.equals(localName) &&
-                    MIRU_NS.equals(uri)) {
+                    MIRU_BEANS_NS.equals(uri)) {
 
                      if(stack.isEmpty()) {
                          BeanWrapper bean;
@@ -261,10 +261,13 @@ public class XmlBeanParser extends DefaultHandler {
                  }
                  throw new SAXException("Invalid element '" + qName + "'.");
              case STATE_PROPERTY:
-                 if(MIRU_NS.equals(uri)) {
+                 if(MIRU_BEANS_NS.equals(uri)) {
                      if(buffer != null) {
-                         if(value == null) value = buffer.toString();
-                         else throw new SAXException
+                         String string;
+
+                         string = (buffer.toString()).trim();
+                         if(value == null) value = string;
+                         else if(string.length() > 0) throw new SAXException
                              ("Invalid element, both the value attribute and body have been specified.");
                          buffer = null;
                      }
@@ -284,7 +287,7 @@ public class XmlBeanParser extends DefaultHandler {
                  }
                  else throw new SAXException("Invalid element '" + qName + "'.");
              case STATE_COLLECTION:
-                 if(MIRU_NS.equals(uri)) {
+                 if(MIRU_BEANS_NS.equals(uri)) {
                      if(TAG_ENTRY.equals(localName)) {
                          if(bean instanceof List)
                              ((List) bean).add(value);
