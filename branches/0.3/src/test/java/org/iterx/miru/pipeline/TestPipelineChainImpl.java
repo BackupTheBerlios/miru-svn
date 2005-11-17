@@ -22,6 +22,9 @@ package org.iterx.miru.pipeline;
 
 
 import junit.framework.TestCase;
+import org.iterx.miru.pipeline.transformer.TransformerImpl;
+import org.iterx.miru.pipeline.generator.GeneratorImpl;
+import org.iterx.miru.pipeline.serializer.SerializerImpl;
 
 
 public class TestPipelineChainImpl extends TestCase {
@@ -39,15 +42,15 @@ public class TestPipelineChainImpl extends TestCase {
         assertNull(pipelineChain.getSerializer());
 
         pipelineChain = new PipelineChainImpl((generator = new GeneratorImpl()),
-                                         (serializer = new SerializerImpl()));
+                                              (serializer = new SerializerImpl()));
         assertNotNull(pipelineChain);
         assertEquals(generator, pipelineChain.getGenerator());
         assertNull(pipelineChain.getTransformers());
         assertEquals(serializer, pipelineChain.getSerializer());
 
         pipelineChain = new PipelineChainImpl((generator = new GeneratorImpl()),
-                                         null,
-                                         (serializer = new SerializerImpl()));
+                                              null,
+                                              (serializer = new SerializerImpl()));
         assertNotNull(pipelineChain);
         assertEquals(generator, pipelineChain.getGenerator());
         assertNull(pipelineChain.getTransformers());
@@ -63,7 +66,7 @@ public class TestPipelineChainImpl extends TestCase {
         assertEquals(transformers, pipelineChain.getTransformers());
         assertEquals(serializer, pipelineChain.getSerializer());
 
-        
+
         try {
             pipelineChain = new PipelineChainImpl(null,
                                                   new SerializerImpl());
@@ -88,7 +91,7 @@ public class TestPipelineChainImpl extends TestCase {
 
         pipelineChain.setGenerator((generator = new GeneratorImpl()));
         assertEquals(generator, pipelineChain.getGenerator());
-        
+
         pipelineChain.setGenerator(null);
         assertNull(pipelineChain.getGenerator());
     }
@@ -102,7 +105,7 @@ public class TestPipelineChainImpl extends TestCase {
 
         pipelineChain.setSerializer((serializer = new SerializerImpl()));
         assertEquals(serializer, pipelineChain.getSerializer());
-        
+
         pipelineChain.setSerializer(null);
         assertNull(pipelineChain.getSerializer());
     }
@@ -114,11 +117,11 @@ public class TestPipelineChainImpl extends TestCase {
 
         pipelineChain = new PipelineChainImpl();
         assertNull(pipelineChain.getTransformers());
-        
+
         pipelineChain.addTransformer((transformer = new TransformerImpl()));
         assertEquals(1, (transformers = pipelineChain.getTransformers()).length);
         assertEquals(transformer, transformers[0]);
-        
+
         pipelineChain.addTransformer((transformer = new TransformerImpl()));
         assertEquals(2, (transformers = pipelineChain.getTransformers()).length);
         assertEquals(transformer, transformers[1]);
@@ -126,11 +129,11 @@ public class TestPipelineChainImpl extends TestCase {
         pipelineChain.removeTransformer(transformers[0]);
         assertEquals(1, (transformers = pipelineChain.getTransformers()).length);
         assertEquals(transformer, transformers[0]);
-        
+
         pipelineChain.removeTransformer(transformer);
         assertNull(pipelineChain.getTransformers());
     }
-    
-    
+
+
 
 }

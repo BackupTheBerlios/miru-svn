@@ -20,7 +20,6 @@
 */
 package org.iterx.miru.pipeline.serializer;
 
-import java.io.OutputStream;
 import java.io.IOException;
 
 import org.xml.sax.SAXException;
@@ -31,15 +30,11 @@ import org.xml.sax.helpers.XMLFilterImpl;
 
 import org.iterx.sax.XMLWriter;
 import org.iterx.sax.InputSource;
-import org.iterx.sax.OutputTarget;
-
-import org.iterx.miru.io.StreamTarget;
 
 import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.context.ProcessingContext;
 
 import org.iterx.miru.pipeline.Stage;
-import org.iterx.miru.pipeline.SerializerImpl;
 import org.iterx.miru.pipeline.PipelineChainException;
 import org.iterx.miru.pipeline.XmlProducer;
 import org.iterx.miru.pipeline.XmlConsumer;

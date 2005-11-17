@@ -20,8 +20,6 @@
 */
 package org.iterx.miru.pipeline;
 
-import java.io.Writer;
-import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -32,20 +30,14 @@ import junit.extensions.RepeatedTest;
 import com.clarkware.junitperf.LoadTest;
 import com.clarkware.junitperf.TimedTest;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-
-import org.iterx.sax.OutputTarget;
-import org.iterx.sax.helper.XMLWriterImpl;
-
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.http.HttpRequestContextImpl;
 import org.iterx.miru.context.http.HttpResponseContextImpl;
 import org.iterx.miru.context.ProcessingContextFactory;
 
-import org.iterx.miru.pipeline.generator.SaxGenerator;
-import org.iterx.miru.pipeline.serializer.SaxSerializer;
+import org.iterx.miru.pipeline.generator.XmlGenerator;
+import org.iterx.miru.pipeline.serializer.XmlSerializer;
+import org.iterx.miru.pipeline.transformer.XsltTransformer;
 
 public class PerfTestPipelineChainImpl extends TestCase {
 
@@ -57,7 +49,7 @@ public class PerfTestPipelineChainImpl extends TestCase {
         Test test;
 
         test = new PipelineChainImplTest("testPipeline");
-        
+
         test = new RepeatedTest(test, ITERATIONS);
         test = new TimedTest(test, TIMEOUT);
         return new LoadTest(test, CONCURRENCY);
@@ -68,35 +60,38 @@ public class PerfTestPipelineChainImpl extends TestCase {
         private ProcessingContextFactory processingContextFactory;
         private PipelineChain[] pipelines;
         private int next, recycle;
-        {   
+        {
             Runtime runtime;
             long memory;
             runtime = Runtime.getRuntime();
 
             System.gc();
-            memory = runtime.freeMemory();            
+            memory = runtime.freeMemory();
 
             (new PipelineChainImpl
-             (new SaxGenerator(),
-              new SaxSerializer(new SimpleXmlWriter()))).init();
-            
+             (new XmlGenerator(),
+              new XmlSerializer())).init();
+
             memory -= runtime.freeMemory();
-            System.out.println("Memory: " + 
+            System.out.println("Memory: " +
                                memory +
                                " bytes");
 
-            memory = runtime.freeMemory();    
+            memory = runtime.freeMemory();
             pipelines = new PipelineChainImpl[CONCURRENCY];
             for(int i = CONCURRENCY; i-- > 0; ) {
                 PipelineChainImpl pipelineChain;
+                XmlSerializer xmlSerializer;
                 pipelineChain = (new PipelineChainImpl
-                            (new SaxGenerator(),
-                             new SaxSerializer(new SimpleXmlWriter())));
+                                 (new XmlGenerator(),
+                                  xmlSerializer = new XmlSerializer()));
+                pipelineChain.addTransformer(new XsltTransformer());
+                xmlSerializer.setOmitXMLDeclaration(true);
                 pipelineChain.init();
                 pipelines[i] = pipelineChain;
             }
             memory -= runtime.freeMemory();
-            System.out.println("Memory: " + 
+            System.out.println("Memory: " +
                                (memory / CONCURRENCY) +
                                " bytes/PipelineImpl");
             System.gc();
@@ -108,12 +103,12 @@ public class PerfTestPipelineChainImpl extends TestCase {
 
             super(name);
         }
-        
-        
+
+
         private static String createMessage() {
-            
-            return  ("<parent><child>" + 
-                     Thread.currentThread() + 
+
+            return  ("<parent><child>" +
+                     Thread.currentThread() +
                      "</child></parent>");
         }
 
@@ -123,10 +118,10 @@ public class PerfTestPipelineChainImpl extends TestCase {
         }
 
         private void recyclePipeline(PipelineChain pipelineChain) {
-            
+
             pipelines[(recycle = (++recycle % CONCURRENCY))] = pipelineChain;
         }
-    
+
         public void testPipeline() throws Exception {
             ProcessingContext processingContext;
             StringReader reader;
@@ -138,69 +133,18 @@ public class PerfTestPipelineChainImpl extends TestCase {
             reader = new StringReader(message);
             writer = new StringWriter();
             processingContext = processingContextFactory.getProcessingContext
-                (new HttpRequestContextImpl(reader),
-                 new HttpResponseContextImpl(writer));
-            
+                                  (new HttpRequestContextImpl(reader),
+                                   new HttpResponseContextImpl(writer));
+
             pipelineChain = getPipeline();
             pipelineChain.execute(processingContext);
             recyclePipeline(pipelineChain);
 
             reader.close();
             writer.close();
-    
-            assertEquals(message, writer.toString());            
-        }
-    }
-    
-    private static class SimpleXmlWriter extends XMLWriterImpl {
-        private Writer writer;
 
-        public void parse(InputSource source, OutputTarget target) 
-            throws IOException, SAXException {
-
-            writer = target.getCharacterStream();
-            parse(source);
-            writer.flush();
-            writer = null;
-        }
-
-        public void startElement(String namespaceURI,
-                                 String localName,
-                                 String qName,
-                                 Attributes atts)
-            throws SAXException {
-            try {
-                writer.write("<");
-                writer.write(qName);
-                writer.write(">");
-            }
-            catch(IOException e) {}
-
-        }
-
-        public void characters(char[] ch,
-                               int start,
-                               int length)
-            throws SAXException {
-            try {
-
-                writer.write(ch, start, length);
-            }
-            catch(IOException e) {}
-        }
-
-        public void endElement(String namespaceURI,
-                               String localName,
-                               String qName)
-            throws SAXException {
-
-            try {
-                writer.write("</");
-                writer.write(qName);
-                writer.write(">");           
-            }
-            catch(IOException e) {}
-
+            assertTrue((writer.toString()).length() > 0 );
+            assertEquals(message, writer.toString());
         }
     }
 }

@@ -30,5 +30,4 @@ public interface HandlerAdapter {
     public int execute(ProcessingContext processingContext,
                        Object handler);
 
-
 }

@@ -58,6 +58,7 @@ public class ResourceContentHandler implements ContentHandler {
 
     public ResourceContentHandler() {}
 
+    //TODO: pass in ResourceFactory.
     public ResourceContentHandler(ResourceResolver resourceResolver) {
 
         if(resourceResolver == null)

@@ -56,7 +56,6 @@ public class UriResourceResolver implements ResourceResolver {
         if(base.getScheme() == null)
             throw new IllegalArgumentException("Relative base uri [" +
                                                base + "]");
-
         this.base = base;
     }
 

@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.handler.flow.IfFlowHandler
+  org.iterx.miru.dispatcher.handler.flow.CacheHandler
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -23,23 +23,27 @@ package org.iterx.miru.dispatcher.handler.flow;
 
 import org.iterx.miru.dispatcher.handler.FlowHandler;
 import org.iterx.miru.dispatcher.handler.Handler;
-import org.iterx.miru.dispatcher.matcher.Matcher;
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.cache.Cache;
 
-public class IfFlowHander implements FlowHandler {
+public class CacheHandler implements FlowHandler {
 
-    private Matcher matcher;
     private Handler handler;
+    private Cache cache;
 
-    public Matcher getMatcher() {
 
-        return matcher;
+    public Cache getCache() {
+
+        return cache;
     }
 
-    public void setMatcher(Matcher matcher) {
+    public void setCache(Cache cache) {
 
-        this.matcher = matcher;
+        if(cache == null)
+            throw new IllegalArgumentException("cache == null");
+        this.cache = cache;
     }
+
 
     public Handler getHandler()  {
 
@@ -50,25 +54,24 @@ public class IfFlowHander implements FlowHandler {
 
         if(handler == null)
             throw new IllegalArgumentException("handler == null");
-
         this.handler = handler;
     }
 
+    public Object[] getMatches(ProcessingContext context) {
 
-    public Object[] getMatches(ProcessingContext processingContext) {
-
-        return null;
+        return new Object[0];
     }
 
-    public boolean hasMatches(ProcessingContext processingContext) {
+    public boolean hasMatches(ProcessingContext context) {
 
-        return ((matcher == null) || matcher.hasMatches(processingContext));
+        return false;
     }
-
 
     public int execute(ProcessingContext processingContext) {
-        assert (handler != null) : "handler == null";
+        //get matches and use as key for cache
 
-        return handler.execute(processingContext);
+        return 0;
     }
+
+
 }

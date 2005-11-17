@@ -95,7 +95,6 @@ public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {
                (map = BeanFactoryUtils.beansOfTypeIncludingAncestors
                    ((ListableBeanFactory) beanFactory, type, true, false)).size() > 0)
                 return ((map.values()).iterator()).next();
-
         }
         catch(BeansException e) {
             if(LOGGER.isWarnEnabled())

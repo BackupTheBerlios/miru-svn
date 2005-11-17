@@ -20,9 +20,7 @@
 */
 package org.iterx.miru.pipeline.generator;
 
-import java.io.InputStream;
 import java.io.IOException;
-import java.util.ListIterator;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -30,26 +28,17 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
 
-import org.iterx.sax.InputSource;
-
-import org.iterx.miru.io.StreamSource;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ProcessingContext;
-import org.iterx.miru.pipeline.GeneratorImpl;
 import org.iterx.miru.pipeline.PipelineChainException;
 import org.iterx.miru.pipeline.helper.SaxHelper;
 
 public class SaxGenerator extends GeneratorImpl {
 
     private static final String LEXICAL_HANDLER =
-        "http://xml.org/sax/properties/lexical-handler";
+          "http://xml.org/sax/properties/lexical-handler";
 
-    protected static SAXParserFactory saxParserFactory;
     protected XMLReader xmlReader;
-
-    static {
-        saxParserFactory = SAXParserFactory.newInstance();
-    }
 
     public SaxGenerator() {}
 
@@ -71,19 +60,7 @@ public class SaxGenerator extends GeneratorImpl {
     }
 
     public void init() {
-
-        if(xmlReader == null) {
-            try {
-                SAXParser saxParser;
-
-                saxParser = saxParserFactory.newSAXParser();
-                xmlReader = saxParser.getXMLReader();
-            }
-            catch(Exception e) {
-                throw new RuntimeException
-                    ("Failed to initialise Generator.", e);
-            }
-        }
+        assert (xmlReader != null) : "xmlReader == null";
 
         if(contentHandler != null)
             xmlReader.setContentHandler(contentHandler);
@@ -97,6 +74,7 @@ public class SaxGenerator extends GeneratorImpl {
     }
 
     public void execute(ProcessingContext processingContext) throws IOException {
+        assert (processingContext != null) : "processingContext == null";
         assert (xmlReader != null) : "xmlReader == null";
 
         try {
@@ -111,6 +89,7 @@ public class SaxGenerator extends GeneratorImpl {
     }
 
     public void destroy() {
+        assert (xmlReader != null) : "xmlReader == null";
 
         if(contentHandler != null)
             xmlReader.setContentHandler(null);

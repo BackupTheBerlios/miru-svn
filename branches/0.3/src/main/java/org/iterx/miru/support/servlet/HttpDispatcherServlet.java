@@ -34,6 +34,7 @@ import org.iterx.miru.io.Loadable;
 import org.iterx.miru.io.resource.UriResource;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.ProcessingContextFactory;
+import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.dispatcher.Dispatcher;
 import org.iterx.miru.dispatcher.context.DispatcherApplicationContext;
 import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactory;
@@ -88,13 +89,19 @@ public class HttpDispatcherServlet extends HttpServlet {
 
         try {
             DispatcherApplicationContext applicationContext;
+            ApplicationContext parentApplicationContext;
             HandlerChainFactory handlerChainFactory;
             ServletContext servletContext;
             String parameter;
 
             servletContext = servletConfig.getServletContext();
 
-            applicationContext = new ServletDispatcherApplicationContext(servletContext);
+            parentApplicationContext =
+                (ApplicationContext) servletContext.getAttribute((DispatcherApplicationContext.class).getName());
+            applicationContext = ((parentApplicationContext != null)?
+                                  new ServletDispatcherApplicationContext(parentApplicationContext, servletContext) :
+                                  new ServletDispatcherApplicationContext(servletContext));
+
             if((parameter = servletConfig.getInitParameter(ServletDispatcherApplicationContext.BEANS)) != null &&
                applicationContext instanceof Loadable) {
                 URL url;

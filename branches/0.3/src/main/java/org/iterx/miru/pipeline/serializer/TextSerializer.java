@@ -1,74 +1,69 @@
 /*
-  org.iterx.miru.pipeline.Serializer
+  org.iterx.miru.pipeline.serializer.TextSerializer
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2.1 of the License, or (at your option) any later version.
-  
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
-  All Rights Reserved.  
+  All Rights Reserved.
 */
-package org.iterx.miru.pipeline;
+
+package org.iterx.miru.pipeline.serializer;
 
 import java.io.IOException;
+import java.io.Writer;
 
-import org.iterx.miru.context.ProcessingContext;
+import com.sun.org.apache.xml.internal.serializer.ToTextStream;
 import org.iterx.miru.pipeline.Stage;
-import org.iterx.miru.pipeline.XmlProducer;
-import org.iterx.miru.pipeline.Serializer;
+import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.io.StreamTarget;
 
-public class SerializerImpl implements Serializer {
 
-    protected XmlProducer parent;
-    
-    public SerializerImpl() {}
+public class TextSerializer extends SerializerImpl {
 
-    public SerializerImpl(XmlProducer parent) {
 
-        if(parent == null) 
-            throw new IllegalArgumentException("parent == null");
+    private ToTextStream textStream;
 
-        this.parent = parent;
+    public TextSerializer() {
+
+        textStream = new ToTextStream();
     }
-
-    public XmlProducer getParent() {
-        
-        return parent;
-    }
-
-    public void setParent(XmlProducer parent) {
-
-        this.parent = parent;
-    }
-
 
     public void init() {
         assert (parent != null) : "parent == null";
-                
+
+        parent.setContentHandler(textStream);
+        parent.setLexicalHandler(textStream);
+
         if(parent instanceof Stage) ((Stage) parent).init();
     }
 
     public void execute(ProcessingContext processingContext) throws IOException {
         assert (processingContext != null) : "processingContext == null";
 
-        if(parent instanceof Stage) ((Stage) parent).execute(processingContext);
+        ResponseContext responseContext;
+        Writer writer;
+
+        responseContext = processingContext.getResponseContext();
+        writer = ((StreamTarget) responseContext).getWriter();
+
+        textStream.setWriter(writer);
+        super.execute(processingContext);
+        writer.flush();
+
+        textStream.setWriter(null);
     }
 
-
-    public void destroy() {
-
-        if(parent != null && parent instanceof Stage) ((Stage) parent).destroy();
-        parent = null;
-    }
-    
 }
