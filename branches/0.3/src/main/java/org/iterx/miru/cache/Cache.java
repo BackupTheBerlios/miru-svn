@@ -20,6 +20,8 @@
 */
 package org.iterx.miru.cache;
 
+import java.util.Iterator;
+
 public interface Cache {
 
     public Object get(Object key);
@@ -27,5 +29,7 @@ public interface Cache {
     public void put(Object key, Object object);
 
     public void remove(Object key);
+
+    public Iterator keys();
 
 }

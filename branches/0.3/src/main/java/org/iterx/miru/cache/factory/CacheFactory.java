@@ -41,7 +41,7 @@ public abstract class CacheFactory implements CacheProvider {
                     throw new RuntimeException("Failed to create CacheFactory '" + cls + "'.", e);
                 }
             }
-            else cacheFactory = new InMemoryCacheFactory();
+            else cacheFactory = new MemoryCacheFactory();
         }
         return cacheFactory;
     }

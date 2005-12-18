@@ -23,6 +23,7 @@ package org.iterx.miru.cache;
 
 public interface CacheProvider {
     
-    public Cache getCache();
+    public Cache getCache(String name);
 
+    public void recycleCache(String name);
 }
