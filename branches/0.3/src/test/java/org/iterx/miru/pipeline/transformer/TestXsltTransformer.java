@@ -10,7 +10,7 @@ import org.iterx.miru.io.resource.MockResource;
 import org.iterx.miru.pipeline.PipelineChainImpl;
 import org.iterx.miru.pipeline.serializer.XmlSerializer;
 import org.iterx.miru.pipeline.generator.XmlGenerator;
-import org.iterx.miru.context.ProcessingContextFactory;
+import org.iterx.miru.context.factory.ProcessingContextFactory;
 import org.iterx.miru.context.http.MockHttpRequestContext;
 import org.iterx.miru.context.http.MockHttpResponseContext;
 

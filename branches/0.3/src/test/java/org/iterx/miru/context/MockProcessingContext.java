@@ -21,6 +21,8 @@
 
 package org.iterx.miru.context;
 
+import org.iterx.miru.context.factory.ProcessingContextImpl;
+
 public class MockProcessingContext extends ProcessingContextImpl {
 
     public MockProcessingContext(RequestContext request,

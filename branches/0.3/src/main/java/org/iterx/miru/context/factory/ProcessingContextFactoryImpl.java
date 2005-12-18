@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.ProcessingContextFactoryImpl
+  org.iterx.miru.context.factory.ProcessingContextFactoryImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,7 @@
 */
 
 
-package org.iterx.miru.context;
+package org.iterx.miru.context.factory;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -28,6 +28,10 @@ import java.util.Set;
 import java.util.Iterator;
 
 import org.iterx.miru.resolver.ContextResolver;
+import org.iterx.miru.context.factory.ProcessingContextFactory;
+import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
 public class ProcessingContextFactoryImpl extends ProcessingContextFactory {
 

@@ -34,7 +34,7 @@ import javax.servlet.ServletContext;
 import org.iterx.miru.io.Loadable;
 import org.iterx.miru.io.resource.UriResource;
 import org.iterx.miru.context.ProcessingContext;
-import org.iterx.miru.context.ProcessingContextFactory;
+import org.iterx.miru.context.factory.ProcessingContextFactory;
 import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.dispatcher.Dispatcher;
 import org.iterx.miru.dispatcher.event.RedirectEvent;

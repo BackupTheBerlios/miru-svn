@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.ProcessingContextImpl
+  org.iterx.miru.context.factory.ProcessingContextImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,13 +19,16 @@
   All Rights Reserved.
 */
 
-package org.iterx.miru.context;
+package org.iterx.miru.context.factory;
 
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 
 import org.iterx.miru.resolver.ContextResolver;
+import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
 public class ProcessingContextImpl implements ProcessingContext {
 
@@ -88,7 +91,7 @@ public class ProcessingContextImpl implements ProcessingContext {
 
         if((value = attributes.get(name)) instanceof ContextResolver)
             value = ((ContextResolver) value).resolve(this);
-        
+
         return value;
     }
 

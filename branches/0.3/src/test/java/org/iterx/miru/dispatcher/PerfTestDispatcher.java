@@ -41,7 +41,7 @@ import org.iterx.miru.bean.factory.BeanFactoryImpl;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.http.HttpRequestContextImpl;
 import org.iterx.miru.context.http.HttpResponseContextImpl;
-import org.iterx.miru.context.ProcessingContextFactory;
+import org.iterx.miru.context.factory.ProcessingContextFactory;
 
 import org.iterx.miru.dispatcher.handler.ContentHandler;
 import org.iterx.miru.dispatcher.handler.HandlerChain;

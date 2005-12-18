@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.ProcessingContextFactory
+  org.iterx.miru.context.factory.ProcessingContextFactory
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,9 +19,10 @@
   All Rights Reserved.
 */
 
-package org.iterx.miru.context;
+package org.iterx.miru.context.factory;
 
 import org.iterx.util.SystemUtils;
+import org.iterx.miru.context.ProcessingContextProvider;
 
 public abstract class ProcessingContextFactory implements ProcessingContextProvider {
 

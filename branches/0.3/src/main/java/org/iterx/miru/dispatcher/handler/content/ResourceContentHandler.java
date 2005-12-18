@@ -87,6 +87,8 @@ public class ResourceContentHandler implements ContentHandler {
 
     public void setResourceFactory(ResourceFactory resourceFactory) {
 
+        if(resourceFactory == null)
+            throw new IllegalArgumentException("resourceFactory == null");
         this.resourceFactory = resourceFactory;
     }
 

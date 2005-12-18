@@ -27,6 +27,8 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.iterx.miru.io.resource.MockResource;
+import org.iterx.miru.io.factory.ResourceFactory;
+import org.iterx.miru.io.factory.ResourceFactoryImpl;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.MockProcessingContext;
 import org.iterx.miru.context.http.MockHttpRequestContext;
@@ -46,26 +48,19 @@ public class TestResourceContentHandler extends TestCase {
 
     public void testConstructors() {
         ResourceContentHandler contentHandler;
-        MockResourceResolver resolver;
 
         assertNotNull(contentHandler = new ResourceContentHandler());
-        assertNull(contentHandler.getResourceResolver());
-
-        assertNotNull(contentHandler = new ResourceContentHandler
-            (resolver = new MockResourceResolver()));
-
-        assertEquals(resolver, contentHandler.getResourceResolver());
-
+        assertNull(contentHandler.getResourceFactory());
     }
 
     public void testUriAccessors() {
-            ResourceContentHandler contentHandler;
+        ResourceContentHandler contentHandler;
 
-            contentHandler = new ResourceContentHandler();
-            assertEquals("{0}", contentHandler.getUri());
+        contentHandler = new ResourceContentHandler();
+        assertEquals("{0}", contentHandler.getUri());
 
-            contentHandler.setUri(PATH);
-            assertEquals(PATH, contentHandler.getUri());
+        contentHandler.setUri(PATH);
+        assertEquals(PATH, contentHandler.getUri());
 
         try {
             contentHandler.setUri(null);
@@ -88,21 +83,21 @@ public class TestResourceContentHandler extends TestCase {
         assertNull(contentHandler.getBaseUri());
     }
 
-    public void testResourceResolverAccessors() {
+    public void testResourceFactoryAccessors() {
         ResourceContentHandler contentHandler;
-        MockResourceResolver resolver;
+        ResourceFactory resourceFactory;
 
-        resolver = new MockResourceResolver();
+        resourceFactory = ResourceFactory.getResourceFactory();
 
         contentHandler = new ResourceContentHandler();
-        assertNull(contentHandler.getResourceResolver());
+        assertNull(contentHandler.getResourceFactory());
 
-        contentHandler.setResourceResolver(resolver);
-        assertEquals(resolver, contentHandler.getResourceResolver());
+        contentHandler.setResourceFactory(resourceFactory);
+        assertEquals(resourceFactory, contentHandler.getResourceFactory());
 
         try {
-            contentHandler.setResourceResolver(null);
-            fail("ResourceResolver is null.");
+            contentHandler.setResourceFactory(null);
+            fail("ResourceFactory is null.");
         }
         catch(Exception e){}
 
@@ -112,6 +107,7 @@ public class TestResourceContentHandler extends TestCase {
     public void testHandler() throws Exception {
         ProcessingContext processingContext;
         ResourceContentHandler contentHandler;
+        ResourceFactoryImpl resourceFactory;
         MockHttpResponseContext response;
         MockResourceResolver resolver;
         MockResource source;
@@ -119,12 +115,14 @@ public class TestResourceContentHandler extends TestCase {
         processingContext = new MockProcessingContext
             (MockHttpRequestContext.newInstance("/"),
              response = MockHttpResponseContext.newInstance());
+        resourceFactory = new ResourceFactoryImpl();
 
         resolver = new MockResourceResolver();
         resolver.setResource(source = new MockResource(URI.create(PATH)));
+        resourceFactory.addResourceResolver(resolver);
 
         contentHandler = new ResourceContentHandler();
-        contentHandler.setResourceResolver(resolver);
+        contentHandler.setResourceFactory(resourceFactory);
 
         source.setData(DATA);
         assertEquals(Dispatcher.OK, contentHandler.execute(processingContext));

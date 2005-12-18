@@ -22,7 +22,7 @@ package org.iterx.miru.support.spring.context;
 
 import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.context.ApplicationContextAware;
-import org.iterx.miru.context.ProcessingContextFactory;
+import org.iterx.miru.context.factory.ProcessingContextFactory;
 import org.iterx.miru.io.factory.ResourceFactory;
 
 import org.iterx.miru.bean.factory.BeanFactory;

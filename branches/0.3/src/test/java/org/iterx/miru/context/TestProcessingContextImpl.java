@@ -25,6 +25,7 @@ import junit.framework.TestCase;
 import org.iterx.miru.resolver.MockContextResolver;
 import org.iterx.miru.context.http.MockHttpRequestContext;
 import org.iterx.miru.context.http.MockHttpResponseContext;
+import org.iterx.miru.context.factory.ProcessingContextImpl;
 
 public class TestProcessingContextImpl extends TestCase {
 
@@ -45,7 +46,7 @@ public class TestProcessingContextImpl extends TestCase {
         ProcessingContext clone;
 
         processingContext = new ProcessingContextImpl(MockHttpRequestContext.newInstance("/"),
-                                                      MockHttpResponseContext.newInstance());
+                                                                                     MockHttpResponseContext.newInstance());
         assertNotNull(processingContext);
 
         clone = new ProcessingContextImpl(processingContext);

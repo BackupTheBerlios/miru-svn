@@ -50,7 +50,6 @@ public class EhCacheFactory extends CacheFactory implements Loadable {
 
     public void load(Resource resource) throws IOException {
 
-
         if(resource == null)
             throw new IllegalArgumentException("resource == null");
         if(!(resource instanceof StreamSource))

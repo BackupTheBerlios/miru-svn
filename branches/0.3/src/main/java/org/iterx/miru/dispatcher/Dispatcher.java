@@ -88,6 +88,8 @@ public class Dispatcher {
 
                 handlerChain = (HandlerChain) chains.next();
                 if((matches = handlerChain.getMatches(processingContext)) != null) {
+
+
                     //TODO: set matches in processingContext
                     if((status = handlerChain.execute(processingContext)) != DECLINE)
                         break;

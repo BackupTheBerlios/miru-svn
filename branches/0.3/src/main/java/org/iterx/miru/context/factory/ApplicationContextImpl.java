@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.ApplicationContextImpl
+  org.iterx.miru.context.factory.ApplicationContextImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.  
 */
-package org.iterx.miru.context;
+package org.iterx.miru.context.factory;
 
 import org.iterx.miru.bean.BeanException;
 import org.iterx.miru.bean.BeanProvider;
@@ -27,6 +27,9 @@ import org.iterx.miru.bean.BeanProviderListener;
 import org.iterx.miru.bean.BeanProviderListenerAware;
 
 import org.iterx.miru.io.factory.ResourceFactory;
+import org.iterx.miru.context.factory.ProcessingContextFactory;
+import org.iterx.miru.context.ApplicationContext;
+import org.iterx.miru.context.ApplicationContextAware;
 
 public class ApplicationContextImpl implements ApplicationContext, BeanProviderListener {
 

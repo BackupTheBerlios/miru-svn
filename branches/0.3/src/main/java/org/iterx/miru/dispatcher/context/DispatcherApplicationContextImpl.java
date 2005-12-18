@@ -21,7 +21,7 @@
 package org.iterx.miru.dispatcher.context;
 
 import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactory;
-import org.iterx.miru.context.ApplicationContextImpl;
+import org.iterx.miru.context.factory.ApplicationContextImpl;
 import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.bean.BeanProvider;
 import org.iterx.miru.bean.BeanWrapperAware;

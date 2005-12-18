@@ -23,22 +23,20 @@ package org.iterx.miru.bean.factory;
 
 import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.iterx.miru.bean.BeanWrapperAware;
 import org.iterx.miru.bean.BeanProvider;
 import org.iterx.miru.bean.Bean;
 import org.iterx.miru.bean.BeanWrapper;
+import org.iterx.miru.bean.BeanAware;
 
 public class BeanFactoryImpl extends BeanFactory
     implements BeanWrapperAware {
 
     private BeanProvider parent;
 
-    private final HashMap beans;
-
-    {
-        beans = new HashMap();
-    }
+    private final Map beans = new HashMap();
 
     public BeanFactoryImpl() {}
 
@@ -50,8 +48,7 @@ public class BeanFactoryImpl extends BeanFactory
     public Object getBean(String name) {
         BeanImpl bean;
 
-        if((bean = (BeanImpl) beans.get(name)) != null) return bean.newInstance();
-
+        if((bean = (BeanImpl) beans.get(name)) != null) return newInstance(bean);
         return ((parent != null)? parent.getBean(name) : null);
     }
 
@@ -130,7 +127,7 @@ public class BeanFactoryImpl extends BeanFactory
             BeanImpl bean;
 
             if(type.isAssignableFrom((bean = (BeanImpl) iterator.next()).cls))
-                return bean.newInstance();
+                return newInstance(bean);
         }
         return ((parent != null)? parent.getBeanOfType(type) : null);
     }
@@ -146,7 +143,7 @@ public class BeanFactoryImpl extends BeanFactory
             for(i = types.length; i-- > 0; ) {
                 if(!types[i].isAssignableFrom(bean.cls)) break;
             }
-            if(i < 0) return bean.newInstance();
+            if(i < 0) return newInstance(bean);
         }
         return ((parent != null)? parent.getBeanOfType(types) : null);
     }
@@ -183,4 +180,14 @@ public class BeanFactoryImpl extends BeanFactory
         wrapper.setWrappedInstance(null);
     }
 
+
+    private static final Object newInstance(BeanImpl bean) {
+        Object object;
+
+        object = bean.newInstance();
+        if(object instanceof BeanAware)
+            ((BeanAware) object).setId(bean.getId());
+
+        return object;
+    }
 }

@@ -22,10 +22,9 @@
 package org.iterx.miru.context;
 
 
-//TODO:
-//      - Create ContextResolver marker interface
-//      - Create Locale Resolver
 public interface ProcessingContext {
+
+    //public static final String MATCHES = (ProcessingContext.class).getName() + ":MATCHES";
 
     public RequestContext getRequestContext();
 

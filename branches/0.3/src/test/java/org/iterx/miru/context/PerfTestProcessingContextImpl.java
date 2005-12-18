@@ -29,6 +29,7 @@ import com.clarkware.junitperf.TimedTest;
 import com.clarkware.junitperf.LoadTest;
 import org.iterx.miru.context.http.MockHttpRequestContext;
 import org.iterx.miru.context.http.MockHttpResponseContext;
+import org.iterx.miru.context.factory.ProcessingContextFactory;
 
 public class PerfTestProcessingContextImpl extends TestCase {
 

@@ -39,6 +39,7 @@ import org.iterx.miru.bean.factory.BeanFactory;
 import org.iterx.miru.bean.BeanWrapper;
 import org.iterx.miru.bean.BeanWrapperAware;
 import org.iterx.miru.bean.BeanProvider;
+import org.iterx.miru.bean.BeanAware;
 import org.iterx.miru.support.spring.bean.SpringBeanWrapper;
 
 public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {
@@ -76,7 +77,11 @@ public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {
         assert (name != null)  : "name == null";
 
         try {
-            return beanFactory.getBean(name);
+            Object object;
+
+            object = beanFactory.getBean(name);
+            if(object instanceof BeanAware) ((BeanAware) object).setId(name);
+            return object;
         }
         catch(NoSuchBeanDefinitionException e) {
             if(LOGGER.isWarnEnabled())
@@ -89,12 +94,18 @@ public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {
         assert (type != null) : "type == null";
 
         try {
-            Map map;
+            String[] names;
 
             if((beanFactory instanceof ListableBeanFactory) &&
-               (map = BeanFactoryUtils.beansOfTypeIncludingAncestors
-                   ((ListableBeanFactory) beanFactory, type, true, false)).size() > 0)
-                return ((map.values()).iterator()).next();
+               (names = BeanFactoryUtils.beanNamesForTypeIncludingAncestors
+                   ((ListableBeanFactory) beanFactory, type, true, false)).length > 0) {
+                Object object;
+                String name;
+
+                object = beanFactory.getBean(name = names[0]);
+                if(object instanceof BeanAware) ((BeanAware) object).setId(name);
+                return object;
+            }
         }
         catch(BeansException e) {
             if(LOGGER.isWarnEnabled())
@@ -109,26 +120,29 @@ public class SpringBeanFactory extends BeanFactory implements BeanWrapperAware {
     public Object getBeanOfType(Class[] types) {
         assert (types != null && types.length > 0) : "types == null";
         try {
-            Map map;
+            String[] names;
 
             if((beanFactory instanceof ListableBeanFactory) &&
-               (map = BeanFactoryUtils.beansOfTypeIncludingAncestors
+               (names = BeanFactoryUtils.beanNamesForTypeIncludingAncestors
                    ((ListableBeanFactory) beanFactory,
-                    types[0], true, false)).size() > 0) {
+                    types[0], true, false)).length > 0) {
 
-                for(Iterator beans = (map.values()).iterator();
-                    beans.hasNext();) {
-                    Object bean;
-                    Class cls;
-                    int i;
+                for(int i = 0; i < names.length; i++) {
+                    Object object;
+                    String name;
+                    int j;
 
-                    cls = (bean = beans.next()).getClass();
+                    name = names[i];
+                    object = beanFactory.getBean(name);
 
-                    for (i = types.length; i-- > 1;) {
-                        if (!types[i].isAssignableFrom(cls)) break;
+                    for(j = types.length; j-- > 1;) {
+                        if(!types[j].isAssignableFrom(object.getClass())) break;
                     }
 
-                    if (i < 1) return bean;
+                    if(j < 1) {
+                        if(object instanceof BeanAware) ((BeanAware) object).setId(name);
+                        return object;
+                    }
                 }
             }
         }

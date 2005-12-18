@@ -30,5 +30,4 @@ public interface Bean {
 
     public KeyValue getPropertyValue(String property);
 
-
 }
