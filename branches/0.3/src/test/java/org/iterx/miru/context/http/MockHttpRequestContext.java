@@ -32,16 +32,26 @@ import org.iterx.miru.context.http.HttpRequestContextImpl;
 
 public class MockHttpRequestContext extends HttpRequestContextImpl {
 
-    public MockHttpRequestContext(String uri) {
+    private MockHttpRequestContext(String uri) {
 
         super((InputStream) null);
         setURI(uri);
     }
 
-    public MockHttpRequestContext(String uri, byte[] data) {
+    private MockHttpRequestContext(String uri, byte[] data) {
 
         super(new ByteArrayInputStream(data));
         setURI(uri);
+    }
+
+    public static MockHttpRequestContext newInstance(String uri) {
+
+        return new MockHttpRequestContext(uri);
+    }
+
+    public static MockHttpRequestContext newInstance(String uri, byte[] data) {
+
+        return new MockHttpRequestContext(uri, data);
     }
 
     public void setURI(String uri) {

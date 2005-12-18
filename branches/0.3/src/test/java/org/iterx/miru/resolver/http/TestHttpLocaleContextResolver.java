@@ -57,7 +57,8 @@ public class TestHttpLocaleContextResolver extends TestCase {
     protected void setUp() {
 
         processingContext = new MockProcessingContext
-            (new MockHttpRequestContext("/"),  new MockHttpResponseContext());
+            (MockHttpRequestContext.newInstance("/"),
+             MockHttpResponseContext.newInstance());
 
     }
 

@@ -37,7 +37,6 @@ import org.iterx.miru.context.ProcessingContextFactory;
 
 import org.iterx.miru.pipeline.generator.XmlGenerator;
 import org.iterx.miru.pipeline.serializer.XmlSerializer;
-import org.iterx.miru.pipeline.transformer.XsltTransformer;
 
 public class PerfTestPipelineChainImpl extends TestCase {
 
@@ -85,7 +84,6 @@ public class PerfTestPipelineChainImpl extends TestCase {
                 pipelineChain = (new PipelineChainImpl
                                  (new XmlGenerator(),
                                   xmlSerializer = new XmlSerializer()));
-                pipelineChain.addTransformer(new XsltTransformer());
                 xmlSerializer.setOmitXMLDeclaration(true);
                 pipelineChain.init();
                 pipelines[i] = pipelineChain;
@@ -114,12 +112,16 @@ public class PerfTestPipelineChainImpl extends TestCase {
 
         private PipelineChain getPipeline() {
 
-            return pipelines[(next = (++next % CONCURRENCY))];
+            synchronized(pipelines) {
+                return pipelines[(next = (++next % CONCURRENCY))];
+            }
         }
 
         private void recyclePipeline(PipelineChain pipelineChain) {
 
-            pipelines[(recycle = (++recycle % CONCURRENCY))] = pipelineChain;
+            synchronized(pipelines) {
+                pipelines[(recycle = (++recycle % CONCURRENCY))] = pipelineChain;
+            }
         }
 
         public void testPipeline() throws Exception {

@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.resolver.MockResourceResolver
+  org.iterx.miru.resolver.MockResourceResolver
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,12 +19,12 @@
   All Rights Reserved.  
 */
 
-package org.iterx.miru.dispatcher.resolver;
+package org.iterx.miru.resolver;
 
 import java.net.URI;
 
 import org.iterx.miru.io.Resource;
-import org.iterx.miru.dispatcher.resolver.ResourceResolver;
+import org.iterx.miru.resolver.ResourceResolver;
 
 public class MockResourceResolver implements ResourceResolver {
 
@@ -52,5 +52,5 @@ public class MockResourceResolver implements ResourceResolver {
         return (resource != null &&
                 (resource.getURI()).equals(uri))? resource : null;
     }
-    
+
 }

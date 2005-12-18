@@ -28,10 +28,10 @@ import java.net.URISyntaxException;
 import junit.framework.TestCase;
 
 import org.iterx.miru.io.resource.MockResource;
-import org.iterx.miru.io.ResourceFactoryImpl;
+import org.iterx.miru.io.factory.ResourceFactoryImpl;
 
-import org.iterx.miru.dispatcher.resolver.ResourceResolver;
-import org.iterx.miru.dispatcher.resolver.MockResourceResolver;
+import org.iterx.miru.resolver.ResourceResolver;
+import org.iterx.miru.resolver.MockResourceResolver;
 
 public class TestResourceFactoryImpl extends TestCase {
 

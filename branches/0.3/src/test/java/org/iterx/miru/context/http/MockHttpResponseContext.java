@@ -23,32 +23,38 @@ package org.iterx.miru.context.http;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.iterx.miru.context.http.HttpResponseContextImpl;
 
 public class MockHttpResponseContext extends HttpResponseContextImpl {
 
+    private ByteArrayOutputStream out;
 
-    public MockHttpResponseContext() {
+    private MockHttpResponseContext(OutputStream out) {
 
-        super(new ByteArrayOutputStream());
+        super(out);
+    }
+
+    public static MockHttpResponseContext newInstance() {
+        MockHttpResponseContext responseContext;
+        ByteArrayOutputStream out;
+
+        out = new ByteArrayOutputStream();
+        responseContext = new MockHttpResponseContext(out);
+        responseContext.out = out;
+
+        return responseContext;
     }
 
     public byte[] getData() {
 
-        try {
-            return ((ByteArrayOutputStream) getOutputStream()).toByteArray();
-        }
-        catch(IOException e) {}
-        return null;
+        return out.toByteArray();
     }
 
     public void reset() {
 
-        try {
-            ((ByteArrayOutputStream) getOutputStream()).reset();
-        }
-        catch(IOException e) {}
+        out.reset();
     }
 
 }

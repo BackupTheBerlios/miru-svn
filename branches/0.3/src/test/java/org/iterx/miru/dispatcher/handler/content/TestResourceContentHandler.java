@@ -31,7 +31,7 @@ import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.MockProcessingContext;
 import org.iterx.miru.context.http.MockHttpRequestContext;
 import org.iterx.miru.context.http.MockHttpResponseContext;
-import org.iterx.miru.dispatcher.resolver.MockResourceResolver;
+import org.iterx.miru.resolver.MockResourceResolver;
 import org.iterx.miru.dispatcher.Dispatcher;
 
 public class TestResourceContentHandler extends TestCase {
@@ -79,13 +79,13 @@ public class TestResourceContentHandler extends TestCase {
         ResourceContentHandler contentHandler;
 
         contentHandler = new ResourceContentHandler();
-        assertNull(contentHandler.getBase());
+        assertNull(contentHandler.getBaseUri());
 
-        contentHandler.setBase(BASE);
-        assertEquals(BASE, contentHandler.getBase());
+        contentHandler.setBaseUri(BASE);
+        assertEquals(BASE, contentHandler.getBaseUri());
 
-        contentHandler.setBase(null);
-        assertNull(contentHandler.getBase());
+        contentHandler.setBaseUri(null);
+        assertNull(contentHandler.getBaseUri());
     }
 
     public void testResourceResolverAccessors() {
@@ -117,8 +117,8 @@ public class TestResourceContentHandler extends TestCase {
         MockResource source;
 
         processingContext = new MockProcessingContext
-            (new MockHttpRequestContext("/"),
-             response = new MockHttpResponseContext());
+            (MockHttpRequestContext.newInstance("/"),
+             response = MockHttpResponseContext.newInstance());
 
         resolver = new MockResourceResolver();
         resolver.setResource(source = new MockResource(URI.create(PATH)));

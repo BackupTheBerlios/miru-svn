@@ -32,8 +32,8 @@ public class TestProcessingContextImpl extends TestCase {
 
     protected void setUp() {
 
-        processingContext = new ProcessingContextImpl(new MockHttpRequestContext("/"),
-                                                      new MockHttpResponseContext());
+        processingContext = new ProcessingContextImpl(MockHttpRequestContext.newInstance("/"),
+                                                      MockHttpResponseContext.newInstance());
     }
 
     protected void tearDown() {
@@ -44,8 +44,8 @@ public class TestProcessingContextImpl extends TestCase {
     public void testConstructors() {
         ProcessingContext clone;
 
-        processingContext = new ProcessingContextImpl(new MockHttpRequestContext("/"),
-                                                      new MockHttpResponseContext());
+        processingContext = new ProcessingContextImpl(MockHttpRequestContext.newInstance("/"),
+                                                      MockHttpResponseContext.newInstance());
         assertNotNull(processingContext);
 
         clone = new ProcessingContextImpl(processingContext);
@@ -61,13 +61,13 @@ public class TestProcessingContextImpl extends TestCase {
         }
         catch(IllegalArgumentException e) {}
         try {
-            new ProcessingContextImpl(null, new MockHttpResponseContext());
+            new ProcessingContextImpl(null, MockHttpResponseContext.newInstance());
             fail("ProcessingContext initialised with null arguments");
         }
         catch(IllegalArgumentException e) {}
 
         try {
-            new ProcessingContextImpl(new MockHttpRequestContext("/"), null);
+            new ProcessingContextImpl(MockHttpRequestContext.newInstance("/"), null);
             fail("ProcessingContext initialised with null arguments");
         }
         catch(IllegalArgumentException e) {}
@@ -82,7 +82,7 @@ public class TestProcessingContextImpl extends TestCase {
     public void testRequestContextAccessors() {
         RequestContext request;
 
-        request = new MockHttpRequestContext("/");
+        request = MockHttpRequestContext.newInstance("/");
         processingContext.setRequestContext(request);
         assertEquals(request, processingContext.getRequestContext());
 
@@ -96,7 +96,7 @@ public class TestProcessingContextImpl extends TestCase {
     public void testResponseContextAccessors() {
         ResponseContext response;
 
-        response = new MockHttpResponseContext();
+        response = MockHttpResponseContext.newInstance();
         processingContext.setResponseContext(response);
         assertEquals(response, processingContext.getResponseContext());
 

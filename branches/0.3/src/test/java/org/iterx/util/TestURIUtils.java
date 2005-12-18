@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 
 public class TestURIUtils extends TestCase {
 
-    private static final URI BASE = URI.create("base:///");
+    private static final URI BASE = URI.create("baseUri:///");
     private static final URI PATH = URI.create("/");
 
     public void testResolve() {

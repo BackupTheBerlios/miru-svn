@@ -32,7 +32,6 @@ import java.net.URISyntaxException;
 
 import junit.framework.TestCase;
 
-import org.iterx.miru.context.http.HttpRequestContextImpl;
 
 public class TestHttpRequestContextImpl extends TestCase {
 
@@ -56,8 +55,6 @@ public class TestHttpRequestContextImpl extends TestCase {
     assertNotNull(request);
     assertEquals(reader, request.getReader());
 
-        System.out.println(ENCODING);
-        System.out.println(request.getCharacterEncoding());
     assertTrue(encodingEquals(ENCODING, request.getCharacterEncoding()));
 
     request = new HttpRequestContextImpl
@@ -166,34 +163,35 @@ public class TestHttpRequestContextImpl extends TestCase {
     }
 
     public void testInputStream() throws IOException {
-    HttpRequestContextImpl request;
-    Reader reader;
+        HttpRequestContextImpl request;
+        Reader reader;
 
-    request = new HttpRequestContextImpl(System.in);
-    assertEquals(System.in, request.getInputStream());
-    assertNull(request.getReader());
+        request = new HttpRequestContextImpl(System.in);
+        assertEquals(System.in, request.getInputStream());
+        assertNull(request.getReader());
 
 
-    request = new HttpRequestContextImpl
-        ((reader = new InputStreamReader(System.in)));
-    assertNull(request.getInputStream());
-    assertEquals(reader, request.getReader());
-    assertNull(request.getInputStream());
+        request = new HttpRequestContextImpl
+            ((reader = new InputStreamReader(System.in)));
+        assertNull(request.getInputStream());
+        assertEquals(reader, request.getReader());
+        assertNull(request.getInputStream());
     }
 
     public void testReader() throws IOException {
-    HttpRequestContextImpl request;
-    Reader reader;
+        HttpRequestContextImpl request;
+        Reader reader;
 
-    request = new HttpRequestContextImpl
-        ((reader = new InputStreamReader(System.in)));
-    assertNull(request.getInputStream());
-    assertEquals(reader, request.getReader());
-    assertNull(request.getInputStream());
+        request = new HttpRequestContextImpl
+            ((reader = new InputStreamReader(System.in)));
+        assertNull(request.getInputStream());
+        assertEquals(reader, request.getReader());
+        assertNull(request.getInputStream());
 
-    request = new HttpRequestContextImpl(System.in);
-    assertNotNull(request.getReader());
-    assertNull(request.getInputStream());
+        request = new HttpRequestContextImpl(System.in);
+        assertNotNull(request.getReader());
+
+        assertNull(request.getInputStream());
     }
 
     private static boolean encodingEquals(String encodingA,

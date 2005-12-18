@@ -23,6 +23,8 @@ package org.iterx.miru.io;
 
 import java.net.URI;
 
+import org.iterx.miru.io.factory.ResourceFactory;
+
 public class MockResourceFactory extends ResourceFactory {
 
     private Resource resource;
@@ -43,5 +45,5 @@ public class MockResourceFactory extends ResourceFactory {
 
         this.resource = resource;
     }
-    
+
 }

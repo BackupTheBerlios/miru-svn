@@ -62,7 +62,8 @@ public class PerfTestProcessingContextImpl extends TestCase {
             ProcessingContext context;
 
             context = processingContextFactory.getProcessingContext
-                (new MockHttpRequestContext("/"), new MockHttpResponseContext());
+                (MockHttpRequestContext.newInstance("/"),
+                 MockHttpResponseContext.newInstance());
         }
 
     }
