@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.matcher.Matcher
+  org.iterx.miru.dispatcher.event.RedirectEvent
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,14 +18,33 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
-package org.iterx.miru.dispatcher.matcher;
 
-import org.iterx.miru.context.ProcessingContext;
 
-public interface Matcher {
+package org.iterx.miru.dispatcher.event;
 
-    public boolean hasMatches(ProcessingContext processingContext);
+import java.net.URI;
 
-    public Object[] getMatches(ProcessingContext processingContext);
+public class RedirectEvent extends Event {
+
+    private URI uri;
+
+    public RedirectEvent(URI uri) {
+
+        if(uri == null)
+            throw new IllegalArgumentException("uri == null");
+        this.uri = uri;
+    }
+
+    public URI getURI() {
+
+        return uri;
+    }
+
+    public void setURI(URI uri) {
+
+        if(uri == null)
+            throw new IllegalArgumentException("uri == null");
+        this.uri = uri;
+    }
 
 }

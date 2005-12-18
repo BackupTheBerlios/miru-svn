@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.DispatcherEvent
+  org.iterx.miru.dispatcher.event.EventListenerAware
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,24 +18,8 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
+package org.iterx.miru.dispatcher.event;
 
-package org.iterx.miru.dispatcher;
+public interface EventListenerAware {
 
-public class DispatcherEvent extends RuntimeException {
-
-    public DispatcherEvent() {}
-
-    public DispatcherEvent(String message) {
-
-        super(message);
-    }
-
-    public DispatcherEvent(Throwable cause) {
-
-    }
-
-    public DispatcherEvent(String message, Throwable cause) {
-
-        super(message);
-    }
 }

@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.io.ResourceFactory
+  org.iterx.miru.io.factory.ResourceFactory
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,9 +19,10 @@
   All Rights Reserved.
 */
 
-package org.iterx.miru.io;
+package org.iterx.miru.io.factory;
 
 import org.iterx.util.SystemUtils;
+import org.iterx.miru.io.ResourceProvider;
 
 
 public abstract class ResourceFactory implements ResourceProvider {

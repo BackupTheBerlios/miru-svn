@@ -25,6 +25,8 @@ package org.iterx.miru.dispatcher.handler.factory;
 import org.iterx.miru.dispatcher.handler.HandlerChain;
 import org.iterx.miru.dispatcher.handler.Handler;
 import org.iterx.miru.dispatcher.matcher.Matcher;
+import org.iterx.miru.dispatcher.event.Event;
+import org.iterx.miru.dispatcher.Dispatcher;
 import org.iterx.miru.context.ProcessingContext;
 
 public class HandlerChainImpl implements HandlerChain, Matcher {
@@ -75,5 +77,4 @@ public class HandlerChainImpl implements HandlerChain, Matcher {
 
         return handler.execute(processingContext);
     }
-
 }

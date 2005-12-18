@@ -27,12 +27,16 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.ByteBuffer;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.iterx.miru.dispatcher.handler.ContentHandler;
-import org.iterx.miru.dispatcher.resolver.ResourceResolver;
+import org.iterx.miru.resolver.ResourceResolver;
 import org.iterx.miru.dispatcher.Dispatcher;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.ResponseContext;
@@ -40,31 +44,19 @@ import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.io.Resource;
 import org.iterx.miru.io.StreamTarget;
 import org.iterx.miru.io.StreamSource;
+import org.iterx.miru.io.factory.ResourceFactory;
 import org.iterx.util.URIUtils;
-
-
 
 public class ResourceContentHandler implements ContentHandler {
 
     private static final Log LOGGER = LogFactory.getLog(ResourceContentHandler.class);
 
-    private ResourceResolver resourceResolver;
-    private String uri;
-    private URI base;
+    private ResourceFactory resourceFactory;
+    private URI baseUri;
 
-    {
-        uri = "{0}";
-    }
+    private String uri = "{0}";
 
     public ResourceContentHandler() {}
-
-    //TODO: pass in ResourceFactory.
-    public ResourceContentHandler(ResourceResolver resourceResolver) {
-
-        if(resourceResolver == null)
-            throw new IllegalArgumentException("resourceResolver == null");
-        this.resourceResolver = resourceResolver;
-    }
 
     public String getUri() {
 
@@ -78,30 +70,29 @@ public class ResourceContentHandler implements ContentHandler {
         this.uri = uri;
     }
 
-    public URI getBase() {
+    public URI getBaseUri() {
 
-        return base;
+        return baseUri;
     }
 
-    public void setBase(URI base) {
+    public void setBaseUri(URI base) {
 
-        this.base = base;
+        this.baseUri = base;
     }
 
-    public ResourceResolver getResourceResolver() {
+    public ResourceFactory getResourceFactory() {
 
-        return resourceResolver;
+        return resourceFactory;
     }
 
-    public void setResourceResolver(ResourceResolver resourceResolver) {
+    public void setResourceFactory(ResourceFactory resourceFactory) {
 
-        if(resourceResolver == null)
-            throw new IllegalArgumentException("resourceResolver == null");
-        this.resourceResolver = resourceResolver;
+        this.resourceFactory = resourceFactory;
     }
+
 
     public int execute(ProcessingContext processingContext) {
-        assert (resourceResolver != null) : "resourceResolver == null";
+        assert (resourceFactory != null) : "resourceFactory == null";
 
         ResponseContext response;
         RequestContext request;
@@ -113,48 +104,47 @@ public class ResourceContentHandler implements ContentHandler {
         assert (response instanceof StreamTarget) : "ResponseContext not instanceof StreamSource";
 
         uri = URIUtils.resolve(this.uri,
-                               base,
+                               baseUri,
                                new String[] { (request.getURI()).getPath() });
 
-        if((resource = resourceResolver.resolve(uri)) != null &&
+        if((resource = resourceFactory.getResource(uri)) != null &&
            resource instanceof StreamSource) {
-            ReadableByteChannel reader;
-            WritableByteChannel writer;
 
-            reader = null;
-            writer = null;
+            InputStream in;
+            OutputStream out;
 
-            //resource.getContentType();
-            //add support for character transcoding...
+            in = null;
+            out = null;
             try {
-                ByteBuffer buffer;
-                buffer = ByteBuffer.allocate(8096);
+                byte[] buffer;
+                int count;
 
-                reader = Channels.newChannel(((StreamSource) resource).getInputStream());
-                writer = Channels.newChannel(((StreamTarget) response).getOutputStream());
-                while(reader.read(buffer) != -1 || buffer.position() > 0) {
-                    buffer.flip();
-                    writer.write(buffer);
-                    buffer.compact();
+                in = ((StreamSource) resource).getInputStream();
+                out = ((StreamTarget) response).getOutputStream();
+                buffer = new byte[8192];
+
+                while((count = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, count);
                 }
+                out.flush();
                 return Dispatcher.OK;
             }
             catch(IOException e) {
-                //LOG ERROR
-                //re-throw error?
+
             }
             finally {
-                if(reader != null)
-                    try { reader.close(); } catch(IOException e) {}
-                if(writer != null)
-                    try { writer.close(); } catch(IOException e) {}
+                if(in != null)
+                    try { in.close(); } catch(IOException e) {}
+                if(out != null)
+                    try { out.close(); } catch(IOException e) {}
             }
         }
-
         //throw resource not found exception?
         //or set error on response
         LOGGER.warn("Resource '" + uri + "' not found.");
         return Dispatcher.ERROR;
     }
+
+
 
 }

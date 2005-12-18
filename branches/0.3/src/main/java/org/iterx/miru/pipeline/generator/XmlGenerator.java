@@ -62,6 +62,8 @@ public class XmlGenerator extends GeneratorImpl {
 
             saxParser = saxParserFactory.newSAXParser();
             xmlReader = saxParser.getXMLReader();
+            xmlReader.setFeature(NAMESPACES, true);
+            xmlReader.setFeature(NAMESPACE_PREFIXES, false);
         }
         catch(Exception e) {
             throw new RuntimeException

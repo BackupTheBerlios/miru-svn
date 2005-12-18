@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.matcher.Matcher
+  org.iterx.miru.dispatcher.event.Event
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,14 +18,16 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
-package org.iterx.miru.dispatcher.matcher;
 
-import org.iterx.miru.context.ProcessingContext;
+package org.iterx.miru.dispatcher.event;
 
-public interface Matcher {
+public class Event extends RuntimeException {
 
-    public boolean hasMatches(ProcessingContext processingContext);
+    public Event() {}
 
-    public Object[] getMatches(ProcessingContext processingContext);
 
+    public synchronized Throwable fillInStackTrace() {
+
+        return null;
+    }
 }

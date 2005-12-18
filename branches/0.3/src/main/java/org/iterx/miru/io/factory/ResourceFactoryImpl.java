@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.io.ResourceFactoryImpl
+  org.iterx.miru.io.factory.ResourceFactoryImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,14 +19,16 @@
   All Rights Reserved.  
 */
 
-package org.iterx.miru.io;
+package org.iterx.miru.io.factory;
 
 import java.net.URI;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.iterx.miru.dispatcher.resolver.ResourceResolver;
+import org.iterx.miru.resolver.ResourceResolver;
+import org.iterx.miru.io.factory.ResourceFactory;
+import org.iterx.miru.io.Resource;
 
 import org.iterx.util.ArrayUtils;
 

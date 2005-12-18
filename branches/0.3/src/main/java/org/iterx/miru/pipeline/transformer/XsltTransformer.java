@@ -22,6 +22,8 @@ package org.iterx.miru.pipeline.transformer;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXTransformerFactory;
@@ -29,24 +31,30 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.Templates;
+import javax.xml.transform.stream.StreamSource;
 
-import org.iterx.miru.pipeline.Stage;
-import org.iterx.miru.pipeline.PipelineChainException;
-import org.iterx.miru.context.ProcessingContext;
-import org.iterx.miru.io.ResourceFactory;
-import org.iterx.miru.io.Resource;
 import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
 
+
+import org.iterx.miru.pipeline.Stage;
+import org.iterx.miru.pipeline.PipelineChainException;
+import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.io.factory.ResourceFactory;
+import org.iterx.miru.io.Resource;
+import org.iterx.miru.io.ReadableResource;
+import org.iterx.util.URIUtils;
+
 public class XsltTransformer extends TransformerImpl {
 
     private static SAXTransformerFactory transformerFactory;
-
+    private static Map templates;
 
     private TransformerHandler transformerHandler;
+
     private SaxHandlerProxy saxHandlerProxy;
     private SAXResult saxResult;
 
@@ -55,6 +63,7 @@ public class XsltTransformer extends TransformerImpl {
 
     static {
         transformerFactory = (SAXTransformerFactory) TransformerFactory.newInstance();
+        templates = new HashMap();
     }
 
     public String getUri() {
@@ -102,28 +111,29 @@ public class XsltTransformer extends TransformerImpl {
         assert (uri != null) : "uri == null";
 
         try {
-            /*
             Templates template;
-            Resource resource;
             URI uri;
 
             uri = URIUtils.resolve(this.uri,
                                    null,
                                    new String[] {});
-            if((resource = resourceFactory.getResource(uri)) == null ||
-               !(resource instanceof ReadableResource))
-                throw new PipelineChainException("Invalid template [" + uri + "].");
 
+            if((template = (Templates) templates.get(uri)) == null) {
+                Resource resource;
 
-            template = transformerFactory.newTemplates
-                (new StreamSource(((ReadableResource) resource).getReader()));
-                */
-            //transformerHandler = transformerFactory.newTransformerHandler(template);
+                if((resource = resourceFactory.getResource(uri)) == null ||
+                   !(resource instanceof ReadableResource))
+                    throw new PipelineChainException("Invalid template [" + uri + "].");
+                template = transformerFactory.newTemplates
+                    (new StreamSource(((ReadableResource) resource).getReader()));
 
-            if(transformerHandler == null) {
-                transformerHandler = transformerFactory.newTransformerHandler();
-                transformerHandler.setResult(saxResult);
+                synchronized(templates) {
+                    templates.put(uri, template);
+                }
             }
+            transformerHandler = transformerFactory.newTransformerHandler(template);
+            transformerHandler.setResult(saxResult);
+
             super.execute(processingContext);
         }
         catch(TransformerConfigurationException e) {
@@ -136,7 +146,6 @@ public class XsltTransformer extends TransformerImpl {
          transformerHandler = null;
          saxHandlerProxy = null;
          saxResult = null;
-
          super.destroy();
     }
 

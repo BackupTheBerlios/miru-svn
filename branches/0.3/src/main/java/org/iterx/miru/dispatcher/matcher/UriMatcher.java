@@ -72,21 +72,21 @@ public class UriMatcher implements org.iterx.miru.dispatcher.matcher.Matcher {
     }
 
     public void setPattern(String pattern) {
-        if(pattern == null)
-            throw new IllegalArgumentException("pattern == null");
+            if(pattern == null)
+                throw new IllegalArgumentException("pattern == null");
 
-        if(!pattern.equals(this.pattern)) {
-            StringBuilder builder;
+            if(!pattern.equals(this.pattern)) {
+                StringBuilder builder;
 
-            builder = new StringBuilder();
-            if(!pattern.startsWith("$")) builder.append(".*");
-            builder.append(pattern);
-            if(!pattern.endsWith("^")) builder.append(".*");
+                builder = new StringBuilder();
+                if(!pattern.startsWith("$")) builder.append(".*");
+                builder.append(pattern);
+                if(!pattern.endsWith("^")) builder.append(".*");
 
-            regex = Pattern.compile(builder.toString());
-            this.pattern = pattern;
+                regex = Pattern.compile(builder.toString());
+                this.pattern = pattern;
+            }
         }
-    }
 
 
     public boolean hasMatches(ProcessingContext context) {
@@ -133,46 +133,45 @@ public class UriMatcher implements org.iterx.miru.dispatcher.matcher.Matcher {
     }
 
     private static String uriToString(URI uri, int mask) {
-        String string;
+            String string;
 
-        switch(mask) {
-            case MASK_PATH:
-                string = uri.getPath();
-                break;
-            case MASK_URI:
-                string = uri.toString();
-                break;
-            case MASK_SCHEME:
-                string = uri.getScheme();
-                break;
-            case MASK_AUTHORITY:
-                string = uri.getAuthority();
-                break;
-            case MASK_QUERY:
-                string = uri.getQuery();
-                break;
-            default:
-                StringBuilder builder;
-
-                builder = new StringBuilder();
-                if((mask & MASK_SCHEME) != 0) {
-                    builder.append(uri.getScheme());
-                    builder.append(':');
-                }
-                if((mask & MASK_AUTHORITY) != 0) {
-                    builder.append("//");
-                    builder.append(uri.getAuthority());
-                }
-                if((mask & MASK_PATH) != 0)
-                    builder.append(uri.getPath());
-                if((mask & MASK_QUERY) != 0) {
-                    builder.append('?');
-                    builder.append(uri.getQuery());
-                }
-                string = builder.toString();
+            switch(mask) {
+                case MASK_PATH:
+                    string = uri.getPath();
+                    break;
+                case MASK_URI:
+                    string = uri.toString();
+                    break;
+                case MASK_SCHEME:
+                    string = uri.getScheme();
+                    break;
+                case MASK_AUTHORITY:
+                    string = uri.getAuthority();
+                    break;
+                case MASK_QUERY:
+                    string = uri.getQuery();
+                    break;
+                default:
+                    StringBuilder builder  = new StringBuilder();
+                    if((mask & MASK_SCHEME) != 0) {
+                        builder.append(uri.getScheme());
+                        builder.append(':');
+                    }
+                    if((mask & MASK_AUTHORITY) != 0) {
+                        builder.append("//");
+                        builder.append(uri.getAuthority());
+                    }
+                    if((mask & MASK_PATH) != 0)
+                        builder.append(uri.getPath());
+                    if((mask & MASK_QUERY) != 0) {
+                        builder.append('?');
+                        builder.append(uri.getQuery());
+                    }
+                    string = builder.toString();
+            }
+            return string;
         }
 
-        return string;
-    }
+
 
 }
