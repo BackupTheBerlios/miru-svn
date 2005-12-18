@@ -151,7 +151,7 @@ public class BeanWrapperImpl implements BeanWrapper {
                     parameterType = (method.getParameterTypes())[0];
                     next = value;
 
-                    while(current != next) {
+                    OUTER: while(current != next) {
                         current = next;
 
 
@@ -172,9 +172,9 @@ public class BeanWrapperImpl implements BeanWrapper {
                             return;
                         }
                         else if(parameterType.isAssignableFrom(current.getClass()) ||
-                                (parameterType.isArray() &&
-                                 current instanceof List &&
-                                 (parameterType.getComponentType()).isAssignableFrom(current.getClass()))) {
+                                (parameterType.isArray() && current instanceof List)) {
+
+                            //&& (parameterType.getComponentType()).isAssignableFrom(current.getClass()))) {
 
                             if(current instanceof List ) {
                                 ArrayList list;
@@ -186,15 +186,19 @@ public class BeanWrapperImpl implements BeanWrapper {
 
                                     entry = iterator.next();
                                     if(entry instanceof BeanRef) {
-                                        list.add(beanProvider.getBean(((BeanRef) entry).getId()));
+                                        list.add(entry = beanProvider.getBean(((BeanRef) entry).getId()));
                                     }
                                     else if(entry instanceof BeanImpl) {
                                         BeanImpl bean;
 
                                         bean = (BeanImpl) entry;
-                                        list.add(bean.newInstance());
+                                        list.add(entry = bean.newInstance());
                                     }
                                     else list.add(entry);
+
+                                    if(parameterType.isArray() &&
+                                       !(parameterType.getComponentType()).isAssignableFrom(entry.getClass()))
+                                        break OUTER;
                                 }
                                 current = ((parameterType.isArray())?
                                            list.toArray((Object[]) Array.newInstance

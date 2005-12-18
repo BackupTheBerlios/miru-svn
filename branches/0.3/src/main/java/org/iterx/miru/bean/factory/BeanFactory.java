@@ -36,8 +36,6 @@ public abstract class BeanFactory implements BeanProvider,  BeanProviderListener
 
     private BeanProviderListener[] beanProviderListeners =  new BeanProviderListener[0];
 
-
-
     static {
         String[] paths, clone;
 

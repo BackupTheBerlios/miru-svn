@@ -28,8 +28,7 @@ import org.iterx.miru.context.ApplicationContext;
 
 public interface ServletApplicationContext extends ApplicationContext {
 
-    
-
+   
     public ServletContext getServletContext();
-
+   
 }

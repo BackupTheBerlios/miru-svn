@@ -21,7 +21,7 @@
 package org.iterx.miru.context;
 
 import org.iterx.miru.bean.BeanProvider;
-import org.iterx.miru.io.ResourceFactory;
+import org.iterx.miru.io.factory.ResourceFactory;
 
 
 public interface ApplicationContext extends BeanProvider {

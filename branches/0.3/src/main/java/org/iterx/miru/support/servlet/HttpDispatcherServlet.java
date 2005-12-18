@@ -22,6 +22,7 @@ package org.iterx.miru.support.servlet;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URI;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +37,8 @@ import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.ProcessingContextFactory;
 import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.dispatcher.Dispatcher;
+import org.iterx.miru.dispatcher.event.RedirectEvent;
+import org.iterx.miru.dispatcher.event.ErrorEvent;
 import org.iterx.miru.dispatcher.context.DispatcherApplicationContext;
 import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactory;
 import org.iterx.miru.support.servlet.context.http.HttpServletRequestContext;
@@ -153,28 +156,36 @@ public class HttpDispatcherServlet extends HttpServlet {
             int status = dispatcher.dispatch(processingContext);
             switch(status) {
                 case Dispatcher.DONE:
-                    response.flushBuffer();
-                case Dispatcher.OK:
+                    requestContext.close();
+                    responseContext.close();
                     break;
+                case Dispatcher.OK:
                 case Dispatcher.DECLINE:
-                    if(responseContext.getStatus() == HttpServletResponseContext.REDIRECT) {
-                        ServletContext servletContext;
-                        String uri;
-
-                        if((uri = responseContext.getHeader("location")) != null)
-                            uri = (requestContext.getURI()).getPath();
-
-                        servletContext = getServletConfig().getServletContext();
-                        (servletContext.getRequestDispatcher(uri)).forward(request, response);
-                        break;
-                    }
                     break;
                 case Dispatcher.ERROR:
-                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    responseContext.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     break;
                 default:
                     break;
             };
+        }
+        catch(RedirectEvent redirect)  {
+            URI uri;
+
+            if((uri = redirect.getURI()).getScheme() == null) {
+                ServletContext servletContext;
+                servletContext = (getServletConfig().getServletContext());
+
+                (servletContext.getRequestDispatcher(uri.getPath())).forward(request, response);
+            }
+            else response.sendRedirect(uri.toString());
+        }
+        catch(ErrorEvent error)  {
+            String url;
+
+            url = (request.getRequestURL()).toString();
+            LOGGER.info("Error processing [" + url + "]", error);
+            response.setStatus(error.getStatus());
         }
         catch(Exception e) {
             String url;

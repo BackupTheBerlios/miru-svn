@@ -28,15 +28,18 @@ import java.io.Writer;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.IOException;
+import java.io.Closeable;
 
 import org.iterx.miru.context.http.HttpResponseContext;
 
-public class HttpResponseContextImpl implements HttpResponseContext {
+public class HttpResponseContextImpl
+    implements HttpResponseContext, Closeable {
+
     protected Map properties;
     protected boolean _mutable;
 
     private Writer writer;
-    private OutputStream out;
+    private OutputStream outputStream;
 
     private String encoding, type;
     private int length;
@@ -65,7 +68,7 @@ public class HttpResponseContextImpl implements HttpResponseContext {
     public HttpResponseContextImpl(OutputStream out, String encoding) {
 
         properties = new HashMap();
-        this.out = out;
+        this.outputStream = out;
         this.encoding = encoding;
     }
 
@@ -139,26 +142,34 @@ public class HttpResponseContextImpl implements HttpResponseContext {
 
     public OutputStream getOutputStream() throws IOException {
 
-        if (_mutable && out != null) {
+        if (_mutable && outputStream != null) {
             _mutable = false;
             writer = null;
         }
-        return out;
+        return outputStream;
     }
 
     public Writer getWriter() throws IOException {
 
         if (_mutable) {
-            if (out != null)
+            if (outputStream != null)
                 writer = ((encoding != null) ?
-                          new OutputStreamWriter(out, encoding) :
-                          new OutputStreamWriter(out));
+                          new OutputStreamWriter(outputStream, encoding) :
+                          new OutputStreamWriter(outputStream));
             _mutable = false;
-            out = null;
+            outputStream = null;
         }
         return writer;
     }
 
+
+    public void close() throws IOException {
+
+        if(outputStream != null)
+            try { outputStream.close(); } catch(IOException e) {}
+        if(writer != null)
+            try { writer.close(); } catch(IOException e) {}
+    }
 
     private final class CaseInsensitiveKey {
         private String value;

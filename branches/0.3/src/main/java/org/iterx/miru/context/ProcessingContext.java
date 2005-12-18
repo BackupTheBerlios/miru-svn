@@ -22,10 +22,7 @@
 package org.iterx.miru.context;
 
 
-//TODO: - Replace this by interface
-//      - Create ProcessingContextImpl
-//      - Create ProcessingContextFactoryImpl
-//      - Modify HttpDispatchServlet to take ProcessingContextFactory
+//TODO:
 //      - Create ContextResolver marker interface
 //      - Create Locale Resolver
 public interface ProcessingContext {

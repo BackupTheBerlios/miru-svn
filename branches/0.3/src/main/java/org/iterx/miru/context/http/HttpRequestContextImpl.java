@@ -25,6 +25,7 @@ import java.io.Reader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.Closeable;
 
 import java.net.URI;
 
@@ -32,16 +33,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
 
-import org.iterx.miru.context.http.HttpRequestContext;
 
-public class HttpRequestContextImpl implements HttpRequestContext {
+public class HttpRequestContextImpl
+    implements HttpRequestContext, Closeable {
 
     protected Map parameters, properties;
     protected URI uri;
 
     protected boolean _mutable;
 
-    private InputStream in;
+    private InputStream inputStream;
     private Reader reader;
 
     private String encoding, type;
@@ -68,7 +69,7 @@ public class HttpRequestContextImpl implements HttpRequestContext {
         parameters = new HashMap();
         properties = new HashMap();
         this.encoding = encoding;
-        this.in = in;
+        this.inputStream = in;
 
     }
 
@@ -162,25 +163,36 @@ public class HttpRequestContextImpl implements HttpRequestContext {
 
     public InputStream getInputStream() throws IOException {
 
-        if (_mutable && in != null) {
+        if (_mutable && inputStream != null) {
             _mutable = false;
             reader = null;
         }
-        return in;
+
+        return inputStream;
     }
 
     public Reader getReader() throws IOException {
 
-        if (_mutable) {
-            if (in != null)
+        if(_mutable) {
+            if(inputStream != null)
                 reader = ((encoding != null) ?
-                          new InputStreamReader(in, encoding) :
-                          new InputStreamReader(in));
+                          new InputStreamReader(inputStream, encoding) :
+                          new InputStreamReader(inputStream));
             _mutable = false;
-            in = null;
+            inputStream = null;
         }
+
         return reader;
     }
+
+    public void close() throws IOException {
+
+        if(inputStream != null)
+            try { inputStream.close(); } catch(IOException e) {}
+        if(reader != null)
+            try { reader.close(); } catch(IOException e) {}
+    }
+
 
     private final class CaseInsensitiveKey {
         private String value;

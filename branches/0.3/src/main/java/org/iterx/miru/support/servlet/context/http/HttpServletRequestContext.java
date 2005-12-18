@@ -27,14 +27,18 @@ import java.util.Set;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Closeable;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.iterx.miru.context.http.HttpRequestContext;
 
-public final class HttpServletRequestContext implements HttpRequestContext {
+public final class HttpServletRequestContext
+    implements HttpRequestContext, Closeable {
 
     private HttpServletRequest httpRequest;
+    private InputStream inputStream;
+    private Reader reader;
     private URI uri;
 
     public HttpServletRequestContext(HttpServletRequest httpRequest) {
@@ -115,12 +119,28 @@ public final class HttpServletRequestContext implements HttpRequestContext {
     
     public InputStream getInputStream() throws IOException {
 
-        return httpRequest.getInputStream();
+        try {
+            return (inputStream = httpRequest.getInputStream());
+        }
+        catch(IllegalStateException e) {}
+        return null;
     }
 
     public Reader getReader() throws IOException {
+        try {
+            return (reader = httpRequest.getReader());
+        }
+        catch(IllegalStateException e) {}
+        return null;
+    }
 
-        return httpRequest.getReader();
+    public void close() throws IOException {
+
+        if(inputStream != null)
+            try { inputStream.close(); } catch(IOException e) {}
+        if(reader != null)
+            try { reader.close(); } catch(IOException e) {}
+
     }
 
 }

@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.support.servlet.dispatcher.resolver.resource.ServletContextResourceResolver
+  org.iterx.miru.support.servlet.resolver.resource.ServletContextResourceResolver
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,7 @@
 */
 
 
-package org.iterx.miru.support.servlet.dispatcher.resolver.resource;
+package org.iterx.miru.support.servlet.resolver.resource;
 
 import java.net.URI;
 import java.net.URL;
@@ -29,7 +29,7 @@ import java.net.URISyntaxException;
 
 import javax.servlet.ServletContext;
 
-import org.iterx.miru.dispatcher.resolver.ResourceResolver;
+import org.iterx.miru.resolver.ResourceResolver;
 import org.iterx.miru.io.Resource;
 import org.iterx.miru.io.resource.UriResource;
 import org.iterx.miru.context.ApplicationContextAware;
@@ -81,7 +81,7 @@ public class ServletContextResourceResolver
     }
 
     public Resource resolve(URI uri) {
-        assert (servletContext != null) : "servletContext == null";        
+        assert (servletContext != null) : "servletContext == null";
         Resource resource;
 
         resource = null;

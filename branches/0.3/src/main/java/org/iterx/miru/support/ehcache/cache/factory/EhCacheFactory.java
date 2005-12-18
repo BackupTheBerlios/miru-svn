@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.bean.factory.XmlBeanFactory
+  org.iterx.miru.support.ehcache.cache.factory.EhCacheFactory
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,47 +18,50 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
-package org.iterx.miru.bean.factory;
+
+package org.iterx.miru.support.ehcache.cache.factory;
 
 import java.io.IOException;
 
-import org.iterx.miru.bean.BeanProvider;
-import org.iterx.miru.io.Resource;
+import org.iterx.miru.cache.factory.CacheFactory;
+import org.iterx.miru.cache.Cache;
 import org.iterx.miru.io.Loadable;
+import org.iterx.miru.io.Resource;
 import org.iterx.miru.io.StreamSource;
-import org.iterx.miru.io.resource.UriResource;
 
-public class XmlBeanFactory extends BeanFactoryImpl implements Loadable {
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.CacheException;
 
-    public XmlBeanFactory() {}
+public class EhCacheFactory extends CacheFactory implements Loadable {
 
-    public XmlBeanFactory(BeanProvider parent) {
+    private CacheManager cacheManager;
 
-        super(parent);
+    public Cache getCache(String name) {
+        assert (cacheManager != null) : "cacheManager == null";
+
+        return new EhCache(cacheManager.getCache(name));
     }
 
-    public void load(String uri) throws IOException {
-        Resource resource;
+    public void recycleCache(String name) {
+        assert (cacheManager != null) : "cacheManager == null";
 
-        if((resource = new UriResource(uri)).exists()) load(resource);
-        else throw new IllegalArgumentException
-                       ("Resource [" + uri + "] does not exist.");
+        cacheManager.removeCache(name);
     }
-
 
     public void load(Resource resource) throws IOException {
-        XmlBeanParser parser;
+
 
         if(resource == null)
             throw new IllegalArgumentException("resource == null");
         if(!(resource instanceof StreamSource))
             throw new IllegalArgumentException("resource is not a StreamSource.");
 
-        parser = new XmlBeanParser(this);
-        parser.parse((StreamSource) resource);
+        try {
+            cacheManager = new CacheManager(((StreamSource) resource).getInputStream());
+        }
+        catch(CacheException e) {
+            throw new RuntimeException("Failed to initialise EhCache.", e);
+        }
     }
-
-
-
 
 }

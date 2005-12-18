@@ -24,6 +24,7 @@ package org.iterx.miru.support.servlet.context.http;
 import java.io.Writer;
 import java.io.OutputStream;
 import java.io.IOException;
+import java.io.Closeable;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -33,9 +34,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.iterx.miru.context.http.HttpResponseContext;
 
-public final class HttpServletResponseContext implements HttpResponseContext {
+public final class HttpServletResponseContext
+    implements HttpResponseContext, Closeable {
 
     private HttpServletResponse httpResponse;
+    private OutputStream outputStream;
+    private Writer writer;
+
     private Map properties;
     private int length, status;
 
@@ -114,12 +119,28 @@ public final class HttpServletResponseContext implements HttpResponseContext {
 
     public OutputStream getOutputStream() throws IOException {
 
-        return httpResponse.getOutputStream();
+        try {
+            return (outputStream = httpResponse.getOutputStream());
+        }
+        catch(IllegalStateException e) {}
+        return null;
     }
 
     public Writer getWriter() throws IOException {
 
-        return httpResponse.getWriter();
+        try {
+            return (writer = httpResponse.getWriter());
+        }
+        catch(IllegalStateException e) {}
+        return null;
+    }
+
+    public void close() throws IOException {
+
+        if(outputStream != null)
+            try { outputStream.close(); } catch(IOException e) {}
+        if(writer != null)
+            try { writer.close(); } catch(IOException e) {}
     }
 
 }

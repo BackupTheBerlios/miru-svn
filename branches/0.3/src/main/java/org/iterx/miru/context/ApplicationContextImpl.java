@@ -26,7 +26,7 @@ import org.iterx.miru.bean.factory.BeanFactory;
 import org.iterx.miru.bean.BeanProviderListener;
 import org.iterx.miru.bean.BeanProviderListenerAware;
 
-import org.iterx.miru.io.ResourceFactory;
+import org.iterx.miru.io.factory.ResourceFactory;
 
 public class ApplicationContextImpl implements ApplicationContext, BeanProviderListener {
 
@@ -121,7 +121,7 @@ public class ApplicationContextImpl implements ApplicationContext, BeanProviderL
         Object object;
 
         if(((object = beanProvider.getBean(name)) == null) &&
-            parent != null) object = parent.getBean(name);
+           parent != null) object = parent.getBean(name);
         return object;
     }
 
