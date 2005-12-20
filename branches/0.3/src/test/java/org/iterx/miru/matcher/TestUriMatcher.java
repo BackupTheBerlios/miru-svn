@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.matcher.TestUriMatcher
+  org.iterx.miru.matcher.TestUriMatcher
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,7 @@
   All Rights Reserved.
 */
 
-package org.iterx.miru.dispatcher.matcher;
+package org.iterx.miru.matcher;
 
 import junit.framework.TestCase;
 import org.iterx.miru.context.MockProcessingContext;
@@ -29,31 +29,32 @@ import org.iterx.miru.context.http.MockHttpResponseContext;
 
 public class TestUriMatcher extends TestCase {
 
+    private static final String ID         = "id";
     private static final String URI        = "http://localhost:8000/a/path?query_string";
     private static final Integer MASK_URI  = new Integer(UriMatcher.MASK_URI);
     private static final Integer MASK_PATH = new Integer(UriMatcher.MASK_PATH);
     private static final Integer MASK_HOST = new Integer(UriMatcher.MASK_SCHEME|UriMatcher.MASK_AUTHORITY);
 
     private static Object[][] TESTS = {
-        { MASK_URI, "^$", null},
-        { MASK_URI, "does-not-exist", null},
-        { MASK_URI, ".*", new Object[]{ URI }},
-        { MASK_URI, "^http://", new Object[]{ URI }},
-        { MASK_URI, "?query_string$", new Object[]{ URI }},
-        { MASK_URI, "/a/path", new Object[]{ URI }},
-        { MASK_URI, "//(\\w*):(\\d*)/", new Object[]{ URI, "localhost", "8000" }},
-        { MASK_PATH, "localhost", null},
-        { MASK_PATH, ".*", new Object[]{ "/a/path" }},
-        { MASK_PATH, "(path)", new Object[]{ "/a/path", "path" }},
-        { MASK_HOST, "/a/path", null },
-        { MASK_HOST, "^http://", new Object[]{ "http://localhost:8000" }},
-        { MASK_HOST, "//(\\w*):(\\d*)", new Object[]{ "http://localhost:8000", "localhost", "8000" }},
-    };
-
+          { MASK_URI, "^$", null},
+          { MASK_URI, "does-not-exist", null},
+          { MASK_URI, ".*", new String[]{ URI }},
+          { MASK_URI, "^http://", new String[]{ URI }},
+          { MASK_URI, "?query_string$", new String[]{ URI }},
+          { MASK_URI, "/a/path", new String[]{ URI }},
+          { MASK_URI, "//(\\w*):(\\d*)/", new String[]{ URI, "localhost", "8000" }},
+          { MASK_PATH, "localhost", null},
+          { MASK_PATH, ".*", new String[]{ "/a/path" }},
+          { MASK_PATH, "(path)", new String[]{ "/a/path", "path" }},
+          { MASK_HOST, "/a/path", null },
+          { MASK_HOST, "^http://", new String[]{ "http://localhost:8000" }},
+          { MASK_HOST, "//(\\w*):(\\d*)", new String[]{ "http://localhost:8000", "localhost", "8000" }},
+      };
+  
     public void testConstructors() {
 
-        assertEquals(UriMatcher.MASK_URI, (new UriMatcher()).getMask());
-        assertEquals(UriMatcher.MASK_PATH, (new UriMatcher(UriMatcher.MASK_PATH)).getMask());
+        assertEquals(UriMatcher.MASK_PATH, (new UriMatcher()).getMask());
+        assertEquals(UriMatcher.MASK_URI, (new UriMatcher(UriMatcher.MASK_URI)).getMask());
     }
 
 
@@ -61,10 +62,10 @@ public class TestUriMatcher extends TestCase {
         UriMatcher matcher;
 
         matcher = new UriMatcher();
-        assertEquals(UriMatcher.MASK_URI, matcher.getMask());
-
-        matcher.setMask(UriMatcher.MASK_PATH);
         assertEquals(UriMatcher.MASK_PATH, matcher.getMask());
+
+        matcher.setMask(UriMatcher.MASK_URI);
+        assertEquals(UriMatcher.MASK_URI, matcher.getMask());
 
         matcher.setMask(UriMatcher.MASK_SCHEME|UriMatcher.MASK_PATH);
         assertEquals(UriMatcher.MASK_SCHEME|UriMatcher.MASK_PATH, matcher.getMask());
@@ -95,13 +96,13 @@ public class TestUriMatcher extends TestCase {
     }
 
     public void testMatches() {
-        ProcessingContext context;
+        ProcessingContext processingContext;
         UriMatcher matcher;
 
 
-        matcher = new UriMatcher();
-        context = new MockProcessingContext(MockHttpRequestContext.newInstance(URI),
-                                            MockHttpResponseContext.newInstance());
+        matcher = new UriMatcher(ID);
+        processingContext = new MockProcessingContext(MockHttpRequestContext.newInstance(URI),
+                                                      MockHttpResponseContext.newInstance());
 
         for(int i = 0; i < TESTS.length; i++) {
             Object[] values;
@@ -110,19 +111,21 @@ public class TestUriMatcher extends TestCase {
             matcher.setPattern((String) TESTS[i][1]);
 
 
-            if((values = (Object[]) TESTS[i][2]) != null) {
-                Object[] matches;
+            if((values = (String[]) TESTS[i][2]) != null) {
+                Matches matches;
+                String[] strings;
 
-                assertTrue(matcher.hasMatches(context));
-                assertNotNull(matches = matcher.getMatches(context));
-                assertEquals(values.length, matches.length);
+                assertTrue(matcher.hasMatches(processingContext));
+                assertNotNull(matches = matcher.getMatches(processingContext));
+                assertNotNull(strings = matches.get(ID));
+                assertEquals(values.length, strings.length);
                 for(int j = 0; j < values.length; j++) {
-                    assertEquals(values[j], matches[j]);
+                    assertEquals(values[j], strings[j]);
                 }
             }
             else {
-                assertFalse(matcher.hasMatches(context));
-                assertNull(matcher.getMatches(context));
+                assertFalse(matcher.hasMatches(processingContext));
+                assertNull(matcher.getMatches(processingContext));
             }
         }
     }

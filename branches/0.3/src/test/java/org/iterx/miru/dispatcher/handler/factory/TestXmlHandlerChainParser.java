@@ -25,14 +25,14 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 
 import junit.framework.TestCase;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.iterx.miru.bean.factory.MockBeanFactory;
 import org.iterx.miru.io.resource.MockResource;
-import org.iterx.miru.dispatcher.matcher.Matcher;
+import org.iterx.miru.matcher.Matcher;
+import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.dispatcher.handler.Handler;
 import org.iterx.miru.dispatcher.handler.HandlerChainMap;
 import org.iterx.miru.dispatcher.Dispatcher;
@@ -346,7 +346,7 @@ public class TestXmlHandlerChainParser extends TestCase {
             object = handlers;
         }
 
-        public Object[] getMatches(ProcessingContext processingContext) {
+        public Matches getMatches(ProcessingContext processingContext) {
 
             return matcher.getMatches(processingContext);
         }
@@ -402,9 +402,9 @@ public class TestXmlHandlerChainParser extends TestCase {
         }
 
 
-        public Object[] getMatches(ProcessingContext prcoessingContext) {
+        public Matches getMatches(ProcessingContext prcoessingContext) {
 
-            return new Object[0];
+            return new Matches();
         }
 
         public boolean hasMatches(ProcessingContext processingContext) {

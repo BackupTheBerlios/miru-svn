@@ -57,16 +57,10 @@ public class TestResourceContentHandler extends TestCase {
         ResourceContentHandler contentHandler;
 
         contentHandler = new ResourceContentHandler();
-        assertEquals("{0}", contentHandler.getUri());
+        assertNull(contentHandler.getUri());
 
         contentHandler.setUri(PATH);
         assertEquals(PATH, contentHandler.getUri());
-
-        try {
-            contentHandler.setUri(null);
-            fail("URI is null.");
-        }
-        catch(Exception e){}
     }
 
 

@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.matcher.MockMatcher
+  org.iterx.miru.matcher.MockMatcher
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,17 +19,17 @@
   All Rights Reserved.
 */
 
-package org.iterx.miru.dispatcher.matcher;
+package org.iterx.miru.matcher;
 
 import org.iterx.miru.context.ProcessingContext;
 
 public class MockMatcher implements Matcher {
 
-    private Object[] matches;
+    private Matches matches;
 
     public MockMatcher() {}
 
-    public MockMatcher(Object[] matches) {
+    public MockMatcher(Matches matches) {
 
         this.matches = matches;
     }
@@ -39,12 +39,12 @@ public class MockMatcher implements Matcher {
         return (matches != null);
     }
 
-    public Object[] getMatches(ProcessingContext context) {
+    public Matches getMatches(ProcessingContext context) {
 
-        return (matches != null)? matches : new Object[0];
+        return (matches != null)? matches : null;
     }
 
-    public void setMatches(Object[] matches) {
+    public void setMatches(Matches matches) {
 
         this.matches = matches;
     }

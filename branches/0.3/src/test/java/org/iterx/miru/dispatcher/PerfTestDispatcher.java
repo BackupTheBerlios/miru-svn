@@ -123,7 +123,8 @@ public class PerfTestDispatcher extends TestCase {
               reader = new StringReader(message);
               writer = new StringWriter();
               processingContext = processingContextFactory.getProcessingContext
-                  (new HttpRequestContextImpl(reader), new HttpResponseContextImpl(writer));
+                  (new HttpRequestContextImpl(reader),
+                   new HttpResponseContextImpl(writer));
 
               assertEquals(Dispatcher.OK,
                            dispatcher.dispatch(processingContext));
