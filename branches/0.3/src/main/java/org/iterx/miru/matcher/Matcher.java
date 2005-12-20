@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.ProcessingContext
+  org.iterx.miru.matcher.Matcher
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,23 +18,14 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
+package org.iterx.miru.matcher;
 
-package org.iterx.miru.context;
+import org.iterx.miru.context.ProcessingContext;
 
-import org.iterx.miru.matcher.Matches;
+public interface Matcher {
 
+    public boolean hasMatches(ProcessingContext processingContext);
 
-public interface ProcessingContext {
+    public Matches getMatches(ProcessingContext processingContext);
 
-    public static final String MATCHES_ATTRIBUTE = (Matches.class).getName();
-    
-    public RequestContext getRequestContext();
-
-    public ResponseContext getResponseContext();
-
-    public Object getAttribute(String name);
-
-    public String[] getAttributeNames();
-
-    public void setAttribute(String name, Object object);
 }

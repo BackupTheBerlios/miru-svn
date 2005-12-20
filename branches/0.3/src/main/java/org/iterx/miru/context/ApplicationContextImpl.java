@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.factory.ApplicationContextImpl
+  org.iterx.miru.context.ApplicationContextImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.  
 */
-package org.iterx.miru.context.factory;
+package org.iterx.miru.context;
 
 import org.iterx.miru.bean.BeanException;
 import org.iterx.miru.bean.BeanProvider;

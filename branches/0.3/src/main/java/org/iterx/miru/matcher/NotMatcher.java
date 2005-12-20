@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.ProcessingContext
+  org.iterx.miru.matcher.NotMatcher
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,23 +18,37 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
-
-package org.iterx.miru.context;
-
-import org.iterx.miru.matcher.Matches;
+package org.iterx.miru.matcher;
 
 
-public interface ProcessingContext {
+import org.iterx.miru.context.ProcessingContext;
 
-    public static final String MATCHES_ATTRIBUTE = (Matches.class).getName();
-    
-    public RequestContext getRequestContext();
+public class NotMatcher implements Matcher {
 
-    public ResponseContext getResponseContext();
+    private Matcher matcher;
 
-    public Object getAttribute(String name);
+    public Matcher getMatcher() {
 
-    public String[] getAttributeNames();
+        return matcher;
+    }
 
-    public void setAttribute(String name, Object object);
+    public void setMatcher(Matcher matcher) {
+
+        if(matcher == null)
+            throw new IllegalArgumentException("matcher == null");
+        this.matcher = matcher;
+    }
+
+    public Matches getMatches(ProcessingContext context) {
+        assert (matcher != null) : "matcher == null";
+
+        return ((!matcher.hasMatches(context))? new Matches() : null);
+    }
+
+    public boolean hasMatches(ProcessingContext context) {
+        assert (matcher != null) : "matcher == null";
+
+        return (!matcher.hasMatches(context));
+    }
+
 }

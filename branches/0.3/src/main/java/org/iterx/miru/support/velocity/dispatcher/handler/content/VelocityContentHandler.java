@@ -52,7 +52,8 @@ import org.iterx.miru.io.ReadableResource;
 import org.iterx.miru.io.StreamTarget;
 import org.iterx.miru.cache.Cache;
 import org.iterx.miru.cache.factory.CacheFactory;
-import org.iterx.util.URIUtils;
+import org.iterx.miru.matcher.Matches;
+import org.iterx.miru.util.MiruUtils;
 
 public class VelocityContentHandler implements ContentHandler {
 
@@ -64,7 +65,7 @@ public class VelocityContentHandler implements ContentHandler {
     private CacheFactory cacheFactory;
     private URI baseUri;
 
-    private String uri = "{0}";
+    private String uri;
 
     public VelocityContentHandler() {
 
@@ -92,8 +93,6 @@ public class VelocityContentHandler implements ContentHandler {
 
     public void setUri(String uri) {
 
-        if(uri == null)
-            throw new IllegalArgumentException("uri == null");
         this.uri = uri;
     }
 
@@ -141,9 +140,9 @@ public class VelocityContentHandler implements ContentHandler {
             Template template;
             VelocityContext velocityContext;
 
-            uri = URIUtils.resolve(this.uri,
+            uri = MiruUtils.resolve((this.uri != null)? this.uri : (requestContext.getURI()).getPath(),
                                    baseUri,
-                                   new String[] { (requestContext.getURI()).getPath() });
+                                   (Matches) processingContext.getAttribute(ProcessingContext.MATCHES_ATTRIBUTE));
 
             template = engine.getTemplate(uri.toString());
 

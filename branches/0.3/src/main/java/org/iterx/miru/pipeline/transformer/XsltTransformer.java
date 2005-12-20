@@ -46,7 +46,8 @@ import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.io.factory.ResourceFactory;
 import org.iterx.miru.io.Resource;
 import org.iterx.miru.io.ReadableResource;
-import org.iterx.util.URIUtils;
+import org.iterx.miru.matcher.Matches;
+import org.iterx.miru.util.MiruUtils;
 
 public class XsltTransformer extends TransformerImpl {
 
@@ -59,6 +60,8 @@ public class XsltTransformer extends TransformerImpl {
     private SAXResult saxResult;
 
     private ResourceFactory resourceFactory;
+    private URI baseUri;
+
     private String uri;
 
     static {
@@ -73,9 +76,17 @@ public class XsltTransformer extends TransformerImpl {
 
     public void setUri(String uri) {
 
-        if(uri == null)
-            throw new IllegalArgumentException("uri == null");
         this.uri = uri;
+    }
+
+    public URI getBaseUri() {
+
+        return baseUri;
+    }
+
+    public void setBaseUri(URI baseUri) {
+
+        this.baseUri = baseUri;
     }
 
     public ResourceFactory getResourceFactory() {
@@ -114,9 +125,9 @@ public class XsltTransformer extends TransformerImpl {
             Templates template;
             URI uri;
 
-            uri = URIUtils.resolve(this.uri,
-                                   null,
-                                   new String[] {});
+            uri = MiruUtils.resolve(((this.uri != null)? this.uri : ((processingContext.getRequestContext()).getURI()).getPath()),
+                                    baseUri,
+                                    (Matches) processingContext.getAttribute(ProcessingContext.MATCHES_ATTRIBUTE));
 
             if((template = (Templates) templates.get(uri)) == null) {
                 Resource resource;

@@ -28,7 +28,6 @@ import javax.servlet.RequestDispatcher;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
 import org.iterx.miru.dispatcher.handler.ContentHandler;
 import org.iterx.miru.dispatcher.Dispatcher;
 import org.iterx.miru.dispatcher.event.http.HttpErrorEvent;
@@ -38,7 +37,8 @@ import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.support.servlet.context.http.HttpServletRequestContext;
 import org.iterx.miru.support.servlet.context.http.HttpServletResponseContext;
 import org.iterx.miru.support.servlet.context.ServletApplicationContext;
-import org.iterx.util.URIUtils;
+import org.iterx.miru.matcher.Matches;
+import org.iterx.miru.util.MiruUtils;
 
 
 
@@ -48,7 +48,7 @@ public class DelegatingContentHandler implements ContentHandler, ApplicationCont
     private static final Log LOGGER = LogFactory.getLog(DelegatingContentHandler.class);
  
     private ServletContext servletContext;
-    private String uri = "{0}";
+    private String uri = "{null:0}";
 
     public String getUri() {
 
@@ -61,7 +61,6 @@ public class DelegatingContentHandler implements ContentHandler, ApplicationCont
             throw new IllegalArgumentException("uri == null");
         this.uri = uri;
     }
-
 
     public void setApplicationContext(ApplicationContext applicationContext) {
 
@@ -80,9 +79,9 @@ public class DelegatingContentHandler implements ContentHandler, ApplicationCont
         requestContext = (HttpServletRequestContext) processingContext.getRequestContext();
         responseContext = (HttpServletResponseContext) processingContext.getResponseContext();
 
-        uri = URIUtils.resolve(this.uri,
+        uri = MiruUtils.resolve(this.uri,
                                null,
-                               new String[] { (requestContext.getURI()).getPath() });
+                               (Matches) processingContext.getAttribute(ProcessingContext.MATCHES_ATTRIBUTE));
 
 
         dispatcher = (("servlet".equals(uri.getScheme()))?

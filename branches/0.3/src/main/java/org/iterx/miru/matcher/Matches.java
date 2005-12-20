@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.ProcessingContext
+  org.iterx.miru.matcher.Matches
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,22 +19,35 @@
   All Rights Reserved.
 */
 
-package org.iterx.miru.context;
+package org.iterx.miru.matcher;
 
-import org.iterx.miru.matcher.Matches;
+import java.util.Map;
+import java.util.HashMap;
+import java.io.Serializable;
+
+public class Matches implements Serializable {
+
+    private Map matches = new HashMap(1);
+
+    public String[] get(String key) {
+
+        return (String[]) matches.get(key);
+    }
+
+    public void put(Matches matches) {
+
+        (this.matches).putAll(matches.matches);
+    }
+
+    public void put(String key, String[] values) {
+
+        matches.put(key, values);
+    }
 
 
-public interface ProcessingContext {
+    public void remove(String key)  {
 
-    public static final String MATCHES_ATTRIBUTE = (Matches.class).getName();
-    
-    public RequestContext getRequestContext();
+        matches.remove(key);
+    }
 
-    public ResponseContext getResponseContext();
-
-    public Object getAttribute(String name);
-
-    public String[] getAttributeNames();
-
-    public void setAttribute(String name, Object object);
 }
