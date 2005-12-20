@@ -21,7 +21,7 @@
 
 package org.iterx.miru.dispatcher.handler;
 
-import org.iterx.miru.dispatcher.matcher.Matcher;
+import org.iterx.miru.matcher.Matcher;
 
 public interface HandlerChain extends Handler, Matcher {
 

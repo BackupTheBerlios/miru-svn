@@ -23,18 +23,16 @@ package org.iterx.miru.dispatcher.handler.flow;
 
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.dispatcher.Dispatcher;
-import org.iterx.miru.dispatcher.matcher.Matcher;
+import org.iterx.miru.matcher.Matcher;
+import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.dispatcher.handler.FlowHandler;
 import org.iterx.miru.dispatcher.handler.Handler;
 import org.iterx.util.ArrayUtils;
 
 public class AndFlowHandler implements FlowHandler {
 
-    private Handler[] handlers;
+    private Handler[] handlers = new Handler[0];
 
-    {
-        handlers = new Handler[0];
-    }
 
     public void addHandler(Handler handler) {
 
@@ -76,10 +74,11 @@ public class AndFlowHandler implements FlowHandler {
         return true;
     }
 
-    public Object[] getMatches(ProcessingContext processingContext) {
+    public Matches getMatches(ProcessingContext processingContext) {
 
-           return null;
-       }
+        //TODO: Implement
+        return null;
+    }
    
     public int execute(ProcessingContext processingContext) {
 

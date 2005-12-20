@@ -21,9 +21,11 @@
 
 package org.iterx.miru.dispatcher.handler.flow;
 
+
 import org.iterx.miru.dispatcher.handler.FlowHandler;
 import org.iterx.miru.dispatcher.handler.Handler;
-import org.iterx.miru.dispatcher.matcher.Matcher;
+import org.iterx.miru.matcher.Matcher;
+import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.dispatcher.Dispatcher;
 import org.iterx.miru.context.ProcessingContext;
 
@@ -55,9 +57,9 @@ public class IfFlowHandler implements FlowHandler {
         this.handler = handler;
     }
 
-    public Object[] getMatches(ProcessingContext processingContext) {
+    public Matches getMatches(ProcessingContext processingContext) {
 
-        return (matcher == null)? null : matcher.getMatches(processingContext);
+        return (matcher == null)? new Matches() : matcher.getMatches(processingContext);
     }
 
     public boolean hasMatches(ProcessingContext processingContext) {
@@ -67,11 +69,13 @@ public class IfFlowHandler implements FlowHandler {
 
     public int execute(ProcessingContext processingContext) {
         assert (handler != null) : "handler == null";
-        Object[] matches;
+        Matches matches;
 
         if(!(handler instanceof Matcher) ||
            (matches = ((Matcher) handler).getMatches(processingContext)) != null) {
-            //TODO: set matches in processingContext
+
+
+            //TODO: Create new ProcessingContext and set matches
             return handler.execute(processingContext);
         }
 

@@ -27,6 +27,7 @@ import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.dispatcher.handler.HandlerChain;
 import org.iterx.miru.dispatcher.handler.HandlerChainMap;
 import org.iterx.miru.dispatcher.resolver.HandlerResolver;
+import org.iterx.miru.matcher.Matches;
 
 public class Dispatcher {
 
@@ -84,13 +85,12 @@ public class Dispatcher {
                                               processingContext))) != null) {
             while(chains.hasNext()) {
                 HandlerChain handlerChain;
-                Object[] matches;
+                Matches matches;
 
                 handlerChain = (HandlerChain) chains.next();
                 if((matches = handlerChain.getMatches(processingContext)) != null) {
 
-
-                    //TODO: set matches in processingContext
+                    processingContext.setAttribute(ProcessingContext.MATCHES_ATTRIBUTE, matches);
                     if((status = handlerChain.execute(processingContext)) != DECLINE)
                         break;
                 }

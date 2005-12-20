@@ -24,14 +24,12 @@ package org.iterx.miru.dispatcher.handler.factory;
 
 import org.iterx.miru.dispatcher.handler.HandlerChain;
 import org.iterx.miru.dispatcher.handler.Handler;
-import org.iterx.miru.dispatcher.matcher.Matcher;
-import org.iterx.miru.dispatcher.event.Event;
-import org.iterx.miru.dispatcher.Dispatcher;
+import org.iterx.miru.matcher.Matcher;
+import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.context.ProcessingContext;
 
 public class HandlerChainImpl implements HandlerChain, Matcher {
 
-    private static final Object[] EMPTY_ARRAY = new Object[0];
 
     private String id;
     private Handler handler;
@@ -58,11 +56,11 @@ public class HandlerChainImpl implements HandlerChain, Matcher {
         this.handler = handler;
     }
 
-    public Object[] getMatches(ProcessingContext processingContext) {
+    public Matches getMatches(ProcessingContext processingContext) {
         assert (handler != null) : "handler == null";
 
         return ((handler instanceof Matcher)?
-                ((Matcher) handler).getMatches(processingContext) : EMPTY_ARRAY); 
+                ((Matcher) handler).getMatches(processingContext) : new Matches());
     }
 
     public boolean hasMatches(ProcessingContext processingContext) {

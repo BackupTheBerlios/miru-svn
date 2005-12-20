@@ -1,4 +1,4 @@
- /*
+/*
   org.iterx.miru.dispatcher.handler.flow.RedirectFlowHandler
 
   This library is free software; you can redistribute it and/or
@@ -24,76 +24,67 @@ import java.net.URI;
 
 import org.iterx.miru.dispatcher.handler.FlowHandler;
 import org.iterx.miru.dispatcher.event.RedirectEvent;
-import org.iterx.miru.dispatcher.matcher.Matcher;
+import org.iterx.miru.matcher.Matcher;
+import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.context.ProcessingContext;
-import org.iterx.miru.context.RequestContext;
-import org.iterx.util.URIUtils;
+import org.iterx.miru.util.MiruUtils;
 
- public class RedirectFlowHandler implements FlowHandler {
+public class RedirectFlowHandler implements FlowHandler {
 
-     private Matcher matcher;
-     private URI baseUri;
-     private String uri;
+    private Matcher matcher;
+    private URI baseUri;
 
-     {
-         uri = "{0}";
-     }
+    private String uri;
 
-     public String getUri() {
+    public String getUri() {
 
-         return uri;
-     }
+        return uri;
+    }
 
-     public void setUri(String uri) {
+    public void setUri(String uri) {
 
-         if(uri == null)
-             throw new IllegalArgumentException("uri == null");
+        this.uri = uri;
+    }
 
-         this.uri = uri;
-     }
+    public URI getBaseUri() {
 
-     public URI getBaseUri() {
+        return baseUri;
+    }
 
-         return baseUri;
-     }
+    public void setBaseUri(URI base) {
 
-     public void setBaseUri(URI base) {
-
-         this.baseUri = base;
-     }
+        this.baseUri = base;
+    }
 
 
-     public Matcher getMatcher() {
+    public Matcher getMatcher() {
 
-         return matcher;
-     }
+        return matcher;
+    }
 
-     public void setMatcher(Matcher matcher) {
+    public void setMatcher(Matcher matcher) {
 
-         this.matcher = matcher;
-     }
+        this.matcher = matcher;
+    }
 
-     public Object[] getMatches(ProcessingContext processingContext) {
+    public Matches getMatches(ProcessingContext processingContext) {
 
-         return (matcher == null)? null : matcher.getMatches(processingContext);
-     }
+        return (matcher == null) ? new Matches() : matcher.getMatches(processingContext);
+    }
 
-     public boolean hasMatches(ProcessingContext processingContext) {
+    public boolean hasMatches(ProcessingContext processingContext) {
 
-         return ((matcher == null) || matcher.hasMatches(processingContext));
-     }
+        return ((matcher == null) || matcher.hasMatches(processingContext));
+    }
 
 
-     public int execute(ProcessingContext processingContext) {
-         RequestContext requestContext;
-         URI uri;
+    public int execute(ProcessingContext processingContext) {
+        URI uri;
 
-         requestContext = processingContext.getRequestContext();
-
-         uri = URIUtils.resolve(this.uri,
+        uri = MiruUtils.resolve((this.uri != null)? this.uri : ((processingContext.getRequestContext()).getURI()).getPath(),
                                 baseUri,
-                                new String[] { (requestContext.getURI()).getPath() });
-    
-         throw new RedirectEvent(uri);
-     }
- }
+                                (Matches) processingContext.getAttribute(ProcessingContext.MATCHES_ATTRIBUTE));
+
+        throw new RedirectEvent(uri);
+    }
+}

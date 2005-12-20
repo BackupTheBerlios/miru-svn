@@ -22,13 +22,7 @@
 package org.iterx.miru.dispatcher.handler.content;
 
 import java.net.URI;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.WritableByteChannel;
-import java.nio.ByteBuffer;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -36,16 +30,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.iterx.miru.dispatcher.handler.ContentHandler;
-import org.iterx.miru.resolver.ResourceResolver;
 import org.iterx.miru.dispatcher.Dispatcher;
+import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.ResponseContext;
-import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.io.Resource;
 import org.iterx.miru.io.StreamTarget;
 import org.iterx.miru.io.StreamSource;
 import org.iterx.miru.io.factory.ResourceFactory;
-import org.iterx.util.URIUtils;
+import org.iterx.miru.util.MiruUtils;
 
 public class ResourceContentHandler implements ContentHandler {
 
@@ -54,7 +47,7 @@ public class ResourceContentHandler implements ContentHandler {
     private ResourceFactory resourceFactory;
     private URI baseUri;
 
-    private String uri = "{0}";
+    private String uri;
 
     public ResourceContentHandler() {}
 
@@ -65,8 +58,6 @@ public class ResourceContentHandler implements ContentHandler {
 
     public void setUri(String uri) {
 
-        if(uri == null)
-            throw new IllegalArgumentException("uri == null");
         this.uri = uri;
     }
 
@@ -97,17 +88,15 @@ public class ResourceContentHandler implements ContentHandler {
         assert (resourceFactory != null) : "resourceFactory == null";
 
         ResponseContext response;
-        RequestContext request;
         Resource resource;
         URI uri;
 
         response = processingContext.getResponseContext();
-        request = processingContext.getRequestContext();
         assert (response instanceof StreamTarget) : "ResponseContext not instanceof StreamSource";
 
-        uri = URIUtils.resolve(this.uri,
-                               baseUri,
-                               new String[] { (request.getURI()).getPath() });
+        uri = MiruUtils.resolve((this.uri != null)? this.uri : ((processingContext.getRequestContext()).getURI()).getPath(),
+                                baseUri,
+                                (Matches) processingContext.getAttribute(ProcessingContext.MATCHES_ATTRIBUTE));
 
         if((resource = resourceFactory.getResource(uri)) != null &&
            resource instanceof StreamSource) {
