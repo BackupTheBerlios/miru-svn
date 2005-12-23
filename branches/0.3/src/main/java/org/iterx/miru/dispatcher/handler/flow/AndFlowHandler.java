@@ -75,9 +75,22 @@ public class AndFlowHandler implements FlowHandler {
     }
 
     public Matches getMatches(ProcessingContext processingContext) {
+        Matches matches;
 
-        //TODO: Implement
-        return null;
+        matches = new Matches();
+        for(int i = handlers.length; i-- > 0; ) {
+            Handler handler;
+
+            handler = handlers[i];
+            if(handler instanceof Matcher) {
+                Matches result;
+
+                result = ((Matcher) handler).getMatches(processingContext);
+                if(result == null) return null;
+                else matches.put(result);
+            }
+        }
+        return matches;
     }
    
     public int execute(ProcessingContext processingContext) {
@@ -85,8 +98,9 @@ public class AndFlowHandler implements FlowHandler {
         for(int i = 0; i < handlers.length; i++ ) {
             int status;
 
-            if((status = handlers[i].execute(processingContext)) != Dispatcher.OK)
-                return status;
+            status = handlers[i].execute(processingContext);
+            if(status == Dispatcher.ERROR ||
+               status == Dispatcher.DONE) return status;
         }
         return Dispatcher.OK;
     }

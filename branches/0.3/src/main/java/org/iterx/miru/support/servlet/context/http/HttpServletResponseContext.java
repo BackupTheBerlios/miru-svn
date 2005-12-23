@@ -29,7 +29,6 @@ import java.io.Closeable;
 import java.util.Map;
 import java.util.HashMap;
 
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
 import org.iterx.miru.context.http.HttpResponseContext;
@@ -37,25 +36,23 @@ import org.iterx.miru.context.http.HttpResponseContext;
 public final class HttpServletResponseContext
     implements HttpResponseContext, Closeable {
 
-    private HttpServletResponse httpResponse;
+    private HttpServletResponse httpServletResponse;
     private OutputStream outputStream;
     private Writer writer;
 
     private Map properties;
-    private int length, status;
 
-    {
-        status = OK;
-        length = -1;
-    }
+    private int length = -1;
+    private int status = OK;
+
 
     public HttpServletResponseContext(HttpServletResponse httpResponse) {
 	        
         if(httpResponse == null)
-            throw new IllegalArgumentException("httpResponse == null");
+            throw new IllegalArgumentException("httpServletResponse == null");
 
         properties = new HashMap();
-        this.httpResponse = httpResponse;
+        this.httpServletResponse = httpResponse;
     }
     
     public int getStatus() {
@@ -65,7 +62,7 @@ public final class HttpServletResponseContext
 
     public void setStatus(int status) {
 
-        httpResponse.setStatus(status);
+        httpServletResponse.setStatus(status);
         this.status = status;
     }  
 
@@ -76,34 +73,34 @@ public final class HttpServletResponseContext
 
     public void setHeader(String name, String value) {
 
-        httpResponse.setHeader(name, value);
+        httpServletResponse.setHeader(name, value);
         properties.put(name, value);
     }
 
 
-    public ServletResponse getHttpResponse() {
+    public HttpServletResponse getHttpServletResponse() {
 
-        return httpResponse;
+        return httpServletResponse;
     }
 
     public String getCharacterEncoding() {
 
-        return httpResponse.getCharacterEncoding();
+        return httpServletResponse.getCharacterEncoding();
     }
     
     public void setCharacterEncoding(String encoding) {
 
-        httpResponse.setCharacterEncoding(encoding);
+        httpServletResponse.setCharacterEncoding(encoding);
     }
 
     public String getContentType() {
 
-        return httpResponse.getContentType();
+        return httpServletResponse.getContentType();
     }
 
     public void setContentType(String type) {
 
-        httpResponse.setContentType(type);
+        httpServletResponse.setContentType(type);
     }
 
     public int getContentLength() {
@@ -113,14 +110,14 @@ public final class HttpServletResponseContext
 
     public void setContentLength(int length) {
 	
-        httpResponse.setContentLength(length);
+        httpServletResponse.setContentLength(length);
         this.length = length;
     }
 
     public OutputStream getOutputStream() throws IOException {
 
         try {
-            return (outputStream = httpResponse.getOutputStream());
+            return (outputStream = httpServletResponse.getOutputStream());
         }
         catch(IllegalStateException e) {}
         return null;
@@ -129,7 +126,7 @@ public final class HttpServletResponseContext
     public Writer getWriter() throws IOException {
 
         try {
-            return (writer = httpResponse.getWriter());
+            return (writer = httpServletResponse.getWriter());
         }
         catch(IllegalStateException e) {}
         return null;

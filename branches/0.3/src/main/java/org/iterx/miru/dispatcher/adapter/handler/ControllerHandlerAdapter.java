@@ -39,6 +39,7 @@ public class ControllerHandlerAdapter implements HandlerAdapter {
     }
 
     public int execute(ProcessingContext processingContext, Object handler) {
+
         try {
             return ((Controller) handler).execute(processingContext);
         }

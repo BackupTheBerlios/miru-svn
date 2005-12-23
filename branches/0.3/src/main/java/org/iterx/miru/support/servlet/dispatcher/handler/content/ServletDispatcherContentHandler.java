@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.support.servlet.dispatcher.handler.content.DelegatingContentHandler
+  org.iterx.miru.support.servlet.dispatcher.handler.content.ServletDispatcherContentHandler
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -24,6 +24,8 @@ import java.net.URI;
 
 import javax.servlet.ServletContext;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,14 +43,12 @@ import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.util.MiruUtils;
 
 
+public class ServletDispatcherContentHandler implements ContentHandler, ApplicationContextAware {
 
-//TODO: Rename to include servlet in name...
-public class DelegatingContentHandler implements ContentHandler, ApplicationContextAware {
-
-    private static final Log LOGGER = LogFactory.getLog(DelegatingContentHandler.class);
+    private static final Log LOGGER = LogFactory.getLog(ServletDispatcherContentHandler.class);
  
     private ServletContext servletContext;
-    private String uri = "{null:0}";
+    private String uri;
 
     public String getUri() {
 
@@ -71,17 +71,18 @@ public class DelegatingContentHandler implements ContentHandler, ApplicationCont
 
     public int execute(ProcessingContext processingContext) {
         assert (servletContext != null) : "servletContext == null";
-        HttpServletRequestContext requestContext;
-        HttpServletResponseContext responseContext;
+        final HttpServletRequestContext requestContext;
+        final HttpServletResponseContext responseContext;
         RequestDispatcher dispatcher;
         URI uri;
 
         requestContext = (HttpServletRequestContext) processingContext.getRequestContext();
         responseContext = (HttpServletResponseContext) processingContext.getResponseContext();
 
-        uri = MiruUtils.resolve(this.uri,
-                               null,
-                               (Matches) processingContext.getAttribute(ProcessingContext.MATCHES_ATTRIBUTE));
+        //TODO: sort out webapp path
+        uri = MiruUtils.resolve((this.uri != null)? this.uri : ((processingContext.getRequestContext()).getURI()).getPath(),
+                                null,
+                                (Matches) processingContext.getAttribute(ProcessingContext.MATCHES_ATTRIBUTE));
 
 
         dispatcher = (("servlet".equals(uri.getScheme()))?
@@ -90,8 +91,25 @@ public class DelegatingContentHandler implements ContentHandler, ApplicationCont
 
         if(dispatcher != null) {
             try {
-                dispatcher.forward(requestContext.getHttpServletRequest(),
-                                   responseContext.getHttpResponse());
+                HttpServletRequest request;
+                HttpServletResponse response;
+                String[] attributes;
+
+                //TODO: should wrap
+                request = requestContext.getHttpServletRequest();
+                response = responseContext.getHttpServletResponse();
+
+                attributes = processingContext.getAttributeNames();
+                for(int i = attributes.length; i-- > 0; ) {
+                    String attribute;
+
+                    attribute = attributes[i];
+                    request.setAttribute(attribute, processingContext.getAttribute(attribute));
+                }
+
+                //TODO: set original URI for passthrough
+
+                dispatcher.forward(request, response);
                 return Dispatcher.OK;
             }
             catch(Exception e) {
@@ -101,6 +119,8 @@ public class DelegatingContentHandler implements ContentHandler, ApplicationCont
         }
         throw new HttpErrorEvent(HttpErrorEvent.NOT_FOUND);
     }
+
+
 
 
 }

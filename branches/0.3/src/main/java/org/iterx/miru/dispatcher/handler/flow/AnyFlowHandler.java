@@ -1,38 +1,18 @@
-/*
-  org.iterx.miru.dispatcher.handler.flow.OrFlowHandler
-
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2.1 of the License, or (at your option) any later version.
-
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-
-  Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
-  All Rights Reserved.
-*/
-
 package org.iterx.miru.dispatcher.handler.flow;
 
-import org.iterx.miru.context.ProcessingContext;
-import org.iterx.miru.dispatcher.Dispatcher;
-import org.iterx.miru.matcher.Matcher;
-import org.iterx.miru.matcher.Matches;
+
 import org.iterx.miru.dispatcher.handler.FlowHandler;
 import org.iterx.miru.dispatcher.handler.Handler;
+import org.iterx.miru.dispatcher.Dispatcher;
+import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.matcher.Matches;
+import org.iterx.miru.matcher.Matcher;
+
 import org.iterx.util.ArrayUtils;
 
-public class OrFlowHandler implements FlowHandler {
+public class AnyFlowHandler implements FlowHandler {
 
     private Handler[] handlers = new Handler[0];
-
 
     public void addHandler(Handler handler) {
 
@@ -63,20 +43,23 @@ public class OrFlowHandler implements FlowHandler {
 
 
     public Matches getMatches(ProcessingContext processingContext) {
+        Matches matches;
 
+        matches = null;
         for(int i = handlers.length; i-- > 0; ) {
             Handler handler;
 
             handler = handlers[i];
             if(handler instanceof Matcher) {
-                Matches matches;
+                Matches result;
 
-                if((matches = ((Matcher) handler).getMatches(processingContext)) != null)
-                    return matches;
+                if((result = ((Matcher) handler).getMatches(processingContext)) != null) {
+                    if(matches == null) matches = result;
+                    else matches.put(result);
+                }
             }
-            else return new Matches();
         }
-        return null;
+        return matches;
     }
 
     public boolean hasMatches(ProcessingContext processingContext) {
@@ -99,10 +82,15 @@ public class OrFlowHandler implements FlowHandler {
 
             handler = handlers[i];
             if(!(handler instanceof Matcher) ||
-               ((Matcher) handler).hasMatches(processingContext))
-                return handler.execute(processingContext);
+               ((Matcher) handler).hasMatches(processingContext)) {
+                int status;
+
+                status = handler.execute(processingContext);
+                if(status == Dispatcher.ERROR ||
+                   status == Dispatcher.DONE) return status;
+            }
+
         }
         return Dispatcher.OK;
     }
-
 }

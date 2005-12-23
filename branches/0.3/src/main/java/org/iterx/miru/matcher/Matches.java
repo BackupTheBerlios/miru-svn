@@ -23,6 +23,8 @@ package org.iterx.miru.matcher;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Arrays;
 import java.io.Serializable;
 
 public class Matches implements Serializable {
@@ -48,6 +50,34 @@ public class Matches implements Serializable {
     public void remove(String key)  {
 
         matches.remove(key);
+    }
+
+    public boolean equals(Object object) {
+
+        if(object == this) return true;
+        else if(object instanceof Matches) {
+            Map a, b;
+
+            a = matches;
+            b = ((Matches) object).matches;
+            if(a.size() == b.size()) {
+                for(Iterator iterator = (a.entrySet()).iterator();
+                    iterator.hasNext(); ) {
+                    Map.Entry entry;
+
+                    entry = (Map.Entry) iterator.next();
+                    if(!Arrays.equals((Object[]) entry.getValue(),
+                                      (Object[]) b.get(entry.getKey()))) return false;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int hashCode() {
+
+        return (matches.keySet()).hashCode();
     }
 
 }

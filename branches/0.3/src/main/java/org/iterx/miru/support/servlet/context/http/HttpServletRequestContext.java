@@ -36,7 +36,7 @@ import org.iterx.miru.context.http.HttpRequestContext;
 public final class HttpServletRequestContext
     implements HttpRequestContext, Closeable {
 
-    private HttpServletRequest httpRequest;
+    private HttpServletRequest httpServletRequest;
     private InputStream inputStream;
     private Reader reader;
     private URI uri;
@@ -44,13 +44,13 @@ public final class HttpServletRequestContext
     public HttpServletRequestContext(HttpServletRequest httpRequest) {
 
         if(httpRequest == null)
-            throw new IllegalArgumentException("httpRequest == null");
-        this.httpRequest = httpRequest;
+            throw new IllegalArgumentException("httpServletRequest == null");
+        this.httpServletRequest = httpRequest;
     }
 
     public HttpServletRequest getHttpServletRequest() {
 
-        return httpRequest;
+        return httpServletRequest;
     }
 
     public URI getURI() {
@@ -60,14 +60,14 @@ public final class HttpServletRequestContext
                 String scheme;
                 int port;
 
-                uri = new URI((scheme = httpRequest.getScheme()),
+                uri = new URI((scheme = httpServletRequest.getScheme()),
                               null,
-                              httpRequest.getLocalName(),
-                              ((((port = httpRequest.getLocalPort()) == 80 &&
+                              httpServletRequest.getLocalName(),
+                              ((((port = httpServletRequest.getLocalPort()) == 80 &&
                                  "http".equals(scheme)) ||
                                                         ((port == 443) &&
                                                          "https".equals(scheme)))? -1 : port),
-                              httpRequest.getRequestURI(),
+                              httpServletRequest.getRequestURI(),
                               null,
                               null);
             }
@@ -80,17 +80,17 @@ public final class HttpServletRequestContext
 
     public String getHeader(String key) {
 
-        return httpRequest.getHeader(key);
+        return httpServletRequest.getHeader(key);
     }
 
     public String getParameter(String name) {
 
-        return httpRequest.getParameter(name);
+        return httpServletRequest.getParameter(name);
     }
 
     public String[] getParameterValues(String name) {
 
-        return httpRequest.getParameterValues(name);
+        return httpServletRequest.getParameterValues(name);
     }
 
 
@@ -98,29 +98,29 @@ public final class HttpServletRequestContext
         Set names;
 
         return ((String[])
-            ((names = (httpRequest.getParameterMap()).keySet()).toArray
+            ((names = (httpServletRequest.getParameterMap()).keySet()).toArray
                 ((Object[]) new String[names.size()])));
     }
 
     public String getContentType() {
 
-        return httpRequest.getContentType();
+        return httpServletRequest.getContentType();
     }
 
     public int getContentLength() {
 
-        return httpRequest.getContentLength();
+        return httpServletRequest.getContentLength();
     }
 
     public String getCharacterEncoding() {
 
-        return httpRequest.getCharacterEncoding();
+        return httpServletRequest.getCharacterEncoding();
     }
     
     public InputStream getInputStream() throws IOException {
 
         try {
-            return (inputStream = httpRequest.getInputStream());
+            return (inputStream = httpServletRequest.getInputStream());
         }
         catch(IllegalStateException e) {}
         return null;
@@ -128,7 +128,7 @@ public final class HttpServletRequestContext
 
     public Reader getReader() throws IOException {
         try {
-            return (reader = httpRequest.getReader());
+            return (reader = httpServletRequest.getReader());
         }
         catch(IllegalStateException e) {}
         return null;
