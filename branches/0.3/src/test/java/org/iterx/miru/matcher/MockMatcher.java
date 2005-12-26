@@ -22,8 +22,10 @@
 package org.iterx.miru.matcher;
 
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public class MockMatcher implements Matcher {
+public class MockMatcher<S extends RequestContext, T extends ResponseContext> implements Matcher<S, T> {
 
     private Matches matches;
 
@@ -34,12 +36,12 @@ public class MockMatcher implements Matcher {
         this.matches = matches;
     }
 
-    public boolean hasMatches(ProcessingContext context) {
+    public boolean hasMatches(ProcessingContext<? extends S, ? extends T> processingContext) {
 
         return (matches != null);
     }
 
-    public Matches getMatches(ProcessingContext context) {
+    public Matches getMatches(ProcessingContext<? extends S, ? extends T> processingContext) {
 
         return (matches != null)? matches : null;
     }

@@ -23,6 +23,7 @@ package org.iterx.miru.dispatcher.handler.factory;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import org.iterx.miru.dispatcher.adapter.HandlerAdapter;
 import org.iterx.miru.dispatcher.handler.HandlerWrapperAware;
@@ -30,19 +31,18 @@ import org.iterx.miru.dispatcher.handler.HandlerChainMap;
 import org.iterx.miru.dispatcher.handler.HandlerChain;
 import org.iterx.miru.dispatcher.handler.HandlerWrapper;
 import org.iterx.miru.bean.BeanProvider;
+import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.context.RequestContext;
 import org.iterx.util.ArrayUtils;
 
-public class HandlerChainFactoryImpl extends HandlerChainFactory
-    implements HandlerWrapperAware {
+public class HandlerChainFactoryImpl<S extends RequestContext, T extends ResponseContext> extends HandlerChainFactory<S, T>
+    implements HandlerWrapperAware<S, T> {
 
-    private HandlerAdapter[] handlerAdapters;
-    private HandlerChainMap handlerChainMap;
-    private Map handlerChains;
+    private HandlerAdapter<S, T>[] handlerAdapters = (HandlerAdapter<S, T>[]) new HandlerAdapter[0];
+    private HandlerChainMap<S, T> handlerChainMap;
 
-    {
-        handlerAdapters = new HandlerAdapter[0];
-        handlerChains = new LinkedHashMap();
-    }
+    private Map<String, HandlerChain<? extends S, ? extends T>> handlerChains = new LinkedHashMap<String, HandlerChain<? extends S, ? extends T>>(1);
+
 
     public HandlerChainFactoryImpl() {}
 
@@ -51,76 +51,75 @@ public class HandlerChainFactoryImpl extends HandlerChainFactory
         super(beanProvider);
     }
 
-    public HandlerAdapter[] getHandlerAdapters() {
+    public HandlerAdapter<S, T>[] getHandlerAdapters() {
 
             return handlerAdapters;
     }
 
-    public void setHandlerAdapters(HandlerAdapter[] handlerAdapters) {
+    public void setHandlerAdapters(List<HandlerAdapter<? extends S, ? extends T>> handlerAdapters) {
 
         synchronized(this) {
-            this.handlerAdapters = handlerAdapters;
+            this.handlerAdapters = handlerAdapters.toArray(this.handlerAdapters);
         }
+
     }
 
-    public HandlerAdapter addHandlerAdapter(HandlerAdapter handlerAdapter) {
+    public void addHandlerAdapter(HandlerAdapter<? extends S, ? extends T> handlerAdapter) {
 
         synchronized(this) {
-            handlerAdapters = (HandlerAdapter[])
+            handlerAdapters = (HandlerAdapter<S, T>[])
                 ArrayUtils.add(handlerAdapters, handlerAdapter);
         }
-        return handlerAdapter;
     }
 
-    public void removeHandlerAdapter(HandlerAdapter handlerAdapter) {
+    public void removeHandlerAdapter(HandlerAdapter<? extends S, ? extends T> handlerAdapter) {
 
         synchronized(this) {
-            handlerAdapters = (HandlerAdapter[])
+            handlerAdapters = (HandlerAdapter<S, T>[])
                 ArrayUtils.remove(handlerAdapters, handlerAdapter);
         }
     }
 
-    public HandlerChain createHandlerChain() {
+    public HandlerChain<S, T> createHandlerChain() {
 
-        return new HandlerChainImpl();
+        return new HandlerChainImpl<S, T>();
     }
 
-    public void addHandlerChain(HandlerChain handler) {
-        String name;
+    public void addHandlerChain(HandlerChain<? extends S, ? extends T> handlerChain) {
 
-        if(handler == null)
-            throw new IllegalArgumentException("handler == null");
-        if(!(handler instanceof HandlerChainImpl))
+        if(handlerChain == null)
+            throw new IllegalArgumentException("handlerChain == null");
+        if(!(handlerChain instanceof HandlerChainImpl))
             throw new IllegalArgumentException
-                ("Unsupported HandlerChain implementation [" + handler.getClass() + "].");
+                ("Unsupported HandlerChain implementation [" + handlerChain.getClass() + "].");
 
         synchronized(this) {
-            if((name = handler.getId()) != null) handlerChains.put(name, handler);
-            else handlerChains.put(handler, handler);
+            handlerChains.put(handlerChain.getId(), handlerChain);
         }
     }
 
-    public HandlerChainMap getHandlerChains() {
+    public HandlerChainMap<S, T> getHandlerChains() {
 
         if(handlerChainMap == null) {
             synchronized(this) {
                 if(handlerChainMap == null)
-                    handlerChainMap = new HandlerChainMapImpl(new LinkedHashMap(handlerChains));
+                    handlerChainMap = new HandlerChainMapImpl<S, T>(handlerChains);
             }
         }
         return handlerChainMap;
     }
 
-    public void setHandlerChains(HandlerChainMap handlerChainMap) {
+    public void setHandlerChains(HandlerChainMap<? extends S, ? extends T> handlerChainMap) {
 
         if(handlerChainMap == null)
             throw new IllegalArgumentException("handlerChainMap == null");
 
         synchronized(this) {
             handlerChains.clear();
+
             for(Iterator iterator = handlerChainMap.iterator();
                 iterator.hasNext(); ) {
-                addHandlerChain((HandlerChain) iterator.next());
+                addHandlerChain((HandlerChain<S ,T>) iterator.next());
             }
         }
     }
@@ -135,20 +134,21 @@ public class HandlerChainFactoryImpl extends HandlerChainFactory
         }
     }
 
-    public HandlerWrapper assignHandlerWrapper(Object object) {
+    public HandlerWrapper<S, T> assignHandlerWrapper(Object object) {
         assert (getBeanProvider() != null) : "beanProvider == null";
-        HandlerWrapperImpl wrapper;
+        HandlerWrapperImpl<S, T> wrapper;
 
-        wrapper = new HandlerWrapperImpl(this, getBeanProvider());
+        wrapper = new HandlerWrapperImpl<S, T>(this, getBeanProvider());
         wrapper.setWrappedInstance(object);
         return wrapper;
     }
 
-    public void recycleHandlerWrapper(HandlerWrapper wrapper) {
+    public void recycleHandlerWrapper(HandlerWrapper<S, T> wrapper) {
+
         assert (wrapper == null ||
                 wrapper instanceof HandlerWrapperImpl) : "Invalid instance.";
 
-        wrapper.setWrappedInstance(null);        
+        wrapper.setWrappedInstance(null);
     }
 
 }

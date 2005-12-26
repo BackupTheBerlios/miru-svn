@@ -21,9 +21,11 @@
 
 package org.iterx.miru.resolver;
 
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.context.ProcessingContext;
 
-public interface ContextResolver {
+public interface ContextResolver<E, S extends RequestContext, T extends ResponseContext> {
 
-    public Object resolve(ProcessingContext processingContext);
+    public E resolve(ProcessingContext<? extends S, ? extends T> processingContext);
 }

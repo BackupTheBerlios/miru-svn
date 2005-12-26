@@ -24,11 +24,14 @@ package org.iterx.miru.dispatcher.resolver;
 import java.util.Iterator;
 
 import org.iterx.miru.dispatcher.handler.HandlerChainMap;
+import org.iterx.miru.dispatcher.handler.HandlerChain;
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public interface HandlerResolver {
+public interface HandlerResolver<S extends RequestContext, T extends ResponseContext> {
 
-    public Iterator resolve(HandlerChainMap handlerChainMap,
-                            ProcessingContext processingContext);
 
+    public Iterator<HandlerChain<S, T>> resolve(HandlerChainMap<? extends S, ? extends T> handlerChainMap,
+                                                ProcessingContext<? extends S, ? extends T> processingContext);
 }

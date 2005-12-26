@@ -43,7 +43,7 @@ import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.util.MiruUtils;
 
 
-public class ServletDispatcherContentHandler implements ContentHandler, ApplicationContextAware {
+public class ServletDispatcherContentHandler<S extends HttpServletRequestContext, T extends HttpServletResponseContext> implements ContentHandler<S, T>, ApplicationContextAware {
 
     private static final Log LOGGER = LogFactory.getLog(ServletDispatcherContentHandler.class);
  
@@ -69,18 +69,19 @@ public class ServletDispatcherContentHandler implements ContentHandler, Applicat
         servletContext = ((ServletApplicationContext) applicationContext).getServletContext();
     }
 
-    public int execute(ProcessingContext processingContext) {
+    public int execute(ProcessingContext<? extends S, ? extends T>  processingContext) {
         assert (servletContext != null) : "servletContext == null";
-        final HttpServletRequestContext requestContext;
-        final HttpServletResponseContext responseContext;
+
+        HttpServletRequestContext requestContext;
+        HttpServletResponseContext responseContext;
         RequestDispatcher dispatcher;
         URI uri;
 
-        requestContext = (HttpServletRequestContext) processingContext.getRequestContext();
-        responseContext = (HttpServletResponseContext) processingContext.getResponseContext();
+        requestContext =  processingContext.getRequestContext();
+        responseContext =  processingContext.getResponseContext();
 
         //TODO: sort out webapp path
-        uri = MiruUtils.resolve((this.uri != null)? this.uri : ((processingContext.getRequestContext()).getURI()).getPath(),
+        uri = MiruUtils.resolve((this.uri != null)? this.uri : (requestContext.getURI()).getPath(),
                                 null,
                                 (Matches) processingContext.getAttribute(ProcessingContext.MATCHES_ATTRIBUTE));
 

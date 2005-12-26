@@ -34,11 +34,12 @@ import org.iterx.miru.cache.CacheNotifiable;
 import org.iterx.miru.cache.CacheListener;
 import org.iterx.util.KeyValue;
 
-public class LruMemoryCache
-    implements Cache, CacheListenerAware, CacheNotifiable {
+public class LruMemoryCache<K, V>
+    implements Cache<K, V>, CacheListenerAware, CacheNotifiable {
 
-    private List cacheListeners = new ArrayList();
-    private LinkedHashMap cache = new LruLinkedHashMap();
+    private LinkedHashMap<K, V> cache = new LruLinkedHashMap<K, V>();
+    private List<CacheListener> cacheListeners = new ArrayList<CacheListener>();
+
     private int size;
 
 
@@ -48,23 +49,23 @@ public class LruMemoryCache
         this.size = size;
     }
 
-    public Object get(Object key) {
+    public V get(K key) {
 
         notifyListeners(CacheListener.Event.GET, key);
         return cache.get(key);
 
     }
 
-    public void put(Object key, Object object) {
+    public void put(K key, V object) {
 
         synchronized(cache) {
             cache.put(key, object);
             notifyListeners(CacheListener.Event.PUT,
-                            new KeyValue(key, object));
+                            new KeyValue<K, V>(key, object));
         }
     }
 
-    public void remove(Object key) {
+    public void remove(K key) {
 
         synchronized(cache) {
             cache.remove(key);
@@ -72,7 +73,7 @@ public class LruMemoryCache
         }
     }
 
-    public Iterator keys() {
+    public Iterator<K> keys() {
 
         return (cache.keySet()).iterator();
     }
@@ -97,11 +98,10 @@ public class LruMemoryCache
         if((size = cacheListeners.size()) > 0) {
             CacheListener[] listeners;
 
-            listeners = (CacheListener[])
-                cacheListeners.toArray(new CacheListener[size]);
+            listeners = cacheListeners.toArray(new CacheListener[size]);
             for(int i = listeners.length; i-- > 0; ) {
                 try {
-                    ((CacheListener) listeners[i]).cacheEvent(this, event, data);
+                    listeners[i].cacheEvent(this, event, data);
                 }
                 catch(Exception e) {}
             }
@@ -112,7 +112,7 @@ public class LruMemoryCache
 
         switch(event) {
             case EXPIRE:
-                remove(data);
+                remove((K) data);
                 break;
             case CLEAR:
             case DESTROY:
@@ -123,7 +123,7 @@ public class LruMemoryCache
 
                             keys = (cache.keySet()).toArray();
                             for(int i = keys.length; i-- > 0; ) {
-                                remove(keys[i]);
+                                remove((K) keys[i]);
                             }
                         }
                         else cache.clear();
@@ -137,17 +137,17 @@ public class LruMemoryCache
         }
     }
 
-    private class LruLinkedHashMap extends LinkedHashMap {
+    private class LruLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
 
         public LruLinkedHashMap() {
             
             super(size, (float) 0.75, true);
         }
 
-        protected boolean removeEldestEntry(Map.Entry eldest) {
+        protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
 
             if (size() > size) {
-                Object key;
+                K key;
 
                 key = eldest.getKey();
                 remove(key);

@@ -24,12 +24,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.dispatcher.adapter.HandlerAdapter;
 import org.iterx.miru.dispatcher.controller.Controller;
 import org.iterx.miru.dispatcher.Dispatcher;
 
-
-public class ControllerHandlerAdapter implements HandlerAdapter {
+public class ControllerHandlerAdapter<S extends RequestContext, T extends ResponseContext> implements HandlerAdapter<S, T> {
 
     private static final Log LOGGER = LogFactory.getLog(ControllerHandlerAdapter.class);
 
@@ -38,10 +39,10 @@ public class ControllerHandlerAdapter implements HandlerAdapter {
         return (handler instanceof Controller);
     }
 
-    public int execute(ProcessingContext processingContext, Object handler) {
+    public int execute(ProcessingContext<? extends S, ? extends T> processingContext, Object handler) {
 
         try {
-            return ((Controller) handler).execute(processingContext);
+            return ((Controller<S, T>) handler).execute(processingContext);
         }
         catch(Exception e) {
             LOGGER.warn("Controller [" + handler + "]failure.", e);

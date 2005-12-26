@@ -21,11 +21,13 @@
 package org.iterx.miru.matcher;
 
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public interface Matcher {
+public interface Matcher<S extends RequestContext, T extends ResponseContext> {
 
-    public boolean hasMatches(ProcessingContext processingContext);
+    public boolean hasMatches(ProcessingContext<? extends S, ? extends T> processingContext);
 
-    public Matches getMatches(ProcessingContext processingContext);
+    public Matches getMatches(ProcessingContext<? extends S, ? extends T> processingContext);
 
 }

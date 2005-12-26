@@ -48,7 +48,7 @@ public class PerfTestProcessingContextImpl extends TestCase {
 
     public static class ProcessingContextTest extends TestCase {
 
-        private static ProcessingContextFactory processingContextFactory;
+        private static ProcessingContextFactory<RequestContext, ResponseContext> processingContextFactory;
 
         static {
             processingContextFactory = ProcessingContextFactory.getProcessingContextFactory();
@@ -60,9 +60,7 @@ public class PerfTestProcessingContextImpl extends TestCase {
         }
 
         public void testProcessingContext() {
-            ProcessingContext context;
-
-            context = processingContextFactory.getProcessingContext
+            processingContextFactory.getProcessingContext
                 (MockHttpRequestContext.newInstance("/"),
                  MockHttpResponseContext.newInstance());
         }

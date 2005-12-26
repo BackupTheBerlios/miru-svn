@@ -22,18 +22,16 @@ package org.iterx.miru.pipeline.generator;
 
 import java.io.IOException;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
 
-import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.context.stream.StreamRequestContext;
 import org.iterx.miru.pipeline.PipelineChainException;
-import org.iterx.miru.pipeline.helper.SaxHelper;
+import org.iterx.miru.pipeline.util.SaxUtils;
 
-public class SaxGenerator extends GeneratorImpl {
+public class SaxGenerator<S extends StreamRequestContext, T extends ResponseContext> extends GeneratorImpl<S, T> {
 
     private static final String LEXICAL_HANDLER =
           "http://xml.org/sax/properties/lexical-handler";
@@ -73,18 +71,17 @@ public class SaxGenerator extends GeneratorImpl {
         super.init();
     }
 
-    public void execute(ProcessingContext processingContext) throws IOException {
-        assert (processingContext != null) : "processingContext == null";
+    public void execute(ProcessingContext<? extends S, ? extends T> processingContext) throws IOException {
         assert (xmlReader != null) : "xmlReader == null";
 
         try {
-            RequestContext requestContext;
+            StreamRequestContext requestContext;
 
             requestContext = processingContext.getRequestContext();
-            xmlReader.parse(SaxHelper.newInputSource(requestContext));
+            xmlReader.parse(SaxUtils.newInputSource(requestContext));
         }
         catch(SAXException e) {
-            throw new PipelineChainException("Pipeline execution failure.", e);
+            throw new PipelineChainException("Pipeline execution failure", e);
         }
     }
 

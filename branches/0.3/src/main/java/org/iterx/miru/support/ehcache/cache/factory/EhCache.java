@@ -8,7 +8,7 @@ import org.iterx.miru.cache.Cache;
 import net.sf.ehcache.CacheException;
 import net.sf.ehcache.Element;
 
-public class EhCache implements Cache {
+public class EhCache<K extends Serializable, V extends Serializable>  implements Cache<K, V> {
 
     private net.sf.ehcache.Cache cache;
 
@@ -33,32 +33,32 @@ public class EhCache implements Cache {
         this.cache = cache;
     }
 
-    public Object get(Object key) {
+    public V get(K key) {
         assert (cache != null) : "cache == null";
 
         try {
             Element element;
 
-            element = cache.get((Serializable) key);
-            return (element != null)? element.getValue() : null;
+            element = cache.get(key);
+            return (V) ((element != null)? element.getValue() : null);
         }
         catch(CacheException e){}
         return null;
     }
 
-    public void put(Object key, Object object) {
+    public void put(K key, V object) {
         assert (cache != null) : "cache == null";
 
-        cache.put(new Element((Serializable) key, (Serializable) object));
+        cache.put(new Element(key, object));
     }
 
-    public void remove(Object key) {
+    public void remove(K key) {
         assert (cache != null) : "cache == null";
 
-        cache.remove((Serializable) key);
+        cache.remove(key);
     }
 
-    public Iterator keys() {
+    public Iterator<K> keys() {
         assert (cache != null) : "cache == null";
 
         try {

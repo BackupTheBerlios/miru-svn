@@ -22,6 +22,7 @@
 package org.iterx.miru.support.ehcache.cache.factory;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import org.iterx.miru.cache.factory.CacheFactory;
 import org.iterx.miru.cache.Cache;
@@ -32,14 +33,14 @@ import org.iterx.miru.io.StreamSource;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.CacheException;
 
-public class EhCacheFactory extends CacheFactory implements Loadable {
+public class EhCacheFactory<K extends Serializable, V extends Serializable>  extends CacheFactory<K, V>  implements Loadable {
 
     private CacheManager cacheManager;
 
-    public Cache getCache(String name) {
+    public Cache<K, V> getCache(String name) {
         assert (cacheManager != null) : "cacheManager == null";
 
-        return new EhCache(cacheManager.getCache(name));
+        return new EhCache<K, V>(cacheManager.getCache(name));
     }
 
     public void recycleCache(String name) {

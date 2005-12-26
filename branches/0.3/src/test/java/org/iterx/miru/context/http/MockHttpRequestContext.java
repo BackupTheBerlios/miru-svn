@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.iterx.miru.context.http.HttpRequestContextImpl;
 
 public class MockHttpRequestContext extends HttpRequestContextImpl {
 
@@ -67,7 +66,7 @@ public class MockHttpRequestContext extends HttpRequestContextImpl {
     public void reset() {
 
         try {
-            ((ByteArrayInputStream) getInputStream()).reset();
+            (getInputStream()).reset();
         }
         catch(IOException e) {}
     }

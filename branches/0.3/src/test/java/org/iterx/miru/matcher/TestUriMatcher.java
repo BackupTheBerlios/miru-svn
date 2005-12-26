@@ -24,6 +24,8 @@ package org.iterx.miru.matcher;
 import junit.framework.TestCase;
 import org.iterx.miru.context.MockProcessingContext;
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.context.http.MockHttpRequestContext;
 import org.iterx.miru.context.http.MockHttpResponseContext;
 
@@ -96,22 +98,22 @@ public class TestUriMatcher extends TestCase {
     }
 
     public void testMatches() {
-        ProcessingContext processingContext;
-        UriMatcher matcher;
+        ProcessingContext<RequestContext, ResponseContext> processingContext;
+        UriMatcher<RequestContext, ResponseContext> matcher;
 
 
-        matcher = new UriMatcher(ID);
+        matcher = new UriMatcher<RequestContext, ResponseContext>(ID);
         processingContext = new MockProcessingContext(MockHttpRequestContext.newInstance(URI),
                                                       MockHttpResponseContext.newInstance());
 
-        for(int i = 0; i < TESTS.length; i++) {
+        for(Object[] test : TESTS) {
             Object[] values;
 
-            matcher.setMask(((Integer) TESTS[i][0]).intValue());
-            matcher.setPattern((String) TESTS[i][1]);
+            matcher.setMask(((Integer) test[0]).intValue());
+            matcher.setPattern((String) test[1]);
 
 
-            if((values = (String[]) TESTS[i][2]) != null) {
+            if((values = (String[]) test[2]) != null) {
                 Matches matches;
                 String[] strings;
 

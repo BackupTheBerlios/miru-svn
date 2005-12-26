@@ -26,9 +26,11 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
 
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.pipeline.Generator;
 
-public class GeneratorImpl implements Generator {
+public class GeneratorImpl<S extends RequestContext, T extends ResponseContext> implements Generator<S, T> {
 
     protected ContentHandler contentHandler;
     protected LexicalHandler lexicalHandler;
@@ -47,7 +49,7 @@ public class GeneratorImpl implements Generator {
 
     public void init() {}
 
-    public void execute(ProcessingContext processingContext) throws IOException {}
+    public void execute(ProcessingContext<? extends S, ? extends T> processingContext) throws IOException {}
 
     public void destroy() {
 

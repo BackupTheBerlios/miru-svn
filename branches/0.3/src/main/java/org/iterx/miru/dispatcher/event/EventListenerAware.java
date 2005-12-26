@@ -20,6 +20,4 @@
 */
 package org.iterx.miru.dispatcher.event;
 
-public interface EventListenerAware {
-
-}
+public interface EventListenerAware {}

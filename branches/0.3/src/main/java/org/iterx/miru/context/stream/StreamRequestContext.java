@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.adapter.HandlerAdapter
+  org.iterx.miru.context.stream.StreamRequestContext
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,17 +18,10 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
-package org.iterx.miru.dispatcher.adapter;
 
-import org.iterx.miru.context.ProcessingContext;
+package org.iterx.miru.context.stream;
+
 import org.iterx.miru.context.RequestContext;
-import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.io.StreamSource;
 
-public interface ControllerAdapter<S extends RequestContext, T extends ResponseContext> {
-
-    public boolean supports(Object controller);
-
-    public int execute(ProcessingContext<? extends S, ? extends T> processingContext,
-                       Object controller);
-
-}
+public interface StreamRequestContext extends RequestContext, StreamSource {}

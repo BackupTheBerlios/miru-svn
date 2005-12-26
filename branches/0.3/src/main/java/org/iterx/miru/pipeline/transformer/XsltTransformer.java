@@ -43,16 +43,18 @@ import org.xml.sax.ext.LexicalHandler;
 import org.iterx.miru.pipeline.Stage;
 import org.iterx.miru.pipeline.PipelineChainException;
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.io.factory.ResourceFactory;
 import org.iterx.miru.io.Resource;
 import org.iterx.miru.io.ReadableResource;
 import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.util.MiruUtils;
 
-public class XsltTransformer extends TransformerImpl {
+public class XsltTransformer<S extends RequestContext, T extends ResponseContext> extends TransformerImpl<S, T> {
 
     private static SAXTransformerFactory transformerFactory;
-    private static Map templates;
+    private static Map<URI, Templates> templates;
 
     private TransformerHandler transformerHandler;
 
@@ -66,7 +68,7 @@ public class XsltTransformer extends TransformerImpl {
 
     static {
         transformerFactory = (SAXTransformerFactory) TransformerFactory.newInstance();
-        templates = new HashMap();
+        templates = new HashMap<URI, Templates>();
     }
 
     public String getUri() {
@@ -116,8 +118,7 @@ public class XsltTransformer extends TransformerImpl {
     }
 
 
-    public void execute(ProcessingContext processingContext) throws IOException {
-        assert (processingContext != null) : "processingContext == null";
+    public void execute(ProcessingContext<? extends S, ? extends T> processingContext) throws IOException {
         assert (resourceFactory != null) : "resourceFactory == null";
         assert (uri != null) : "uri == null";
 
@@ -129,7 +130,7 @@ public class XsltTransformer extends TransformerImpl {
                                     baseUri,
                                     (Matches) processingContext.getAttribute(ProcessingContext.MATCHES_ATTRIBUTE));
 
-            if((template = (Templates) templates.get(uri)) == null) {
+            if((template = templates.get(uri)) == null) {
                 Resource resource;
 
                 if((resource = resourceFactory.getResource(uri)) == null ||

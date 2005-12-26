@@ -23,12 +23,12 @@ package org.iterx.util;
 
 import java.io.Serializable;
 
-public class KeyValue implements Serializable {
+public class KeyValue<K, V> implements Serializable {
 
-    private Object key;
-    private Object value;
+    private K key;
+    private V value;
 
-    public KeyValue(Object key, Object value) {
+    public KeyValue(K key, V value) {
 
         if(key == null)
             throw new IllegalArgumentException("key == null");
@@ -37,12 +37,12 @@ public class KeyValue implements Serializable {
         this.value = value;
     }
 
-    public Object getKey() {
+    public K getKey() {
 
         return key;
     }
 
-    public Object getValue() {
+    public V getValue() {
 
         return value;
     }

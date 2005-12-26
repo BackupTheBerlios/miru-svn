@@ -28,20 +28,17 @@ import org.iterx.miru.bean.BeanProviderListenerAware;
 
 import org.iterx.miru.io.factory.ResourceFactory;
 import org.iterx.miru.context.factory.ProcessingContextFactory;
-import org.iterx.miru.context.ApplicationContext;
-import org.iterx.miru.context.ApplicationContextAware;
 
-public class ApplicationContextImpl implements ApplicationContext, BeanProviderListener {
+public class ApplicationContextImpl<S extends RequestContext, T extends ResponseContext> implements ApplicationContext<S, T>, BeanProviderListener {
 
-    private ProcessingContextFactory processingContextFactory;
+    private ProcessingContextFactory<S, T> processingContextFactory;
     private ResourceFactory resourceFactory;
 
     private ApplicationContext parent;
 
-    protected BeanProvider beanProvider;
+    protected final BeanProvider beanProvider;
 
     protected ApplicationContextImpl() {
-
 
         this(BeanFactory.getBeanFactory());
     }
@@ -102,22 +99,22 @@ public class ApplicationContextImpl implements ApplicationContext, BeanProviderL
         this.resourceFactory = resourceFactory;
     }
 
-    public ProcessingContextFactory getProcessingContextFactory() {
+    public ProcessingContextFactory<S, T> getProcessingContextFactory() {
 
         if(processingContextFactory == null) {
             if((processingContextFactory =
-                (ProcessingContextFactory) getBeanOfType(ProcessingContextFactory.class)) == null)
+                (ProcessingContextFactory<S, T>) getBeanOfType(ProcessingContextFactory.class)) == null)
                 processingContextFactory = ProcessingContextFactory.getProcessingContextFactory();
         }
         return processingContextFactory;
     }
 
-    public void setProcessingContextFactory(ProcessingContextFactory processingContextFactory) {
+    public void setProcessingContextFactory(ProcessingContextFactory<? extends S, ? extends T> processingContextFactory) {
 
         if(processingContextFactory == null)
             throw new IllegalArgumentException("processingContextFactory == null");
 
-        this.processingContextFactory = processingContextFactory;
+        this.processingContextFactory = (ProcessingContextFactory<S, T>) processingContextFactory;
     }
 
     public Object getBean(String name) {

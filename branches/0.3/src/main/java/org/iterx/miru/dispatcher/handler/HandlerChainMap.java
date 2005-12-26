@@ -24,10 +24,13 @@ package org.iterx.miru.dispatcher.handler;
 
 import java.util.Iterator;
 
-public interface HandlerChainMap  {
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-    public Iterator iterator();
+public interface HandlerChainMap<S extends RequestContext, T extends ResponseContext>   {
 
-    public HandlerChain get(String id);
+    public Iterator<HandlerChain<S, T>> iterator();
+
+    public HandlerChain<S, T> get(String id);
 
 }

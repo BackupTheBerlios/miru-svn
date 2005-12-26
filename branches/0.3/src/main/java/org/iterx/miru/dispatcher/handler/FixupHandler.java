@@ -21,7 +21,7 @@
 
 package org.iterx.miru.dispatcher.handler;
 
-public interface FixupHandler extends Handler {
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-    
-}
+public interface FixupHandler<S extends RequestContext, T extends ResponseContext> extends Handler<S, T> {}

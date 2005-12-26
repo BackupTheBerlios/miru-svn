@@ -20,14 +20,4 @@
 */
 package org.iterx.miru.cache;
 
-public @interface Cachable {
-
-    enum Type {
-        PERSISTENT
-    }
-
-    public Type type();
-
-    public int expires();
-
-}
+public @interface Cachable {}

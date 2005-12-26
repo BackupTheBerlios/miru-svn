@@ -24,18 +24,18 @@ package org.iterx.miru.cache.factory;
 import org.iterx.util.SystemUtils;
 import org.iterx.miru.cache.CacheProvider;
 
-public abstract class CacheFactory implements CacheProvider {
+public abstract class CacheFactory<K, V> implements CacheProvider<K, V> {
 
-    private static CacheFactory cacheFactory;
+    private static Object cacheFactory;
 
-    public static CacheFactory getCacheFactory() {
+    public static <K, V> CacheFactory<K, V> getCacheFactory() {
 
         if(cacheFactory == null) {
             String cls;
 
             if((cls = SystemUtils.getProperty((CacheFactory.class).getName())) != null) {
                 try {
-                    cacheFactory = (CacheFactory) (Class.forName(cls)).newInstance();
+                    cacheFactory = (Class.forName(cls)).newInstance();
                 }
                 catch(Exception e) {
                     throw new RuntimeException("Failed to create CacheFactory '" + cls + "'.", e);
@@ -43,10 +43,10 @@ public abstract class CacheFactory implements CacheProvider {
             }
             else cacheFactory = new MemoryCacheFactory();
         }
-        return cacheFactory;
+        return (CacheFactory<K, V>) cacheFactory;
     }
 
-    public static void setCacheFactory(CacheFactory cacheFactory) {
+    public static <K, V> void setCacheFactory(CacheFactory<K, V> cacheFactory) {
 
         if(cacheFactory == null)
             throw new IllegalArgumentException("cacheFactory == null");

@@ -21,12 +21,7 @@
 
 package org.iterx.util;
 
-import java.util.Properties;
-import java.util.Enumeration;
-
 import java.io.IOException;
-import java.io.File;
-
 import java.net.URL;
 
 import org.apache.commons.logging.Log;
@@ -40,7 +35,7 @@ public final class SystemUtils {
 
     private SystemUtils() {}
 
-    public static final String getProperty(String key) {
+    public static String getProperty(String key) {
         String value;
 
         if((value = System.getProperty(key)) == null) {
@@ -61,7 +56,7 @@ public final class SystemUtils {
         return value;
     }
 
-    public static final void setProperty(String key, String value) {
+    public static void setProperty(String key, String value) {
 
         if(value == null) System.clearProperty(key);
         else System.setProperty(key, value);

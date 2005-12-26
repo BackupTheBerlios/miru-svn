@@ -20,11 +20,7 @@
 */
 package org.iterx.miru.pipeline;
 
-import org.iterx.miru.pipeline.Stage;
-import org.iterx.miru.pipeline.XmlConsumer;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public interface Serializer extends Stage, XmlConsumer {
-
-
-
-}
+public interface Serializer<S extends RequestContext, T extends ResponseContext> extends Stage<S, T>, XmlConsumer {}

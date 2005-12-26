@@ -22,13 +22,15 @@ package org.iterx.miru.dispatcher;
 
 import junit.framework.TestCase;
 import org.iterx.miru.context.factory.ProcessingContextFactory;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactoryImpl;
 import org.iterx.miru.dispatcher.handler.HandlerChainMap;
 
 public class TestDispatcher extends TestCase {
 
-    private ProcessingContextFactory processingContextFactory;
-    private HandlerChainMap handlerChainMap;
+    private ProcessingContextFactory<RequestContext, ResponseContext> processingContextFactory;
+    private HandlerChainMap<RequestContext, ResponseContext> handlerChainMap;
 
     protected void setUp() {
         HandlerChainFactoryImpl handlerChainFactory;
@@ -46,12 +48,12 @@ public class TestDispatcher extends TestCase {
     }
 
     public void testConstructors() {
-        Dispatcher dispatcher;
+        Dispatcher<RequestContext, ResponseContext> dispatcher;
 
-        dispatcher = new Dispatcher();
+        dispatcher = new Dispatcher<RequestContext, ResponseContext>();
         assertNull(dispatcher.getHandlerChainMap());
 
-        dispatcher = new Dispatcher(handlerChainMap);
+        dispatcher = new Dispatcher<RequestContext, ResponseContext>(handlerChainMap);
         assertEquals(handlerChainMap, dispatcher.getHandlerChainMap());
     }
 }

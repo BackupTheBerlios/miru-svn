@@ -22,21 +22,21 @@
 package org.iterx.miru.cache.factory;
 
 import java.util.HashMap;
+import java.util.Map;
 
-import org.iterx.miru.cache.Cache;
 import org.iterx.miru.cache.CacheNotifiable;
 
-public class MemoryCacheFactory extends CacheFactory {
+public class MemoryCacheFactory<K, V> extends CacheFactory<K, V> {
 
-    private HashMap caches = new HashMap();
+    private Map<String, MemoryCache<K, V>> caches = new HashMap<String, MemoryCache<K, V>>();
 
-    public Cache getCache(String name) {
+    public MemoryCache<K, V> getCache(String name) {
 
         synchronized(caches) {
-            MemoryCache cache;
+            MemoryCache<K, V> cache;
 
-            if((cache = (MemoryCache) caches.get(name)) == null) {
-                cache = new MemoryCache();
+            if((cache = caches.get(name)) == null) {
+                cache = new MemoryCache<K, V>();
                 caches.put(name, cache);
             }
             return cache;
@@ -46,12 +46,11 @@ public class MemoryCacheFactory extends CacheFactory {
     public void recycleCache(String name) {
 
         synchronized(caches) {
-            MemoryCache cache;
+            MemoryCache<K, V> cache;
 
-            cache = (MemoryCache) caches.remove(name);
+            cache = caches.remove(name);
             cache.cacheNotify(this, CacheNotifiable.Event.DESTROY, null);
         }
     }
-
 
 }

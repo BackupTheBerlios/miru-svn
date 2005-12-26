@@ -87,7 +87,7 @@
                   from="^(.*).aj$$"
                   to="${java.target.dir}/\1.class"/>
     </uptodate>
-    <antcall target="compile:aspects"/>
+    <!--antcall target="compile:aspects"/-->
 
   </target>
 

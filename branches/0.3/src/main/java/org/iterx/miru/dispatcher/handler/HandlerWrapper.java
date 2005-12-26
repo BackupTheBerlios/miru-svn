@@ -23,14 +23,17 @@
 package org.iterx.miru.dispatcher.handler;
 
 
+import java.util.List;
+
 import org.iterx.miru.bean.BeanWrapper;
+import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.context.RequestContext;
 
-public interface HandlerWrapper extends BeanWrapper {
-
+public interface HandlerWrapper<S extends RequestContext, T extends ResponseContext> extends BeanWrapper {
 
     public void setHandler(Object handler);
 
-    public void setHandlers(Object handlers);
+    public void setHandlers(List<Object> handlers);
 
 }
 

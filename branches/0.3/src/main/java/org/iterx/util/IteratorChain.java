@@ -22,10 +22,10 @@ package org.iterx.util;
 
 import java.util.Iterator;
 
-public interface IteratorChain extends Iterator {
+public interface IteratorChain<E> extends Iterator<E> {
 
-    public Iterator getParent();
+    public Iterator<E> getParent();
 
-    public void setParent(Iterator parent);
+    public void setParent(Iterator<E> parent);
 
 }

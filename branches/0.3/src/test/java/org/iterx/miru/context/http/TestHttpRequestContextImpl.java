@@ -38,128 +38,128 @@ public class TestHttpRequestContextImpl extends TestCase {
     private static final String ENCODING = System.getProperty("file.encoding");
 
     public void testConstructors() throws IOException {
-    HttpRequestContextImpl request;
-    Reader reader;
+        HttpRequestContextImpl request;
+        Reader reader;
 
-    request = new HttpRequestContextImpl(System.in);
-    assertNotNull(request);
-    assertEquals(System.in, request.getInputStream());
-    assertEquals(null, request.getCharacterEncoding());
+        request = new HttpRequestContextImpl(System.in);
+        assertNotNull(request);
+        assertEquals(System.in, request.getInputStream());
+        assertEquals(null, request.getCharacterEncoding());
 
-    request = new HttpRequestContextImpl(System.in, ENCODING);
-    assertNotNull(request);
-    assertEquals(System.in, request.getInputStream());
-    assertTrue(encodingEquals(ENCODING, request.getCharacterEncoding()));
+        request = new HttpRequestContextImpl(System.in, ENCODING);
+        assertNotNull(request);
+        assertEquals(System.in, request.getInputStream());
+        assertTrue(encodingEquals(ENCODING, request.getCharacterEncoding()));
 
-    request = new HttpRequestContextImpl((reader = new InputStreamReader(System.in)));
-    assertNotNull(request);
-    assertEquals(reader, request.getReader());
+        request = new HttpRequestContextImpl((reader = new InputStreamReader(System.in)));
+        assertNotNull(request);
+        assertEquals(reader, request.getReader());
 
-    assertTrue(encodingEquals(ENCODING, request.getCharacterEncoding()));
+        assertTrue(encodingEquals(ENCODING, request.getCharacterEncoding()));
 
-    request = new HttpRequestContextImpl
-        ((reader = new InputStreamReader(System.in, ENCODING)));
-    assertNotNull(request);
-    assertEquals(reader, request.getReader());
-    assertTrue(encodingEquals(ENCODING, request.getCharacterEncoding()));
+        request = new HttpRequestContextImpl
+            ((reader = new InputStreamReader(System.in, ENCODING)));
+        assertNotNull(request);
+        assertEquals(reader, request.getReader());
+        assertTrue(encodingEquals(ENCODING, request.getCharacterEncoding()));
     }
 
     public void testURIAccessors() throws URISyntaxException {
-    HttpRequestContextImpl request;
-    URI uri;
+        HttpRequestContextImpl request;
+        URI uri;
 
-    uri = new URI("/dev/null");
+        uri = new URI("/dev/null");
 
-    request = new HttpRequestContextImpl(System.in);
-    assertNull(request.getURI());
+        request = new HttpRequestContextImpl(System.in);
+        assertNull(request.getURI());
 
-    request.setURI(uri);
-    assertEquals(uri, request.getURI());
+        request.setURI(uri);
+        assertEquals(uri, request.getURI());
 
-    request.setURI(null);
-    assertNull(request.getURI());
+        request.setURI(null);
+        assertNull(request.getURI());
     }
 
     public void testPropertyAccessors() {
-    HttpRequestContextImpl request;
-    String value;
+        HttpRequestContextImpl request;
+        String value;
 
-    request = new HttpRequestContextImpl(System.in);
-    assertNull(request.getHeader("key"));
+        request = new HttpRequestContextImpl(System.in);
+        assertNull(request.getHeader("key"));
 
-    request.setHeader("key", (value = "value"));
-    assertEquals(value, request.getHeader("key"));
+        request.setHeader("key", (value = "value"));
+        assertEquals(value, request.getHeader("key"));
 
-    request.setHeader("key", null);
-    assertNull(request.getHeader("key"));
+        request.setHeader("key", null);
+        assertNull(request.getHeader("key"));
 
-    request.setHeader("KEY", (value = "value"));
-    assertEquals(value, request.getHeader("key"));
-    assertEquals(value, request.getHeader("kEy"));
-    assertEquals(value, request.getHeader("KEY"));
-    request.setHeader("KeY", null);
-    assertNull(request.getHeader("KEY"));
+        request.setHeader("KEY", (value = "value"));
+        assertEquals(value, request.getHeader("key"));
+        assertEquals(value, request.getHeader("kEy"));
+        assertEquals(value, request.getHeader("KEY"));
+        request.setHeader("KeY", null);
+        assertNull(request.getHeader("KEY"));
     }
 
     public void testParameterAccessors() {
-    HttpRequestContextImpl request;
-    String[] values;
-    String value;
+        HttpRequestContextImpl request;
+        String[] values;
+        String value;
 
-    request = new HttpRequestContextImpl(System.in);
-    assertEquals(0, (request.getParameterNames()).length);
-    assertNull(request.getParameter("a"));
+        request = new HttpRequestContextImpl(System.in);
+        assertEquals(0, (request.getParameterNames()).length);
+        assertNull(request.getParameter("a"));
 
 
-    request.setParameter("a", (value = "value"));
-    assertEquals(value, request.getParameter("a"));
-    assertEquals(1, (values = request.getParameterValues("a")).length);
-    assertEquals(value, values[0]);
+        request.setParameter("a", (value = "value"));
+        assertEquals(value, request.getParameter("a"));
+        assertEquals(1, (values = request.getParameterValues("a")).length);
+        assertEquals(value, values[0]);
 
-    request.setParameterValues("b", (values = new String[]{ value, ""}));
-    assertEquals(values, request.getParameterValues("b"));
-    assertEquals(value, request.getParameter("b"));
+        request.setParameterValues("b", (values = new String[]{value, ""}));
+        assertEquals(values, request.getParameterValues("b"));
+        assertEquals(value, request.getParameter("b"));
 
-    assertEquals(2, (values = request.getParameterNames()).length);
-    assertEquals("a", values[0]);
-    assertEquals("b", values[1]);
+        assertEquals(2, (values = request.getParameterNames()).length);
+        assertEquals("a", values[0]);
+        assertEquals("b", values[1]);
 
-    request.setParameter("a", null);
-    assertNull(request.getParameter("a"));
-    assertEquals(1, (values = request.getParameterNames()).length);
-    assertEquals(value, request.getParameter("b"));
+        request.setParameter("a", null);
+        assertNull(request.getParameter("a"));
+        assertEquals(1, (request.getParameterNames()).length);
+        assertEquals(value, request.getParameter("b"));
 
-    request.setParameter("b", null);
-    assertNull(request.getParameter("b"));
-    assertEquals(0, (request.getParameterNames()).length);
+        request.setParameter("b", null);
+        assertNull(request.getParameter("b"));
+        assertEquals(0, (request.getParameterNames()).length);
     }
 
     public void testContentLengthAccessors() {
-    HttpRequestContextImpl request;
+        HttpRequestContextImpl request;
 
-    request = new HttpRequestContextImpl(System.in);
-    assertEquals(-1, request.getContentLength());
+        request = new HttpRequestContextImpl(System.in);
+        assertEquals(-1, request.getContentLength());
     }
 
     public void testContentTypeAccessors() {
-    HttpRequestContextImpl request;
-    String value;
+        HttpRequestContextImpl request;
+        String value;
 
-    request = new HttpRequestContextImpl(System.in);
-    assertNull(request.getContentType());
+        request = new HttpRequestContextImpl(System.in);
+        assertNull(request.getContentType());
 
-    request.setContentType((value = "text/xml"));
-    assertEquals(value, request.getContentType());
+        request.setContentType((value = "text/xml"));
+        assertEquals(value, request.getContentType());
 
-    request.setContentType(null);
-    assertNull(request.getContentType());
+        request.setContentType(null);
+        assertNull(request.getContentType());
     }
 
     public void testCharacterEncodingAccessors() {
-    HttpRequestContextImpl request;
+        HttpRequestContextImpl request;
 
-    request = new HttpRequestContextImpl(System.in);
-    assertNull(request.getCharacterEncoding());
+        request = new HttpRequestContextImpl(System.in);
+        assertNull(request.getCharacterEncoding());
     }
 
     public void testInputStream() throws IOException {

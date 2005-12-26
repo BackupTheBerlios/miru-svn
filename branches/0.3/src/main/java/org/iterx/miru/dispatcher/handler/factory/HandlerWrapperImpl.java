@@ -29,17 +29,19 @@ import org.iterx.miru.dispatcher.handler.HandlerWrapper;
 import org.iterx.miru.dispatcher.handler.Handler;
 import org.iterx.miru.dispatcher.adapter.HandlerAdapter;
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.bean.BeanWrapper;
 import org.iterx.miru.bean.BeanProvider;
 import org.iterx.miru.bean.BeanWrapperAware;
 
-public class HandlerWrapperImpl implements HandlerWrapper {
+public class HandlerWrapperImpl<S extends RequestContext, T extends ResponseContext> implements HandlerWrapper<S, T> {
 
-    private HandlerChainFactory handlerChainFactory;
+    private HandlerChainFactory<S, T> handlerChainFactory;
     private BeanProvider beanProvider;
     private BeanWrapper beanWrapper;
 
-    public HandlerWrapperImpl(HandlerChainFactory handlerChainFactory,
+    public HandlerWrapperImpl(HandlerChainFactory<? extends S, ? extends T> handlerChainFactory,
                               BeanProvider beanProvider) {
         if(handlerChainFactory == null)
             throw new IllegalArgumentException("handlerChainFactory == null");
@@ -48,7 +50,7 @@ public class HandlerWrapperImpl implements HandlerWrapper {
         if(!(beanProvider instanceof BeanWrapperAware))
             throw new IllegalArgumentException("beanProvider is not BeanWrapperAware.");
 
-        this.handlerChainFactory = handlerChainFactory;
+        this.handlerChainFactory = (HandlerChainFactory<S, T>) handlerChainFactory;
         this.beanProvider = beanProvider;
     }
 
@@ -81,74 +83,66 @@ public class HandlerWrapperImpl implements HandlerWrapper {
         beanWrapper.setValue(property, value);
     }
 
-    public void setValues(Map map) {
+    public void setValues(Map<String, Object> map) {
 
         beanWrapper.setValues(map);
     }
 
-    public void setHandler(Object handler) {
+    public void setHandler(Object object) {
 
-        if(handler != null &&
-           !(handler instanceof Handler)) {
-            HandlerAdapter[] adapters;
-            adapters = handlerChainFactory.getHandlerAdapters();
-
-            for(int i = 0; i < adapters.length; i++) {
-                if(adapters[i].supports(handler)) {
-                    handler = new HandlerProxy(adapters[i], handler);
+        if(object != null && !(object instanceof Handler)) {
+            for(HandlerAdapter<S, T> adapter : handlerChainFactory.getHandlerAdapters()) {
+                if(adapter.supports(object)) {
+                    object = new HandlerProxy<S, T>(adapter, object);
                     break;
                 }
             }
         }
-        beanWrapper.setValue("handler", handler);
+        beanWrapper.setValue("handler", object);
     }
 
-    public void setHandlers(Object handlers) {
-        Object[] values;
+    public void setHandlers(List<Object> objects) {
+        List<Handler<S, T>> handlers;
 
-        values = null;
-        if(handlers instanceof Object[]) values = (Object[]) handlers;
-        else if(handlers instanceof List)  values = ((List) handlers).toArray();
-        if(values != null) {
+        handlers = null;
+        if(objects != null) {
+            HandlerAdapter<S, T>[] adapters;
+            Handler<S, T> handler;
 
-            HandlerAdapter[] adapters;
-            List array;
-            Object value;
-
-            array = new ArrayList();
+            handlers = new ArrayList<Handler<S, T>>();
             adapters = handlerChainFactory.getHandlerAdapters();
-            for(int i = 0; i < values.length; i++) {
-                value = values[i];
-                if(!(value instanceof Handler)) {
-                    for(int j = 0; j < adapters.length; j++) {
-                        if(adapters[j].supports(value)) {
-                            value = new HandlerProxy(adapters[j], value);
-                            break;
+            for(Object object : objects) {
+                OUTER: if(!(object instanceof Handler)) {
+                    for(HandlerAdapter<S, T> adapter : adapters) {
+                        if(adapter.supports(object)) {
+                            handler = new HandlerProxy<S, T>(adapter, object);
+                            break OUTER;
                         }
                     }
+                    throw new IllegalArgumentException("Unsupported Handler [" + object + "].");
                 }
-                array.add(value);
+                else handler = (Handler<S, T>) object;
+                handlers.add(handler);
             }
-            handlers = array;
         }
         beanWrapper.setValue("handlers", handlers);
     }
 
 
-    private static class HandlerProxy implements Handler {
+    private static class HandlerProxy<S extends RequestContext, T extends ResponseContext> implements Handler<S, T> {
 
-        private HandlerAdapter adapter;
-        private Object handler;
+        private HandlerAdapter<S, T> adapter;
+        private Object object;
 
-        private HandlerProxy(HandlerAdapter adapter, Object handler) {
+        private HandlerProxy(HandlerAdapter<? extends S, ? extends T> adapter, Object handler) {
 
-            this.adapter = adapter;
-            this.handler = handler;
+            this.adapter = (HandlerAdapter<S, T>) adapter;
+            this.object = handler;
         }
 
-        public int execute(ProcessingContext processingContext) {
+        public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
 
-            return adapter.execute(processingContext, handler);
+            return adapter.execute(processingContext, object);
         }
 
     }

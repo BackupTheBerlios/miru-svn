@@ -22,16 +22,18 @@
 package org.iterx.miru.support.spring.dispatcher.context;
 
 import org.iterx.miru.support.spring.context.SpringApplicationContext;
-import org.iterx.miru.dispatcher.context.DispatcherApplicationContext;
 import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactory;
+import org.iterx.miru.dispatcher.context.DispatcherApplicationContext;
 import org.iterx.miru.bean.BeanException;
 import org.iterx.miru.bean.factory.BeanFactory;
 import org.iterx.miru.context.ApplicationContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public class SpringDispatcherApplicationContext extends SpringApplicationContext
-    implements DispatcherApplicationContext {
+public class SpringDispatcherApplicationContext<S extends RequestContext, T extends ResponseContext> extends SpringApplicationContext
+    implements DispatcherApplicationContext<S, T> {
 
-    private HandlerChainFactory handlerMappingFactory;
+    private HandlerChainFactory<S, T> handlerMappingFactory;
 
     public SpringDispatcherApplicationContext() {}
 
@@ -52,11 +54,11 @@ public class SpringDispatcherApplicationContext extends SpringApplicationContext
     }
 
 
-    public HandlerChainFactory getHandlerChainFactory() {
+    public HandlerChainFactory<S, T> getHandlerChainFactory() {
 
         if(handlerMappingFactory == null) {
             if((handlerMappingFactory =
-                (HandlerChainFactory) getBeanOfType(HandlerChainFactory.class)) == null)
+                (HandlerChainFactory<S, T>) getBeanOfType(HandlerChainFactory.class)) == null)
                 throw new BeanException();
         }
         return handlerMappingFactory;

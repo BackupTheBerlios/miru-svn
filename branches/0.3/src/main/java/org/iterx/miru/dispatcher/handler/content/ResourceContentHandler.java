@@ -33,16 +33,18 @@ import org.iterx.miru.dispatcher.handler.ContentHandler;
 import org.iterx.miru.dispatcher.Dispatcher;
 import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.context.ProcessingContext;
-import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.context.stream.StreamRequestContext;
+import org.iterx.miru.context.stream.StreamResponseContext;
 import org.iterx.miru.io.Resource;
 import org.iterx.miru.io.StreamTarget;
 import org.iterx.miru.io.StreamSource;
 import org.iterx.miru.io.factory.ResourceFactory;
 import org.iterx.miru.util.MiruUtils;
 
-public class ResourceContentHandler implements ContentHandler {
+public class ResourceContentHandler<S extends StreamRequestContext, T extends StreamResponseContext> implements ContentHandler<S, T> {
 
     private static final Log LOGGER = LogFactory.getLog(ResourceContentHandler.class);
+    private static final int BUFFER_SIZE = 8192;
 
     private ResourceFactory resourceFactory;
     private URI baseUri;
@@ -84,23 +86,21 @@ public class ResourceContentHandler implements ContentHandler {
     }
 
 
-    public int execute(ProcessingContext processingContext) {
+    public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
         assert (resourceFactory != null) : "resourceFactory == null";
 
-        ResponseContext response;
+        StreamResponseContext responseContext;
+        StreamRequestContext requestContext;
         Resource resource;
         URI uri;
 
-        response = processingContext.getResponseContext();
-        assert (response instanceof StreamTarget) : "ResponseContext not instanceof StreamSource";
-
-        uri = MiruUtils.resolve((this.uri != null)? this.uri : ((processingContext.getRequestContext()).getURI()).getPath(),
+        requestContext = processingContext.getRequestContext();
+        responseContext = processingContext.getResponseContext();
+        uri = MiruUtils.resolve((this.uri != null)? this.uri : (requestContext.getURI()).getPath(),
                                 baseUri,
                                 (Matches) processingContext.getAttribute(ProcessingContext.MATCHES_ATTRIBUTE));
 
-        if((resource = resourceFactory.getResource(uri)) != null &&
-           resource instanceof StreamSource) {
-
+        if((resource = resourceFactory.getResource(uri)) != null && resource instanceof StreamSource) {
             InputStream in;
             OutputStream out;
 
@@ -111,8 +111,8 @@ public class ResourceContentHandler implements ContentHandler {
                 int count;
 
                 in = ((StreamSource) resource).getInputStream();
-                out = ((StreamTarget) response).getOutputStream();
-                buffer = new byte[8192];
+                out = responseContext.getOutputStream();
+                buffer = new byte[BUFFER_SIZE];
 
                 while((count = in.read(buffer)) != -1) {
                     out.write(buffer, 0, count);
@@ -131,7 +131,7 @@ public class ResourceContentHandler implements ContentHandler {
             }
         }
         //throw resource not found exception?
-        //or set error on response
+        //or set error on responseContext
         LOGGER.warn("Resource '" + uri + "' not found.");
         return Dispatcher.ERROR;
     }

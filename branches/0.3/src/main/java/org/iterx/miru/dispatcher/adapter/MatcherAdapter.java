@@ -21,12 +21,15 @@
 package org.iterx.miru.dispatcher.adapter;
 
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.matcher.Matches;
 
-public interface MatcherAdapter {
+public interface MatcherAdapter<S extends RequestContext, T extends ResponseContext> {
 
     public boolean supports(Object matcher);
 
-    public boolean hasMatches(ProcessingContext context, Object matcher);
+    public boolean hasMatches(ProcessingContext<? extends S, ? extends T> processingContext, Object matcher);
 
-    public Object[] getMatches(ProcessingContext context, Object matcher);
+    public Matches getMatches(ProcessingContext<? extends S, ? extends T> processingContext, Object matcher);
 }

@@ -22,6 +22,8 @@ package org.iterx.miru.support.spring.context;
 
 import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.context.ApplicationContextAware;
+import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.factory.ProcessingContextFactory;
 import org.iterx.miru.io.factory.ResourceFactory;
 
@@ -29,10 +31,10 @@ import org.iterx.miru.bean.factory.BeanFactory;
 import org.iterx.miru.bean.BeanException;
 import org.iterx.miru.support.spring.bean.factory.SpringBeanFactory;
 
-public class SpringApplicationContext extends SpringBeanFactory
-    implements ApplicationContext {
+public class SpringApplicationContext<S extends RequestContext, T extends ResponseContext> extends SpringBeanFactory
+    implements ApplicationContext<S, T> {
 
-    private ProcessingContextFactory processingContextFactory;
+    private ProcessingContextFactory<S, T> processingContextFactory;
     private ResourceFactory resourceFactory;
 
     private ApplicationContext parent;
@@ -75,11 +77,11 @@ public class SpringApplicationContext extends SpringBeanFactory
         return resourceFactory;
     }
 
-    public ProcessingContextFactory getProcessingContextFactory() {
+    public ProcessingContextFactory<S, T> getProcessingContextFactory() {
 
         if(processingContextFactory == null) {
             if((processingContextFactory =
-                (ProcessingContextFactory) getBeanOfType(ProcessingContextFactory.class)) == null)
+                (ProcessingContextFactory<S, T>) getBeanOfType(ProcessingContextFactory.class)) == null)
                 throw new BeanException();
 
         }

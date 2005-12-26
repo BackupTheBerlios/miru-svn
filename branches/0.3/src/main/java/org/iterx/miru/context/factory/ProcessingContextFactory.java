@@ -23,20 +23,21 @@ package org.iterx.miru.context.factory;
 
 import org.iterx.util.SystemUtils;
 import org.iterx.miru.context.ProcessingContextProvider;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public abstract class ProcessingContextFactory implements ProcessingContextProvider {
+public abstract class ProcessingContextFactory<S extends RequestContext, T extends ResponseContext> implements ProcessingContextProvider<S, T> {
 
-    private static ProcessingContextFactory processingContextFactory;
+    private static Object processingContextFactory;
 
-    public static ProcessingContextFactory getProcessingContextFactory() {
+    public static <S extends RequestContext, T extends ResponseContext> ProcessingContextFactory<S, T> getProcessingContextFactory() {
 
         if(processingContextFactory == null) {
             String cls;
 
             if((cls = SystemUtils.getProperty((ProcessingContextFactory.class).getName())) != null) {
                 try {
-                    processingContextFactory =
-                        (ProcessingContextFactory) (Class.forName(cls)).newInstance();
+                    processingContextFactory = (Class.forName(cls)).newInstance();
                 }
                 catch(Exception e) {
                     throw new RuntimeException
@@ -45,11 +46,11 @@ public abstract class ProcessingContextFactory implements ProcessingContextProvi
             }
             else processingContextFactory = new ProcessingContextFactoryImpl();
         }
-        return processingContextFactory;
+        return (ProcessingContextFactory<S, T>) processingContextFactory;
     }
 
-    public static void setProcessingContextFactory
-        (ProcessingContextFactory processingContextFactory) {
+    public static <S extends RequestContext, T extends ResponseContext> void setProcessingContextFactory
+        (ProcessingContextFactory<? extends S, ? extends T> processingContextFactory) {
 
         if(processingContextFactory == null)
             throw new IllegalArgumentException("processingContextFactory == null");

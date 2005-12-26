@@ -25,9 +25,11 @@ import java.util.Locale;
 
 import org.iterx.miru.context.http.HttpRequestContext;
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.ResponseContext;
+
 import org.iterx.miru.resolver.ContextResolver;
 
-public class HttpLocaleContextResolver implements ContextResolver {
+public class HttpLocaleContextResolver<S extends HttpRequestContext, T extends ResponseContext> implements ContextResolver<Locale, S, T> {
 
     private static final String ACCEPT_LANGUAGE  = "Accept-Language";
 
@@ -51,26 +53,25 @@ public class HttpLocaleContextResolver implements ContextResolver {
     }
 
 
-    public Object resolve(ProcessingContext processingContext) {
+
+    public Locale resolve(ProcessingContext<? extends S, ? extends T> processingContext) {
         HttpRequestContext request;
-        String str;
+        String string;
 
-        assert (processingContext.getRequestContext() instanceof HttpRequestContext) :
-            "Invalid request context, not instance of HttpRequestContext.";
-
-        request = (HttpRequestContext) processingContext.getRequestContext();
-        if((str = request.getHeader(ACCEPT_LANGUAGE)) != null &&
-           str.length() > 0) {
+        request = processingContext.getRequestContext();
+        if((string = request.getHeader(ACCEPT_LANGUAGE)) != null &&
+           string.length() > 0) {
             int index;
 
-            str = (str.split("[,;]", 2))[0];
-            if((index = str.indexOf('-')) != -1) {
-                return new Locale(str.substring(0, index),
-                                  str.substring(index + 1));
+            string = (string.split("[,;]", 2))[0];
+            if((index = string.indexOf('-')) != -1) {
+                return new Locale(string.substring(0, index),
+                                  string.substring(index + 1));
             }
-            return new Locale(str);
+            return new Locale(string);
         }
 
         return defaultLocale;
     }
+
 }

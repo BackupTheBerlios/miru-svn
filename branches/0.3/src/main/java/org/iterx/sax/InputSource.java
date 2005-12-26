@@ -23,8 +23,6 @@ package org.iterx.sax;
 import java.io.Reader;
 import java.io.InputStream;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.ListIterator;
 
 public class InputSource extends org.xml.sax.InputSource implements Iterable {
 

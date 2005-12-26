@@ -21,17 +21,21 @@
 
 package org.iterx.miru.dispatcher.handler;
 
+import java.util.List;
+
 import org.iterx.miru.dispatcher.adapter.HandlerAdapter;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public interface HandlerChainProvider {
+public interface HandlerChainProvider<S extends RequestContext, T extends ResponseContext> {
 
-    public HandlerAdapter[] getHandlerAdapters();
+    public HandlerAdapter<S, T>[] getHandlerAdapters();
 
-    public void setHandlerAdapters(HandlerAdapter[] handlerAdapters);
+    public void setHandlerAdapters(List<HandlerAdapter<? extends S, ? extends T>> handlerAdapters);
 
-    public HandlerAdapter addHandlerAdapter(HandlerAdapter handlerAdapter);
+    public void addHandlerAdapter(HandlerAdapter<? extends S, ? extends T> handlerAdapter);
 
-    public void removeHandlerAdapter(HandlerAdapter handlerAdapter);
+    public void removeHandlerAdapter(HandlerAdapter<? extends S, ? extends T> handlerAdapter);
 
-    public HandlerChainMap getHandlerChains();
+    public HandlerChainMap<S, T> getHandlerChains();
 }

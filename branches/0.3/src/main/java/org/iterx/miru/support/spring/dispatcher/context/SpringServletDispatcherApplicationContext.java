@@ -23,9 +23,11 @@ package org.iterx.miru.support.spring.dispatcher.context;
 import javax.servlet.ServletContext;
 
 import org.iterx.miru.context.ApplicationContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.bean.factory.BeanFactory;
 
-public class SpringServletDispatcherApplicationContext extends SpringDispatcherApplicationContext {
+public class SpringServletDispatcherApplicationContext<S extends RequestContext, T extends ResponseContext> extends SpringDispatcherApplicationContext<S, T> {
 
     private ServletContext servletContext;
 

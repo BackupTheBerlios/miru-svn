@@ -26,28 +26,27 @@ import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.bean.BeanAware;
 
-public class UriMatcher
-    implements BeanAware, org.iterx.miru.matcher.Matcher {
+public class UriMatcher<S extends RequestContext, T extends ResponseContext>
+    implements org.iterx.miru.matcher.Matcher<S, T>, BeanAware {
 
-    public static final int MASK_SCHEME = 0x04;
+    public static final int MASK_SCHEME    = 0x04;
     public static final int MASK_AUTHORITY = 0x08;
-    public static final int MASK_PATH = 0x01;
-    public static final int MASK_QUERY = 0x10;
-    public static final int MASK_URI = 0x02;
+    public static final int MASK_PATH      = 0x01;
+    public static final int MASK_QUERY     = 0x10;
+    public static final int MASK_URI       = 0x02;
 
     private static final String DEFAULT_PATTERN = ".*";
 
     private Pattern regex;
-
     private String pattern;
 
-    private int mask;
     private String id;
+    private int mask;
 
     public UriMatcher() {
 
@@ -113,12 +112,12 @@ public class UriMatcher
         }
     }
 
-    public boolean hasMatches(ProcessingContext processingContext) {
+    public boolean hasMatches(ProcessingContext<? extends S, ? extends T> processingContext) {
         assert (id != null) : "id == null";
         assert (regex != null) : "regex == null";
-        assert (processingContext != null) : "processingContext == null";
-        URI uri;
+
         RequestContext request;
+        URI uri;
 
         request = processingContext.getRequestContext();
         if((uri = request.getURI()) != null) {
@@ -131,12 +130,12 @@ public class UriMatcher
     }
 
 
-    public Matches getMatches(ProcessingContext processingContext) {
+    public Matches getMatches(ProcessingContext<? extends S, ? extends T> processingContext) {
         assert (id != null) : "id == null";
         assert (regex != null) : "regex == null";
-        assert (processingContext != null) : "processingContext == null";
-        URI uri;
+
         RequestContext request;
+        URI uri;
 
         request = processingContext.getRequestContext();
         if((uri = request.getURI()) != null) {

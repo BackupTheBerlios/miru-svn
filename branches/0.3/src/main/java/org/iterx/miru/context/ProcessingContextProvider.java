@@ -22,8 +22,7 @@
 
 package org.iterx.miru.context;
 
-public interface ProcessingContextProvider {
+public interface ProcessingContextProvider<S extends RequestContext, T extends ResponseContext> {
 
-    public ProcessingContext getProcessingContext(RequestContext request,
-                                                  ResponseContext response);
+    public ProcessingContext<S, T> getProcessingContext(S request, T response);
 }

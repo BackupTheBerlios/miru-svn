@@ -30,30 +30,21 @@ import java.io.OutputStreamWriter;
 import java.io.IOException;
 import java.io.Closeable;
 
-import org.iterx.miru.context.http.HttpResponseContext;
+import org.iterx.util.CaseInsensitiveKey;
 
-public class HttpResponseContextImpl
-    implements HttpResponseContext, Closeable {
+public class HttpResponseContextImpl implements HttpResponseContext, Closeable {
 
-    protected Map properties;
-    protected boolean _mutable;
+    protected Map<CaseInsensitiveKey, String> headers;
+    protected boolean _mutable = true;
 
     private Writer writer;
     private OutputStream outputStream;
 
     private String encoding, type;
-    private int length;
-    private int status;
+    private int length = -1;
+    private int status = OK;
 
-    {
-        _mutable = true;
-
-        status = OK;
-        length = -1;
-    }
-
-    protected HttpResponseContextImpl() {
-    }
+    protected HttpResponseContextImpl() {}
 
     public HttpResponseContextImpl(OutputStream out) {
 
@@ -67,7 +58,7 @@ public class HttpResponseContextImpl
 
     public HttpResponseContextImpl(OutputStream out, String encoding) {
 
-        properties = new HashMap();
+        headers = new HashMap<CaseInsensitiveKey, String>(2);
         this.outputStream = out;
         this.encoding = encoding;
     }
@@ -78,7 +69,7 @@ public class HttpResponseContextImpl
             writer instanceof OutputStreamWriter)
             encoding = ((OutputStreamWriter) writer).getEncoding();
 
-        properties = new HashMap();
+        headers = new HashMap<CaseInsensitiveKey, String>(2);
         this.writer = writer;
         this.encoding = encoding;
     }
@@ -97,13 +88,13 @@ public class HttpResponseContextImpl
 
     public String getHeader(String name) {
 
-        return (String) properties.get(new CaseInsensitiveKey(name));
+        return headers.get(new CaseInsensitiveKey(name));
     }
 
     public void setHeader(String name, String value) {
 
-        if (value == null) properties.remove(new CaseInsensitiveKey(name));
-        else properties.put(new CaseInsensitiveKey(name), value);
+        if (value == null) headers.remove(new CaseInsensitiveKey(name));
+        else headers.put(new CaseInsensitiveKey(name), value);
     }
 
     public String getCharacterEncoding() {
@@ -169,28 +160,5 @@ public class HttpResponseContextImpl
             try { outputStream.close(); } catch(IOException e) {}
         if(writer != null)
             try { writer.close(); } catch(IOException e) {}
-    }
-
-    private final class CaseInsensitiveKey {
-        private String value;
-
-        private CaseInsensitiveKey(String key) {
-
-            value = key.toLowerCase();
-        }
-
-        public int hashCode() {
-
-            return value.hashCode();
-        }
-
-        public boolean equals(Object object) {
-            String string;
-
-            return (this == object ||
-                    (object instanceof CaseInsensitiveKey &&
-                     (((string = ((CaseInsensitiveKey) object).value) == value) ||
-                      value.equals(value))));
-        }
     }
 }

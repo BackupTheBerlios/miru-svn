@@ -18,22 +18,20 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
-
 package org.iterx.miru.matcher;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Arrays;
 import java.io.Serializable;
 
 public class Matches implements Serializable {
 
-    private Map matches = new HashMap(1);
+    private Map<String, String[]> matches = new HashMap<String, String[]>(1);
 
     public String[] get(String key) {
 
-        return (String[]) matches.get(key);
+        return matches.get(key);
     }
 
     public void put(Matches matches) {
@@ -56,18 +54,14 @@ public class Matches implements Serializable {
 
         if(object == this) return true;
         else if(object instanceof Matches) {
-            Map a, b;
+            Map<String, String[]> a, b;
 
             a = matches;
             b = ((Matches) object).matches;
             if(a.size() == b.size()) {
-                for(Iterator iterator = (a.entrySet()).iterator();
-                    iterator.hasNext(); ) {
-                    Map.Entry entry;
-
-                    entry = (Map.Entry) iterator.next();
-                    if(!Arrays.equals((Object[]) entry.getValue(),
-                                      (Object[]) b.get(entry.getKey()))) return false;
+                for(Map.Entry<String, String[]> entry : a.entrySet()) {
+                    if(!Arrays.equals(entry.getValue(),
+                                      b.get(entry.getKey()))) return false;
                 }
                 return true;
             }
@@ -76,8 +70,14 @@ public class Matches implements Serializable {
     }
 
     public int hashCode() {
+        int value;
 
-        return (matches.keySet()).hashCode();
+        value = 0;
+        for(Map.Entry<String, String[]> entry : matches.entrySet()) {
+            value += (entry.getKey()).hashCode();
+            value += Arrays.hashCode(entry.getValue());
+        }
+        return value;
     }
 
 }

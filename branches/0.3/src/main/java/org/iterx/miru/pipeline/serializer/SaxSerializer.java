@@ -31,20 +31,19 @@ import org.xml.sax.helpers.XMLFilterImpl;
 import org.iterx.sax.XMLWriter;
 import org.iterx.sax.InputSource;
 
-import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.context.stream.StreamResponseContext;
 
 import org.iterx.miru.pipeline.Stage;
 import org.iterx.miru.pipeline.PipelineChainException;
 import org.iterx.miru.pipeline.XmlProducer;
 import org.iterx.miru.pipeline.XmlConsumer;
+import org.iterx.miru.pipeline.util.SaxUtils;
 import org.iterx.miru.pipeline.generator.SaxGenerator;
-import org.iterx.miru.pipeline.helper.SaxHelper;
 
-public class SaxSerializer extends SerializerImpl {
-
-    private static final String LEXICAL_HANDLER =
-        "http://xml.org/sax/properties/lexical-handler";
+public class SaxSerializer<S extends RequestContext, T extends StreamResponseContext> extends SerializerImpl<S, T> {
 
     protected XMLWriter xmlWriter;
 
@@ -78,22 +77,22 @@ public class SaxSerializer extends SerializerImpl {
 
 
         if(parent instanceof Stage) {
-            xmlWriter.setParent(new StageXmlFilterAdapter((Stage) parent));
+            xmlWriter.setParent(new StageXmlFilterAdapter<S, T>((Stage<S, T>) parent));
             ((Stage) parent).init();
         }
 
     }
 
-    public void execute(ProcessingContext processingContext)
+    public void execute(ProcessingContext<? extends S, ? extends T> processingContext)
         throws IOException {
         assert (xmlWriter != null) : "xmlWriter == null";
 
         try {
-            ResponseContext responseContext;
+            StreamResponseContext responseContext;
 
             responseContext = processingContext.getResponseContext();
-            xmlWriter.parse(new ProcessingContextInputSource(processingContext),
-                            SaxHelper.newOutputTarget(responseContext));
+            xmlWriter.parse(new ProcessingContextInputSource<S, T>(processingContext),
+                            SaxUtils.newOutputTarget(responseContext));
         }
         catch(Exception e) {
             throw new PipelineChainException
@@ -101,24 +100,23 @@ public class SaxSerializer extends SerializerImpl {
         }
     }
 
-    private static class ProcessingContextInputSource extends InputSource {
+    private static class ProcessingContextInputSource<S extends RequestContext, T extends ResponseContext> extends InputSource {
 
-        private ProcessingContext processingContext;
+        private ProcessingContext<S, T> processingContext;
 
-        private ProcessingContextInputSource(ProcessingContext processingContext) {
+        private ProcessingContextInputSource(ProcessingContext<? extends S, ? extends T> processingContext) {
 
-            this.processingContext = processingContext;
+            this.processingContext = (ProcessingContext<S, T>) processingContext;
         }
     }
 
-    //TODO: Need to add getParent wrapper for all Sax type stages.    
-    private static class StageXmlFilterAdapter extends XMLFilterImpl {
+    private static class StageXmlFilterAdapter<S extends RequestContext, T extends ResponseContext> extends XMLFilterImpl {
 
-        private Stage stage;
+        private Stage<S, T> stage;
 
-        private StageXmlFilterAdapter(Stage stage) {
+        private StageXmlFilterAdapter(Stage<? extends S, ? extends T> stage) {
 
-            this.stage = stage;
+            this.stage = (Stage<S, T>) stage;
         }
 
         public XMLReader getParent() {
@@ -138,7 +136,7 @@ public class SaxSerializer extends SerializerImpl {
             throws IOException, SAXException {
 
             stage.execute
-                (((ProcessingContextInputSource) inputSource).processingContext);
+                (((ProcessingContextInputSource<S, T>) inputSource).processingContext);
         }
 
     }

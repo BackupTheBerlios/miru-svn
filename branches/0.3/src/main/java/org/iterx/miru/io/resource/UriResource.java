@@ -187,8 +187,7 @@ public class UriResource implements ReadableResource {
             }
             catch(Exception e){
                 _connection = null;
-                throw new RuntimeException("Invalid resource [" +
-                                           uri + "]");
+                throw new RuntimeException("Invalid resource [" + uri + "]");
             }
         }
     }

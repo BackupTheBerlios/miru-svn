@@ -20,7 +20,7 @@
 */
 package org.iterx.util;
 
-public interface Filter {
+public interface Filter<E> {
 
-    public boolean accept(Object object);
+    public boolean accept(E object);
 }

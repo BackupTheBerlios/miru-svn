@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.pipeline.helper.SaxHelper
+  org.iterx.miru.pipeline.util.SaxUtils
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,46 +18,28 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
-package org.iterx.miru.pipeline.helper;
+package org.iterx.miru.pipeline.util;
 
-import java.util.ListIterator;
-import java.util.Iterator;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
-import java.net.URI;
 
 import org.iterx.sax.InputSource;
 import org.iterx.sax.OutputTarget;
-import org.iterx.miru.context.RequestContext;
-import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.io.StreamSource;
 import org.iterx.miru.io.StreamTarget;
 
-public class SaxHelper {
+public class SaxUtils {
 
-    public static InputSource newInputSource(final RequestContext request)  {
-        final StreamSource stream;
-        final Iterable iterable;
-
-        stream = (request instanceof StreamSource)? (StreamSource) request : null;
-        iterable = (request instanceof Iterable)? (Iterable) request : null;
-
+    public static InputSource newInputSource(final StreamSource streamSource)  {
         return new InputSource() {
-
-            public Iterator iterator() {
-                Iterator iterator;
-
-                return ((iterable != null &&
-                         ((iterator = iterable.iterator()) instanceof ListIterator))? (ListIterator) iterator : null);
-            }
 
             public InputStream getByteStream() {
 
                 try {
-                    return (stream != null)? stream.getInputStream() : null;
+                    return streamSource.getInputStream();
                 }
                 catch(IOException e) {
                     throw new RuntimeException(e);
@@ -67,7 +49,7 @@ public class SaxHelper {
             public Reader getCharacterStream() {
 
                 try {
-                    return (stream != null)? stream.getReader() : null;
+                    return streamSource.getReader();
                 }
                 catch(IOException e) {
                     throw new RuntimeException(e);
@@ -76,7 +58,7 @@ public class SaxHelper {
 
             public String getEncoding() {
 
-                return (stream != null)? stream.getCharacterEncoding() : null;
+                return streamSource.getCharacterEncoding();
             }
 
             public String getPublicId() {
@@ -85,9 +67,8 @@ public class SaxHelper {
             }
 
             public String getSystemId() {
-                URI uri;
 
-                return ((uri = request.getURI()) != null)? uri.toString() : null;
+                return null;
             }
 
             public void setByteStream(InputStream byteStream) {
@@ -117,27 +98,14 @@ public class SaxHelper {
         };
     }
 
-    public static OutputTarget newOutputTarget(final ResponseContext response)  {
-        final StreamTarget stream;
-        final Iterable iterable;
-
-        stream = (response instanceof StreamTarget)? (StreamTarget) response : null;
-        iterable = (response instanceof Iterable)? (Iterable) response : null;
+    public static OutputTarget newOutputTarget(final StreamTarget streamTarget)  {
 
         return new OutputTarget() {
-
-            public Iterator iterator() {
-                Iterator iterator;
-
-                return ((iterable != null &&
-                         ((iterator = iterable.iterator()) instanceof ListIterator))? (ListIterator) iterator : null);
-            }
-
 
             public OutputStream getByteStream() {
 
                 try {
-                    return (stream != null)? stream.getOutputStream() : null;
+                    return streamTarget.getOutputStream();
                 }
                 catch(IOException e) {
                     throw new RuntimeException(e);
@@ -147,7 +115,7 @@ public class SaxHelper {
             public Writer getCharacterStream() {
 
                 try {
-                    return (stream != null)? stream.getWriter() : null;
+                    return streamTarget.getWriter();
                 }
                 catch(IOException e) {
                     throw new RuntimeException(e);
@@ -156,12 +124,12 @@ public class SaxHelper {
 
             public String getEncoding() {
 
-                return (stream != null)? stream.getCharacterEncoding() : null;
+                return streamTarget.getCharacterEncoding();
             }
 
             public void setEncoding(String encoding) {
 
-                if(stream != null) stream.setCharacterEncoding(encoding);
+                streamTarget.setCharacterEncoding(encoding);
 
             }
 

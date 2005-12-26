@@ -23,14 +23,16 @@ package org.iterx.miru.dispatcher.context;
 import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactory;
 import org.iterx.miru.context.ApplicationContextImpl;
 import org.iterx.miru.context.ApplicationContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.bean.BeanProvider;
 import org.iterx.miru.bean.BeanWrapperAware;
 import org.iterx.miru.bean.BeanWrapper;
 
-public class DispatcherApplicationContextImpl extends ApplicationContextImpl
-    implements DispatcherApplicationContext, BeanWrapperAware {
+public class DispatcherApplicationContextImpl<S extends RequestContext, T extends ResponseContext> extends ApplicationContextImpl
+    implements DispatcherApplicationContext<S, T>, BeanWrapperAware {
 
-    private HandlerChainFactory handlerChainFactory;
+    private HandlerChainFactory<S, T> handlerChainFactory;
 
     protected DispatcherApplicationContextImpl() {}
 
@@ -49,23 +51,23 @@ public class DispatcherApplicationContextImpl extends ApplicationContextImpl
             throw new IllegalArgumentException("beanProvider is not BeanWrapperAware.");
     }
 
-    public HandlerChainFactory getHandlerChainFactory() {
+    public HandlerChainFactory<S, T> getHandlerChainFactory() {
 
         if(handlerChainFactory == null) {
             if((handlerChainFactory =
-                (HandlerChainFactory) getBeanOfType(HandlerChainFactory.class)) == null)
+                (HandlerChainFactory<S, T>) getBeanOfType(HandlerChainFactory.class)) == null)
                 handlerChainFactory = HandlerChainFactory.getHandlerChainFactory();
             handlerChainFactory.setBeanProvider(this);
         }
         return handlerChainFactory;
     }
 
-    public void setHandlerChainFactory(HandlerChainFactory handlerChainFactory) {
+    public void setHandlerChainFactory(HandlerChainFactory<? extends S, ? extends T> handlerChainFactory) {
 
         if(handlerChainFactory == null)
             throw new IllegalArgumentException("handlerChainFactory == null");
 
-        this.handlerChainFactory = handlerChainFactory;
+        this.handlerChainFactory = (HandlerChainFactory<S, T>) handlerChainFactory;
     }
 
 

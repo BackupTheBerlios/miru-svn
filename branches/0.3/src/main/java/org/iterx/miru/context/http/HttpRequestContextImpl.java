@@ -33,26 +33,23 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
 
+import org.iterx.util.CaseInsensitiveKey;
 
-public class HttpRequestContextImpl
-    implements HttpRequestContext, Closeable {
 
-    protected Map parameters, properties;
+public class HttpRequestContextImpl implements HttpRequestContext, Closeable {
+
+    protected Map<CaseInsensitiveKey, String> headers;
+    protected Map<String, String[]> parameters;
     protected URI uri;
 
-    protected boolean _mutable;
+    protected boolean _mutable = true;
 
     private InputStream inputStream;
     private Reader reader;
 
     private String encoding, type;
 
-    {
-        _mutable = true;
-    }
-
-    protected HttpRequestContextImpl() {
-    }
+    protected HttpRequestContextImpl() {}
 
     public HttpRequestContextImpl(InputStream in) {
 
@@ -66,8 +63,8 @@ public class HttpRequestContextImpl
 
     public HttpRequestContextImpl(InputStream in, String encoding) {
 
-        parameters = new HashMap();
-        properties = new HashMap();
+        headers = new HashMap<CaseInsensitiveKey, String>(8);
+        parameters = new HashMap<String, String[]>(2);
         this.encoding = encoding;
         this.inputStream = in;
 
@@ -79,8 +76,8 @@ public class HttpRequestContextImpl
             reader instanceof InputStreamReader)
             encoding = ((InputStreamReader) reader).getEncoding();
 
-        parameters = new HashMap();
-        properties = new HashMap();
+        headers = new HashMap<CaseInsensitiveKey, String>(8);
+        parameters = new HashMap<String, String[]>(2);
         this.encoding = encoding;
         this.reader = reader;
     }
@@ -98,31 +95,31 @@ public class HttpRequestContextImpl
 
     public String getHeader(String name) {
 
-        return (String) properties.get(new CaseInsensitiveKey(name));
+        return headers.get(new CaseInsensitiveKey(name));
     }
 
     public void setHeader(String name, String value) {
 
-        if (value == null) properties.remove(new CaseInsensitiveKey(name));
-        else properties.put(new CaseInsensitiveKey(name), value);
+        if (value == null) headers.remove(new CaseInsensitiveKey(name));
+        else headers.put(new CaseInsensitiveKey(name), value);
     }
 
     public String getParameter(String name) {
         String[] values;
 
-        return (((values = (String[]) parameters.get(name)) != null) ?
+        return (((values = parameters.get(name)) != null) ?
                 values[0] : null);
     }
 
     public void setParameter(String name, String value) {
 
-        if (value == null) parameters.remove(name);
-        else parameters.put(name, new String[]{value});
+        if(value == null) parameters.remove(name);
+        else parameters.put(name, new String[]{ value });
     }
 
     public String[] getParameterValues(String name) {
 
-        return (String[]) parameters.get(name);
+        return parameters.get(name);
     }
 
     public void setParameterValues(String name, String[] value) {
@@ -134,10 +131,9 @@ public class HttpRequestContextImpl
 
 
     public String[] getParameterNames() {
-        Set names;
+        Set<String> names;
 
-        return (String[]) ((names = parameters.keySet()).toArray
-            ((Object[]) new String[names.size()]));
+        return  ((names = parameters.keySet()).toArray(new String[names.size()]));
     }
 
     public int getContentLength() {
@@ -193,28 +189,5 @@ public class HttpRequestContextImpl
             try { reader.close(); } catch(IOException e) {}
     }
 
-
-    private final class CaseInsensitiveKey {
-        private String value;
-
-        private CaseInsensitiveKey(String key) {
-
-            value = key.toLowerCase();
-        }
-
-        public int hashCode() {
-
-            return value.hashCode();
-        }
-
-        public boolean equals(Object object) {
-            String string;
-
-            return (this == object ||
-                    (object instanceof CaseInsensitiveKey &&
-                     (((string = ((CaseInsensitiveKey) object).value) == value) ||
-                      value.equals(value))));
-        }
-    }
 }
     

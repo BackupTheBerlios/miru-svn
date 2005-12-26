@@ -22,15 +22,16 @@
 
 package org.iterx.miru.dispatcher.handler.factory;
 
-import org.iterx.miru.dispatcher.handler.factory.XmlHandlerChainFactory;
 import org.iterx.miru.dispatcher.handler.HandlerChainProvider;
 import org.iterx.miru.bean.BeanProvider;
 import org.iterx.miru.bean.BeanWrapperAware;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 import org.iterx.util.SystemUtils;
 
-public abstract class HandlerChainFactory implements HandlerChainProvider {
+public abstract class HandlerChainFactory<S extends RequestContext, T extends ResponseContext> implements HandlerChainProvider<S, T> {
 
-    private static HandlerChainFactory handlerChainFactory;
+    private static Object handlerChainFactory;
 
     private BeanProvider beanProvider;
 
@@ -58,7 +59,7 @@ public abstract class HandlerChainFactory implements HandlerChainProvider {
         }
     }
 
-    public static HandlerChainFactory getHandlerChainFactory() {
+    public static <S extends RequestContext, T extends ResponseContext>  HandlerChainFactory<S, T> getHandlerChainFactory() {
 
         if(handlerChainFactory == null) {
 
@@ -66,8 +67,7 @@ public abstract class HandlerChainFactory implements HandlerChainProvider {
 
             if((cls = SystemUtils.getProperty((HandlerChainFactory.class).getName())) != null) {
                 try {
-                    handlerChainFactory =
-                        (HandlerChainFactory) (Class.forName(cls)).newInstance();
+                    handlerChainFactory = (Class.forName(cls)).newInstance();
                 }
                 catch(Exception e) {
                     throw new RuntimeException
@@ -76,10 +76,10 @@ public abstract class HandlerChainFactory implements HandlerChainProvider {
             }
             else handlerChainFactory = new XmlHandlerChainFactory();
         }
-        return handlerChainFactory;
+        return (HandlerChainFactory<S, T>) handlerChainFactory;
     }
 
-    public static void setHandlerChainFactory(HandlerChainFactory handlerChainFactory) {
+    public static <S extends RequestContext, T extends ResponseContext> void setHandlerChainFactory(HandlerChainFactory<? extends S, ? extends T> handlerChainFactory) {
 
         if(handlerChainFactory == null)
             throw new IllegalArgumentException("handlerChainFactory == null");

@@ -22,15 +22,15 @@
 package org.iterx.miru.cache.factory;
 
 import java.util.HashMap;
+import java.util.Map;
 
-import org.iterx.miru.cache.Cache;
 import org.iterx.miru.cache.CacheNotifiable;
 
-public class LruMemoryCacheFactory extends CacheFactory {
+public class LruMemoryCacheFactory<K, V> extends CacheFactory<K, V> {
 
     private static final int DEFAULT_SIZE = 128;
 
-    private HashMap caches = new HashMap();
+    private Map<String, LruMemoryCache<K, V>> caches = new HashMap<String, LruMemoryCache<K, V>>();
     private int size = DEFAULT_SIZE;
 
     public int getSize() {
@@ -43,13 +43,13 @@ public class LruMemoryCacheFactory extends CacheFactory {
         this.size = size;
     }
 
-    public Cache getCache(String name) {
+    public LruMemoryCache<K, V> getCache(String name) {
 
         synchronized(caches) {
-            LruMemoryCache cache;
+            LruMemoryCache<K, V> cache;
 
-            if((cache = (LruMemoryCache) caches.get(name)) == null) {
-                cache = new LruMemoryCache(size);
+            if((cache = caches.get(name)) == null) {
+                cache = new LruMemoryCache<K, V>(size);
                 caches.put(name, cache);
             }
             return cache;
@@ -59,12 +59,11 @@ public class LruMemoryCacheFactory extends CacheFactory {
     public void recycleCache(String name) {
 
         synchronized(caches) {
-            LruMemoryCache cache;
+            LruMemoryCache<K, V> cache;
 
-            cache = (LruMemoryCache) caches.remove(name);
+            cache = caches.remove(name);
             cache.cacheNotify(this, CacheNotifiable.Event.DESTROY, null);
         }
     }
-
 
 }

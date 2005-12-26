@@ -22,33 +22,35 @@ package org.iterx.miru.matcher;
 
 
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public class NotMatcher implements Matcher {
+public class NotMatcher<S extends RequestContext, T extends ResponseContext>  implements Matcher<S, T> {
 
-    private Matcher matcher;
+    private Matcher<S, T> matcher;
 
-    public Matcher getMatcher() {
+    public Matcher<S, T> getMatcher() {
 
         return matcher;
     }
 
-    public void setMatcher(Matcher matcher) {
+    public void setMatcher(Matcher<? extends S, ? extends T> matcher) {
 
         if(matcher == null)
             throw new IllegalArgumentException("matcher == null");
-        this.matcher = matcher;
+        this.matcher = (Matcher<S, T>) matcher;
     }
 
-    public Matches getMatches(ProcessingContext context) {
+    public Matches getMatches(ProcessingContext<? extends S, ? extends T> processingContext) {
         assert (matcher != null) : "matcher == null";
 
-        return ((!matcher.hasMatches(context))? new Matches() : null);
+        return ((!matcher.hasMatches(processingContext))? new Matches() : null);
     }
 
-    public boolean hasMatches(ProcessingContext context) {
+    public boolean hasMatches(ProcessingContext<? extends S, ? extends T> processingContext) {
         assert (matcher != null) : "matcher == null";
 
-        return (!matcher.hasMatches(context));
+        return (!matcher.hasMatches(processingContext));
     }
 
 }

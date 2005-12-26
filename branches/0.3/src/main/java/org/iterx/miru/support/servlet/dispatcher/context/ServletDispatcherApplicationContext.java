@@ -29,9 +29,10 @@ import org.iterx.miru.io.Resource;
 import org.iterx.miru.dispatcher.context.DispatcherApplicationContextImpl;
 import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.support.servlet.context.ServletApplicationContext;
-import org.iterx.miru.bean.BeanWrapperAware;
+import org.iterx.miru.support.servlet.context.http.HttpServletRequestContext;
+import org.iterx.miru.support.servlet.context.http.HttpServletResponseContext;
 
-public class ServletDispatcherApplicationContext extends DispatcherApplicationContextImpl
+public class ServletDispatcherApplicationContext<S extends HttpServletRequestContext, T extends HttpServletResponseContext> extends DispatcherApplicationContextImpl<S, T>
     implements ServletApplicationContext, Loadable {
 
     public static final String CHAINS = "chains";

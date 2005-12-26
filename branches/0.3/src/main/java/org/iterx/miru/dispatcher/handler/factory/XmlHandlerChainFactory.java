@@ -30,8 +30,10 @@ import org.iterx.miru.io.Resource;
 import org.iterx.miru.io.StreamSource;
 import org.iterx.miru.io.Loadable;
 import org.iterx.miru.io.resource.UriResource;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public class XmlHandlerChainFactory extends HandlerChainFactoryImpl
+public class XmlHandlerChainFactory<S extends RequestContext, T extends ResponseContext> extends HandlerChainFactoryImpl<S, T>
     implements Loadable {
 
     public XmlHandlerChainFactory() {}
@@ -53,7 +55,7 @@ public class XmlHandlerChainFactory extends HandlerChainFactoryImpl
 
     public void load(Resource resource) throws IOException {
         assert (getBeanProvider() != null) : "beanProvider == null";
-        XmlHandlerChainParser parser;
+        XmlHandlerChainParser<S, T> parser;
 
         if(resource == null)
             throw new IllegalArgumentException("resource == null");
@@ -61,7 +63,7 @@ public class XmlHandlerChainFactory extends HandlerChainFactoryImpl
             throw new IllegalArgumentException("resource is not a 'StreamSource'");
 
 
-        parser = new XmlHandlerChainParser(this);
+        parser = new XmlHandlerChainParser<S, T>(this);
         parser.parse((StreamSource) resource);
     }
 

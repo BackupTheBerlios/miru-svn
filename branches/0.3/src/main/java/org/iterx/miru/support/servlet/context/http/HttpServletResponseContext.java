@@ -40,7 +40,7 @@ public final class HttpServletResponseContext
     private OutputStream outputStream;
     private Writer writer;
 
-    private Map properties;
+    private Map<String, String> properties;
 
     private int length = -1;
     private int status = OK;
@@ -51,7 +51,7 @@ public final class HttpServletResponseContext
         if(httpResponse == null)
             throw new IllegalArgumentException("httpServletResponse == null");
 
-        properties = new HashMap();
+        properties = new HashMap<String, String>();
         this.httpServletResponse = httpResponse;
     }
     
@@ -68,7 +68,7 @@ public final class HttpServletResponseContext
 
     public String getHeader(String name) {
 
-        return (String) properties.get(name);
+        return properties.get(name);
     }
 
     public void setHeader(String name, String value) {
@@ -133,11 +133,14 @@ public final class HttpServletResponseContext
     }
 
     public void close() throws IOException {
+        IOException exception;
 
+        exception = null;
         if(outputStream != null)
-            try { outputStream.close(); } catch(IOException e) {}
+            try { outputStream.close(); } catch(IOException e) { exception = e; }
         if(writer != null)
-            try { writer.close(); } catch(IOException e) {}
+            try { writer.close(); } catch(IOException e) { exception = e; }
+        if(exception != null) throw exception;
     }
 
 }

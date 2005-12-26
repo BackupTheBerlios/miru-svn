@@ -23,6 +23,8 @@ package org.iterx.miru.pipeline;
 import java.io.IOException;
 
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
 import org.iterx.miru.pipeline.Stage;
 import org.iterx.miru.pipeline.PipelineChain;
@@ -32,19 +34,16 @@ import org.iterx.miru.pipeline.Serializer;
 
 import org.iterx.util.ArrayUtils;
 
-public class PipelineChainImpl implements PipelineChain {
+public class PipelineChainImpl<S extends RequestContext, T extends ResponseContext> implements PipelineChain<S, T> {
 
     protected Generator generator;
     protected Transformer[] transformers;
     protected Serializer serializer;
 
-    protected boolean _mutable;
+    protected boolean _mutable = true;
 
     private Stage stages;
 
-    {
-        _mutable = true;
-    }
     public PipelineChainImpl() {}
 
     public PipelineChainImpl(Generator generator,
@@ -85,7 +84,7 @@ public class PipelineChainImpl implements PipelineChain {
     }
 
     public void addTransformer(Transformer transformer) {
-        assert (_mutable) : "Immutable object.";
+        assert (_mutable) : "Immutable object";
 
         transformers = ((transformers == null)?
                         new Transformer[] { transformer } :
@@ -93,7 +92,7 @@ public class PipelineChainImpl implements PipelineChain {
     }
 
     public void removeTransformer(Transformer transformer) {
-        assert (_mutable) : "Immutable object.";
+        assert (_mutable) : "Immutable object";
 
         transformers = 
             (Transformer[]) ArrayUtils.remove(transformers, transformer);
@@ -107,24 +106,20 @@ public class PipelineChainImpl implements PipelineChain {
     }
 
     public void setSerializer(Serializer serializer) {
-        assert (_mutable) : "Immutable object.";
+        assert (_mutable) : "Immutable object";
 
         this.serializer = serializer;
     }
 
     public void init() {
-        assert ((_mutable = false) == false);
+        assert !(_mutable = false);
         assert (generator != null) : "generator == null";
         assert (serializer != null) : "serializer == null";
-
         Stage stage;
         
         stage = generator;
         if(transformers != null) {
-            for(int i = 0; i < transformers.length; i++) {
-                Transformer transformer;
-                
-                transformer = transformers[i];
+            for(Transformer transformer : transformers) {
                 transformer.setParent((XmlProducer) stage);
                 stage = transformer;
             }
@@ -136,7 +131,7 @@ public class PipelineChainImpl implements PipelineChain {
         stages = stage;
     }
 
-    public void execute(ProcessingContext processingContext) throws IOException {
+    public void execute(ProcessingContext<? extends S, ? extends T> processingContext) throws IOException {
         if(stages == null) init();
         
         stages.execute(processingContext);

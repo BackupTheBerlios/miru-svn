@@ -45,8 +45,10 @@ import org.iterx.miru.bean.BeanException;
 
 import org.iterx.miru.dispatcher.handler.HandlerWrapper;
 import org.iterx.miru.dispatcher.handler.HandlerChain;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public class XmlHandlerChainParser extends DefaultHandler {
+public class XmlHandlerChainParser<S extends RequestContext, T extends ResponseContext> extends DefaultHandler {
 
     public static final String MIRU_CHAINS_NS       = "http://iterx.org/miru/1.0/chains";
 
@@ -64,20 +66,20 @@ public class XmlHandlerChainParser extends DefaultHandler {
 
     private static final Log LOGGER = LogFactory.getLog(XmlHandlerChainParser.class);
 
-    private XmlHandlerChainFactory handlerChainFactory;
+    private XmlHandlerChainFactory<S, T> handlerChainFactory;
     private BeanProvider beanProvider;
 
-    private List stack;
+    private List<Object> stack;
     private Object object;
 
     private int state;
 
-    public XmlHandlerChainParser(XmlHandlerChainFactory handlerChainFactory) {
+    public XmlHandlerChainParser(XmlHandlerChainFactory<? extends S, ? extends T> handlerChainFactory) {
 
         if(handlerChainFactory == null)
             throw new IllegalArgumentException("handlerChainFactory == null");
 
-        this.handlerChainFactory = handlerChainFactory;
+        this.handlerChainFactory = (XmlHandlerChainFactory<S, T>) handlerChainFactory;
         this.beanProvider = handlerChainFactory.getBeanProvider();
     }
 
@@ -105,7 +107,7 @@ public class XmlHandlerChainParser extends DefaultHandler {
     public void startDocument() throws SAXException {
 
         state = STATE_UNKNOWN;
-        stack = new ArrayList();
+        stack = new ArrayList<Object>();
     }
 
 
@@ -226,7 +228,7 @@ public class XmlHandlerChainParser extends DefaultHandler {
                          parent = stack.get(stack.size() - 1);
 
                          if(parent instanceof List)
-                             ((List) parent).add(object.getWrappedInstance());
+                             ((List<Object>) parent).add(object.getWrappedInstance());
                          else if(parent instanceof BeanWrapper)
                              ((BeanWrapper) parent).setValue("matcher", object.getWrappedInstance());
 
@@ -241,10 +243,10 @@ public class XmlHandlerChainParser extends DefaultHandler {
                      Object parent;
 
                      if(TAG_CHAIN.equals(localName)) {
-                         HandlerWrapper object;
+                         HandlerWrapper<S, T> object;
 
-                         object = (HandlerWrapper) stack.remove(stack.size() - 1);
-                         handlerChainFactory.addHandlerChain((HandlerChain) object.getWrappedInstance());
+                         object = (HandlerWrapper<S, T>) stack.remove(stack.size() - 1);
+                         handlerChainFactory.addHandlerChain((HandlerChain<S, T>) object.getWrappedInstance());
                          handlerChainFactory.recycleHandlerWrapper(object);
 
                          this.object = null;
@@ -259,16 +261,16 @@ public class XmlHandlerChainParser extends DefaultHandler {
 
                          object = stack.remove(stack.size() - 1);
                          parent = stack.get(stack.size() - 1);
-                         ((HandlerWrapper) parent).setHandlers(object);
+                         ((HandlerWrapper<S, T>) parent).setHandlers((List) object);
                      }
                      else {
-                         HandlerWrapper object;
+                         HandlerWrapper<S, T> object;
 
                          parent = stack.get(stack.size() - 1);
-                         object = (HandlerWrapper) this.object;
+                         object = (HandlerWrapper<S, T>) this.object;
 
                          if(parent instanceof List)
-                             ((List) parent).add(object.getWrappedInstance());
+                             ((List<Object>) parent).add(object.getWrappedInstance());
                          else if(parent instanceof HandlerWrapper)
                              ((HandlerWrapper) parent).setHandler(object.getWrappedInstance());
 

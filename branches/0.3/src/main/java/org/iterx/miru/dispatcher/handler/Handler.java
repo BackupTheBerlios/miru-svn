@@ -22,10 +22,12 @@
 package org.iterx.miru.dispatcher.handler;
 
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public interface Handler {
+public interface Handler<S extends RequestContext, T extends ResponseContext> {
 
-    public int execute(ProcessingContext processingContext);
+    public int execute(ProcessingContext<? extends S, ? extends T> processingContext);
 
 }
 

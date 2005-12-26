@@ -39,6 +39,10 @@ import org.iterx.miru.io.StreamTarget;
 import org.iterx.miru.bean.factory.BeanFactoryImpl;
 
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.context.stream.StreamRequestContext;
+import org.iterx.miru.context.stream.StreamResponseContext;
 import org.iterx.miru.context.http.HttpRequestContextImpl;
 import org.iterx.miru.context.http.HttpResponseContextImpl;
 import org.iterx.miru.context.factory.ProcessingContextFactory;
@@ -67,11 +71,11 @@ public class PerfTestDispatcher extends TestCase {
 
       public static class DispatcherTest extends TestCase {
 
-          private ProcessingContextFactory processingContextFactory;
-          private Dispatcher dispatcher;
+          private ProcessingContextFactory<RequestContext, ResponseContext> processingContextFactory;
+          private Dispatcher<RequestContext, ResponseContext> dispatcher;
 
           {
-              HandlerChainFactoryImpl handlerChainFactory;
+              HandlerChainFactoryImpl<RequestContext, ResponseContext> handlerChainFactory;
 
               Runtime runtime;
               long memory;
@@ -81,14 +85,14 @@ public class PerfTestDispatcher extends TestCase {
               memory = runtime.freeMemory();
 
 
-              handlerChainFactory = new HandlerChainFactoryImpl(new BeanFactoryImpl());
+              handlerChainFactory = new HandlerChainFactoryImpl<RequestContext, ResponseContext>(new BeanFactoryImpl());
               HandlerWrapper handlerWrapper = handlerChainFactory.assignHandlerWrapper
                   (handlerChainFactory.createHandlerChain());
               handlerWrapper.setHandler(new SimpleHandler());
               handlerChainFactory.addHandlerChain((HandlerChain) handlerWrapper.getWrappedInstance());
               handlerChainFactory.recycleHandlerWrapper(handlerWrapper);
 
-              dispatcher = new Dispatcher(handlerChainFactory.getHandlerChains());
+              dispatcher = new Dispatcher<RequestContext, ResponseContext>(handlerChainFactory.getHandlerChains());
 
               memory -= runtime.freeMemory();
 
@@ -114,7 +118,7 @@ public class PerfTestDispatcher extends TestCase {
           }
 
           public void testDispatcher() throws Exception {
-              ProcessingContext processingContext;
+              ProcessingContext<RequestContext, ResponseContext> processingContext;
               StringReader reader;
               StringWriter writer;
               String message;
@@ -126,6 +130,7 @@ public class PerfTestDispatcher extends TestCase {
                   (new HttpRequestContextImpl(reader),
                    new HttpResponseContextImpl(writer));
 
+              dispatcher.dispatch(processingContext);
               assertEquals(Dispatcher.OK,
                            dispatcher.dispatch(processingContext));
               reader.close();
@@ -134,15 +139,14 @@ public class PerfTestDispatcher extends TestCase {
           }
       }
 
+    private static class SimpleHandler<S extends StreamRequestContext, T extends StreamResponseContext> implements ContentHandler<S, T> {
 
-    private static class SimpleHandler implements ContentHandler {
+        public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
+            StreamRequestContext requestContext;
+            StreamResponseContext responseContext;
 
-        public int execute(ProcessingContext processingContext) {
-            StreamSource source;
-            StreamTarget target;
-
-            source = (StreamSource) processingContext.getRequestContext();
-            target = (StreamTarget) processingContext.getResponseContext();
+            requestContext = processingContext.getRequestContext();
+            responseContext =  processingContext.getResponseContext();
 
             try {
                 Reader reader;
@@ -150,8 +154,8 @@ public class PerfTestDispatcher extends TestCase {
                 char[] buffer;
                 int length;
 
-                reader = source.getReader();
-                writer = target.getWriter();
+                reader = requestContext.getReader();
+                writer = responseContext.getWriter();
 
                 buffer = new char[256];
                 while((length = reader.read(buffer, 0, 256)) != -1) {

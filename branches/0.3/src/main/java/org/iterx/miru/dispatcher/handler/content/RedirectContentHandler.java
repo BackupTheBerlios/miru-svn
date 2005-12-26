@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.dispatcher.handler.flow.RedirectFlowHandler
+  org.iterx.miru.dispatcher.handler.content.RedirectContentHandler
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,22 +18,22 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
-package org.iterx.miru.dispatcher.handler.flow;
+package org.iterx.miru.dispatcher.handler.content;
 
 import java.net.URI;
 
-import org.iterx.miru.dispatcher.handler.FlowHandler;
+import org.iterx.miru.dispatcher.handler.ContentHandler;
 import org.iterx.miru.dispatcher.event.RedirectEvent;
 import org.iterx.miru.matcher.Matcher;
 import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.util.MiruUtils;
 
-public class RedirectFlowHandler implements FlowHandler {
+public class RedirectContentHandler<S extends RequestContext, T extends ResponseContext> implements ContentHandler<S, T> {
 
-    private Matcher matcher;
     private URI baseUri;
-
     private String uri;
 
     public String getUri() {
@@ -57,34 +57,12 @@ public class RedirectFlowHandler implements FlowHandler {
     }
 
 
-    public Matcher getMatcher() {
-
-        return matcher;
-    }
-
-    public void setMatcher(Matcher matcher) {
-
-        this.matcher = matcher;
-    }
-
-    public Matches getMatches(ProcessingContext processingContext) {
-
-        return (matcher == null) ? new Matches() : matcher.getMatches(processingContext);
-    }
-
-    public boolean hasMatches(ProcessingContext processingContext) {
-
-        return ((matcher == null) || matcher.hasMatches(processingContext));
-    }
-
-
-    public int execute(ProcessingContext processingContext) {
+    public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
         URI uri;
 
         uri = MiruUtils.resolve((this.uri != null)? this.uri : ((processingContext.getRequestContext()).getURI()).getPath(),
                                 baseUri,
                                 (Matches) processingContext.getAttribute(ProcessingContext.MATCHES_ATTRIBUTE));
-
         throw new RedirectEvent(uri);
     }
 }

@@ -21,9 +21,9 @@
 
 package org.iterx.miru.cache;
 
-public interface CacheProvider {
+public interface CacheProvider<K, V> {
     
-    public Cache getCache(String name);
+    public Cache<K, V> getCache(String name);
 
     public void recycleCache(String name);
 }

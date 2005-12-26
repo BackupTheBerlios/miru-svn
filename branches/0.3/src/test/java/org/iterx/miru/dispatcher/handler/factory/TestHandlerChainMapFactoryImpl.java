@@ -21,51 +21,56 @@
 
 package org.iterx.miru.dispatcher.handler.factory;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import junit.framework.TestCase;
 import org.iterx.miru.dispatcher.adapter.HandlerAdapter;
-import org.iterx.miru.dispatcher.Dispatcher;
-import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactoryImpl;
-import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactory;
 import org.iterx.miru.dispatcher.handler.HandlerChainMap;
+import org.iterx.miru.dispatcher.handler.Handler;
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
 
 public class TestHandlerChainMapFactoryImpl extends TestCase {
 
     public void testConstructors() {
-        HandlerChainFactory handlerChainFactory;
+        HandlerChainFactory<RequestContext, ResponseContext> handlerChainFactory;
 
-        handlerChainFactory = new HandlerChainFactoryImpl();
+        handlerChainFactory = new HandlerChainFactoryImpl<RequestContext, ResponseContext>();
         assertNotNull(handlerChainFactory);
     }
 
     public void testHandlerChainAccessors() {
-        HandlerChainFactory handlerChainFactory;
-        HandlerChainMap handlerChainMap;
+        HandlerChainFactory<RequestContext, ResponseContext> handlerChainFactory;
+        HandlerChainMap<RequestContext, ResponseContext> handlerChainMap;
 
-        handlerChainFactory = new HandlerChainFactoryImpl();
+        handlerChainFactory = new HandlerChainFactoryImpl<RequestContext, ResponseContext>();
         assertNotNull(handlerChainMap = handlerChainFactory.getHandlerChains());
         assertFalse((handlerChainMap.iterator()).hasNext());
     }
 
 
     public void testHandlerAdapterAccessors() {
-        HandlerChainFactory handlerChainFactory;
-        HandlerAdapter[] handlerAdapters;
-        HandlerAdapter handlerAdapterA, handlerAdapterB;
+        HandlerChainFactory<RequestContext, ResponseContext> handlerChainFactory;
+        List<HandlerAdapter<? extends RequestContext, ? extends ResponseContext>> handlerAdapterList;
+        HandlerAdapter<RequestContext, ResponseContext>[] handlerAdapters;
+        HandlerAdapter<RequestContext, ResponseContext> handlerAdapterA, handlerAdapterB;
 
-        handlerChainFactory = new HandlerChainFactoryImpl();
+        handlerChainFactory = new HandlerChainFactoryImpl<RequestContext, ResponseContext>();
 
         assertNotNull(handlerAdapters = handlerChainFactory.getHandlerAdapters());
         assertEquals(0, handlerAdapters.length);
 
-        handlerChainFactory.addHandlerAdapter(handlerAdapterA = new MockHandlerAdapter());
+        handlerChainFactory.addHandlerAdapter(handlerAdapterA = new MockHandlerAdapter<RequestContext, ResponseContext>());
 
         assertNotNull(handlerAdapters = handlerChainFactory.getHandlerAdapters());
         assertEquals(1, handlerAdapters.length);
         assertEquals(handlerAdapterA, handlerAdapters[0]);
 
-        handlerChainFactory.addHandlerAdapter(handlerAdapterB = new MockHandlerAdapter());
+        handlerChainFactory.addHandlerAdapter(handlerAdapterB = new MockHandlerAdapter<RequestContext, ResponseContext>());
 
         assertNotNull(handlerAdapters = handlerChainFactory.getHandlerAdapters());
         assertEquals(2, handlerAdapters.length);
@@ -82,31 +87,35 @@ public class TestHandlerChainMapFactoryImpl extends TestCase {
         assertNotNull(handlerAdapters = handlerChainFactory.getHandlerAdapters());
         assertEquals(0, handlerAdapters.length);
 
-        handlerChainFactory.setHandlerAdapters
-            (handlerAdapters = new HandlerAdapter[] { handlerAdapterA, handlerAdapterB });
-        assertEquals(handlerAdapters, handlerChainFactory.getHandlerAdapters());
+        handlerAdapterList = new ArrayList<HandlerAdapter<? extends RequestContext, ? extends ResponseContext>>();
+        handlerAdapterList.add(handlerAdapterA);
+        handlerAdapterList.add(handlerAdapterB);
+
+        handlerChainFactory.setHandlerAdapters(handlerAdapterList);
+
+        assertTrue(Arrays.equals(handlerAdapterList.toArray(handlerAdapters), 
+                                 handlerChainFactory.getHandlerAdapters()));
     }
 
 
-    public class MockHandler {
+    public class MockHandler<S extends RequestContext, T extends ResponseContext> implements Handler<S, T>  {
 
-        public int process(ProcessingContext processingContext) {
-
-            return Dispatcher.OK;
+        public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
+            return 0;
         }
 
     }
 
-    public class MockHandlerAdapter implements HandlerAdapter {
+    public class MockHandlerAdapter<S extends RequestContext, T extends ResponseContext> implements HandlerAdapter<S, T> {
 
         public boolean supports(Object handler) {
 
             return (handler instanceof MockHandler) ;
         }
-        
-        public int execute(ProcessingContext processingContext, Object handler) {
 
-            return ((MockHandler) handler).process(processingContext);
+        public int execute(ProcessingContext<? extends S, ? extends T> processingContext, Object handler) {
+
+            return ((MockHandler<S, T>) handler).execute(processingContext);
         }
 
     }

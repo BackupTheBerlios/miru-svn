@@ -30,9 +30,11 @@ import com.sun.org.apache.xml.internal.serializer.ToXMLStream;
 import org.iterx.miru.io.StreamTarget;
 import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.stream.StreamResponseContext;
 import org.iterx.miru.pipeline.Stage;
 
-public class XmlSerializer extends SerializerImpl {
+public class XmlSerializer<S extends RequestContext, T extends StreamResponseContext> extends SerializerImpl<S, T> {
 
     private ToXMLStream xmlStream;
 
@@ -100,14 +102,12 @@ public class XmlSerializer extends SerializerImpl {
         if(parent instanceof Stage) ((Stage) parent).init();
     }
 
-    public void execute(ProcessingContext processingContext) throws IOException {
-        assert (processingContext != null) : "processingContext == null";
-
-        ResponseContext responseContext;
+    public void execute(ProcessingContext<? extends S, ? extends T> processingContext) throws IOException {
+        StreamResponseContext responseContext;
         Writer writer;
 
         responseContext = processingContext.getResponseContext();
-        writer = ((StreamTarget) responseContext).getWriter();
+        writer = responseContext.getWriter();
 
         xmlStream.setWriter(writer);
         super.execute(processingContext);

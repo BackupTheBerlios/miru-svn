@@ -22,12 +22,14 @@
 package org.iterx.miru.dispatcher.adapter;
 
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public interface HandlerAdapter {
+public interface HandlerAdapter<S extends RequestContext, T extends ResponseContext> {
 
     public boolean supports(Object handler);
 
-    public int execute(ProcessingContext processingContext,
+    public int execute(ProcessingContext<? extends S, ? extends T> processingContext,
                        Object handler);
 
 }

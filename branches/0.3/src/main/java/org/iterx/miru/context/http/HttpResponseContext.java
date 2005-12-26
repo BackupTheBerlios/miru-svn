@@ -21,10 +21,9 @@
 
 package org.iterx.miru.context.http;
 
-import org.iterx.miru.io.StreamTarget;
-import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.context.stream.StreamResponseContext;
 
-public interface HttpResponseContext extends ResponseContext, StreamTarget {
+public interface HttpResponseContext extends StreamResponseContext {
 
     public static final int OK = 200;
 

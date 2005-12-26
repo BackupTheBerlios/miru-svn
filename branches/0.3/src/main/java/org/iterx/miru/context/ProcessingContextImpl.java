@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.factory.ProcessingContextImpl
+  org.iterx.miru.context.ProcessingContextImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,28 +19,25 @@
   All Rights Reserved.
 */
 
-package org.iterx.miru.context.factory;
+package org.iterx.miru.context;
 
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 
 import org.iterx.miru.resolver.ContextResolver;
-import org.iterx.miru.context.ProcessingContext;
-import org.iterx.miru.context.RequestContext;
-import org.iterx.miru.context.ResponseContext;
 
-public class ProcessingContextImpl implements ProcessingContext {
+public class ProcessingContextImpl<S extends RequestContext, T extends ResponseContext> implements ProcessingContext<S, T> {
 
-    protected RequestContext request;
-    protected ResponseContext response;
+    protected S request;
+    protected T response;
 
-    private Map attributes;
+    private Map<String, Object> attributes;
 
     private ProcessingContextImpl() {}
 
-    public ProcessingContextImpl(RequestContext request,
-                                 ResponseContext response) {
+    public ProcessingContextImpl(S request,
+                                 T response) {
         if (request == null)
             throw new IllegalArgumentException("request == null");
         if (response == null)
@@ -49,37 +46,36 @@ public class ProcessingContextImpl implements ProcessingContext {
         this.request = request;
         this.response = response;
 
-        attributes = new HashMap();
+        attributes = new HashMap<String, Object>();
     }
-
-    public ProcessingContextImpl(ProcessingContext processingContext) {
+    public ProcessingContextImpl(ProcessingContext<? extends S, ? extends T> processingContext) {
 
         if (processingContext == null)
             throw new IllegalArgumentException("processingContext == null");
         this.request = processingContext.getRequestContext();
         this.response = processingContext.getResponseContext();
 
-        attributes = new HashMap();
+        attributes = new HashMap<String, Object>();
     }
 
-    public RequestContext getRequestContext() {
+    public S getRequestContext() {
 
         return request;
     }
 
-    public void setRequestContext(RequestContext request) {
+    public void setRequestContext(S request) {
 
         if (request == null)
             throw new IllegalArgumentException("request == null");
         this.request = request;
     }
 
-    public ResponseContext getResponseContext() {
+    public T getResponseContext() {
 
         return response;
     }
 
-    public void setResponseContext(ResponseContext response) {
+    public void setResponseContext(T response) {
 
         if (response == null)
             throw new IllegalArgumentException("response == null");
@@ -90,22 +86,22 @@ public class ProcessingContextImpl implements ProcessingContext {
         Object value;
 
         if((value = attributes.get(name)) instanceof ContextResolver)
-            value = ((ContextResolver) value).resolve(this);
+            value = ((ContextResolver<?, S, T>) value).resolve(this);
 
         return value;
     }
 
     public String[] getAttributeNames() {
-        Set names;
+        Set<String> names;
 
-        return (String[]) ((names = attributes.keySet()).toArray
-            ((Object[]) new String[names.size()]));
+        names = attributes.keySet();
+        return names.toArray(new String[names.size()]);
     }
 
-    public void setAttribute(String name, Object object) {
+    public void setAttribute(String name, Object value) {
 
-        if (object == null) attributes.remove(name);
-        else attributes.put(name, object);
+        if (value == null) attributes.remove(name);
+        else attributes.put(name, value);
     }
 
 }

@@ -28,8 +28,8 @@ import org.springframework.aop.TargetSource;
 
 import org.iterx.miru.aop.Poolable;
 
-public class SpringPoolableMixin extends DelegatingIntroductionInterceptor
-    implements Poolable {
+public class SpringPoolableMixin<T> extends DelegatingIntroductionInterceptor
+    implements Poolable<T> {
 
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
         String method;
@@ -46,19 +46,18 @@ public class SpringPoolableMixin extends DelegatingIntroductionInterceptor
             ((TargetSource) methodInvocation.getThis()).releaseTarget(arguments[0]);
             return null;
         }
-
         return super.invoke(methodInvocation);
     }
 
     
-    public Object getInstance() throws Exception {
+    public T getInstance() throws Exception {
 
         //NOTE: Stub - method interceptor supplies actual implementation.
         throw new UnsupportedOperationException();
     }
 
 
-    public void recycleInstance(Object object) throws Exception {
+    public void recycleInstance(T object) throws Exception {
 
         //NOTE: Stub - method interceptor supplies actual implementation.
         throw new UnsupportedOperationException();

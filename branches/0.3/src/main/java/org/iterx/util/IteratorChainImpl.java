@@ -23,33 +23,33 @@ package org.iterx.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class IteratorChainImpl implements IteratorChain {
+public class IteratorChainImpl<E> implements IteratorChain<E> {
 
-    private Iterator parent;
+    private Iterator<E> parent;
 
     public IteratorChainImpl() {}
 
-    public IteratorChainImpl(Iterator parent) {
+    public IteratorChainImpl(Iterator<E> parent) {
 
         this.parent = parent;
     }
 
-    public Iterator getParent() {
+    public Iterator<E> getParent() {
 
         return parent;
     }
 
-    public void setParent(Iterator parent) {
+    public void setParent(Iterator<E> parent) {
 
         this.parent = parent;
     }
 
     public boolean hasNext() {
 
-        return (parent != null)? parent.hasNext() : false;
+        return (parent != null && parent.hasNext());
     }
 
-    public Object next() {
+    public E next() {
 
         if(parent == null)
             throw new NoSuchElementException();

@@ -20,5 +20,8 @@
 */
 package org.iterx.miru.pipeline;
 
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public interface Generator extends Stage, XmlProducer {}
+
+public interface Generator<S extends RequestContext, T extends ResponseContext> extends Stage<S, T>, XmlProducer {}

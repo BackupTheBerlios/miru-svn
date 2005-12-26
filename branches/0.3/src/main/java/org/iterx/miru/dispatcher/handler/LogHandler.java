@@ -22,7 +22,7 @@
 
 package org.iterx.miru.dispatcher.handler;
 
-public interface LogHandler {
-    
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-}
+public interface LogHandler<S extends RequestContext, T extends ResponseContext> {}

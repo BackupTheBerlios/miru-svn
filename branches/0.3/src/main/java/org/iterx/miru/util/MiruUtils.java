@@ -70,7 +70,7 @@ public final class MiruUtils {
                             }
                         }
                         throw new IllegalArgumentException
-                            ("Invalid uri format '" + uri + "'.");
+                            ("Invalid uri format '" + uri + "'");
                     default:
                         builder.append(c);
                         break;

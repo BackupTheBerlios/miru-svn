@@ -27,7 +27,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.iterx.miru.resolver.ResourceResolver;
-import org.iterx.miru.io.factory.ResourceFactory;
 import org.iterx.miru.io.Resource;
 
 import org.iterx.util.ArrayUtils;
@@ -70,15 +69,13 @@ public class ResourceFactoryImpl extends ResourceFactory {
     public Resource getResource(URI uri) {
         assert (uri != null) : "uri == null";
 
-        for(int i = 0; i < resourceResolvers.length; i++) {
+        for(ResourceResolver resourceResolver : resourceResolvers) {
             Resource resource;
 
-            if((resource = (resourceResolvers[i]).resolve(uri)) != null)
+            if((resource = resourceResolver.resolve(uri)) != null)
                 return resource;
         }
-
-
-        LOGGER.warn("Resource [" + uri + "] not found.");
+        LOGGER.warn("Resource [" + uri + "] not found");
         return null;
     }
 }

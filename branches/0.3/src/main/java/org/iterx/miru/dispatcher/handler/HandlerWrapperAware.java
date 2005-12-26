@@ -22,11 +22,14 @@
 
 package org.iterx.miru.dispatcher.handler;
 
+import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.context.RequestContext;
 
-public interface HandlerWrapperAware {
 
-    public HandlerWrapper assignHandlerWrapper(Object object);
+public interface HandlerWrapperAware<S extends RequestContext, T extends ResponseContext> {
 
-    public void recycleHandlerWrapper(HandlerWrapper wrapper);
+    public HandlerWrapper<S, T> assignHandlerWrapper(Object object);
+
+    public void recycleHandlerWrapper(HandlerWrapper<S, T> wrapper);
 
 }

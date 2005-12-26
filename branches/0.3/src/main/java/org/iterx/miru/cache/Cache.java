@@ -22,14 +22,14 @@ package org.iterx.miru.cache;
 
 import java.util.Iterator;
 
-public interface Cache {
+public interface Cache<K, V> {
 
-    public Object get(Object key);
+    public Object get(K key);
 
-    public void put(Object key, Object object);
+    public void put(K key, V object);
 
-    public void remove(Object key);
+    public void remove(K key);
 
-    public Iterator keys();
+    public Iterator<K> keys();
 
 }

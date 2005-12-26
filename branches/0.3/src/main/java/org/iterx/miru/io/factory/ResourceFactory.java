@@ -41,7 +41,7 @@ public abstract class ResourceFactory implements ResourceProvider {
                 }
                 catch(Exception e) {
                     throw new RuntimeException
-                        ("Failed to create ResourceFactory '" + cls + "'.", e);
+                        ("Failed to create ResourceFactory '" + cls + "'", e);
                 }
             }
             else resourceFactory = new ResourceFactoryImpl();

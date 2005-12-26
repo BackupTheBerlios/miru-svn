@@ -20,10 +20,10 @@
 */
 package org.iterx.miru.aop;
 
-public interface Poolable {
+public interface Poolable<T> {
 
-    public Object getInstance() throws Exception;
+    public T getInstance() throws Exception;
 
-    public void recycleInstance(Object object) throws Exception;
+    public void recycleInstance(T object) throws Exception;
 
 }

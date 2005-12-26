@@ -22,9 +22,11 @@
 package org.iterx.miru.dispatcher.controller;
 
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public interface Controller {
+public interface Controller<S extends RequestContext, T extends ResponseContext> {
 
-     public int execute(ProcessingContext processingContext);
+     public int execute(ProcessingContext<? extends S, ? extends T> processingContext);
 
 }

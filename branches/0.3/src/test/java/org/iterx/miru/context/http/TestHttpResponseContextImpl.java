@@ -37,42 +37,41 @@ public class TestHttpResponseContextImpl extends TestCase {
     private static final String ENCODING = System.getProperty("file.encoding");
 
     public void testConstructors() throws IOException {
-    HttpResponseContextImpl response;
-    Writer writer;
+        HttpResponseContextImpl response;
+        Writer writer;
 
-    response = new HttpResponseContextImpl(System.out);
-    assertNotNull(response);
-    assertEquals(System.out, response.getOutputStream());
-    assertEquals(null, response.getCharacterEncoding());
+        response = new HttpResponseContextImpl(System.out);
+        assertNotNull(response);
+        assertEquals(System.out, response.getOutputStream());
+        assertEquals(null, response.getCharacterEncoding());
 
 
-    response = new HttpResponseContextImpl(System.out, ENCODING);
-    assertNotNull(response);
-    assertEquals(System.out, response.getOutputStream());
-    assertTrue(encodingEquals(ENCODING, response.getCharacterEncoding()));
+        response = new HttpResponseContextImpl(System.out, ENCODING);
+        assertNotNull(response);
+        assertEquals(System.out, response.getOutputStream());
+        assertTrue(encodingEquals(ENCODING, response.getCharacterEncoding()));
 
-    response = new HttpResponseContextImpl((writer = new OutputStreamWriter(System.out)));
-    assertNotNull(response);
-    assertEquals(writer, response.getWriter());
-    assertTrue(encodingEquals(ENCODING, response.getCharacterEncoding()));
+        response = new HttpResponseContextImpl((writer = new OutputStreamWriter(System.out)));
+        assertNotNull(response);
+        assertEquals(writer, response.getWriter());
+        assertTrue(encodingEquals(ENCODING, response.getCharacterEncoding()));
 
-    response = new HttpResponseContextImpl
-        ((writer = new OutputStreamWriter(System.out, ENCODING)));
-    assertNotNull(response);
-    assertEquals(writer, response.getWriter());
-    assertTrue(encodingEquals(ENCODING, response.getCharacterEncoding()));
+        response = new HttpResponseContextImpl
+            ((writer = new OutputStreamWriter(System.out, ENCODING)));
+        assertNotNull(response);
+        assertEquals(writer, response.getWriter());
+        assertTrue(encodingEquals(ENCODING, response.getCharacterEncoding()));
     }
 
     public void testStatusAccessors() {
-    HttpResponseContextImpl response;
-    int status;
+        HttpResponseContextImpl response;
 
-    response = new HttpResponseContextImpl(System.out);
+        response = new HttpResponseContextImpl(System.out);
 
-    assertEquals(HttpResponseContext.OK, response.getStatus());
+        assertEquals(HttpResponseContext.OK, response.getStatus());
 
-    response.setStatus(HttpResponseContext.SERVER_ERROR);
-    assertEquals(HttpResponseContext.SERVER_ERROR, response.getStatus());
+        response.setStatus(HttpResponseContext.SERVER_ERROR);
+        assertEquals(HttpResponseContext.SERVER_ERROR, response.getStatus());
     }
 
 
@@ -80,7 +79,7 @@ public class TestHttpResponseContextImpl extends TestCase {
         HttpResponseContextImpl response;
         String value;
 
-    response = new HttpResponseContextImpl(System.out);
+        response = new HttpResponseContextImpl(System.out);
 
         assertNull(response.getHeader("a"));
         response.setHeader("a", (value = "value"));
@@ -96,75 +95,74 @@ public class TestHttpResponseContextImpl extends TestCase {
     }
 
     public void testContentLengthAccessors() {
-    HttpResponseContextImpl response;
-    int status;
+        HttpResponseContextImpl response;
 
-    response = new HttpResponseContextImpl(System.out);
+        response = new HttpResponseContextImpl(System.out);
 
-    assertEquals(-1, response.getContentLength());
+        assertEquals(-1, response.getContentLength());
 
-    response.setContentLength(4096);
-    assertEquals(4096, response.getContentLength());
+        response.setContentLength(4096);
+        assertEquals(4096, response.getContentLength());
     }
 
     public void testContentTypeAccessors() {
-    HttpResponseContextImpl response;
-    String value;
+        HttpResponseContextImpl response;
+        String value;
 
-    response = new HttpResponseContextImpl(System.out);
-    assertNull(response.getContentType());
+        response = new HttpResponseContextImpl(System.out);
+        assertNull(response.getContentType());
 
-    response.setContentType((value = "text/xml"));
-    assertEquals(value, response.getContentType());
+        response.setContentType((value = "text/xml"));
+        assertEquals(value, response.getContentType());
 
-    response.setContentType(null);
-    assertNull(response.getContentType());
+        response.setContentType(null);
+        assertNull(response.getContentType());
 
     }
 
     public void testCharacterEncodingAccessors() {
-    HttpResponseContextImpl response;
-    String value;
+        HttpResponseContextImpl response;
+        String value;
 
-    response = new HttpResponseContextImpl(System.out);
-    assertNull(response.getCharacterEncoding());
+        response = new HttpResponseContextImpl(System.out);
+        assertNull(response.getCharacterEncoding());
 
-    response.setCharacterEncoding((value = ENCODING));
-    assertTrue(encodingEquals(value, response.getCharacterEncoding()));
+        response.setCharacterEncoding((value = ENCODING));
+        assertTrue(encodingEquals(value, response.getCharacterEncoding()));
 
-    response.setCharacterEncoding(null);
-    assertNull(response.getCharacterEncoding());
+        response.setCharacterEncoding(null);
+        assertNull(response.getCharacterEncoding());
     }
 
 
     public void testOutputStream() throws IOException {
-    HttpResponseContextImpl response;
-    Writer writer;
+        HttpResponseContextImpl response;
+        Writer writer;
 
-    response = new HttpResponseContextImpl(System.out);
-    assertEquals(System.out, response.getOutputStream());
-    assertNull(response.getWriter());
+        response = new HttpResponseContextImpl(System.out);
+        assertEquals(System.out, response.getOutputStream());
+        assertNull(response.getWriter());
 
-    response = new HttpResponseContextImpl
-        ((writer = new OutputStreamWriter(System.out)));
-    assertNull(response.getOutputStream());
-    assertEquals(writer, response.getWriter());
-    assertNull(response.getOutputStream());
+        response = new HttpResponseContextImpl
+            ((writer = new OutputStreamWriter(System.out)));
+        assertNull(response.getOutputStream());
+        assertEquals(writer, response.getWriter());
+        assertNull(response.getOutputStream());
     }
 
     public void testWriter() throws IOException {
-    HttpResponseContextImpl response;
-    Writer writer;
+        HttpResponseContextImpl response;
+        Writer writer;
 
-    response = new HttpResponseContextImpl
-        ((writer = new OutputStreamWriter(System.out)));
-    assertNull(response.getOutputStream());
-    assertEquals(writer, response.getWriter());
-    assertNull(response.getOutputStream());
+        response = new HttpResponseContextImpl
+            ((writer = new OutputStreamWriter(System.out)));
+        assertNull(response.getOutputStream());
+        assertEquals(writer, response.getWriter());
+        assertNull(response.getOutputStream());
 
-    response = new HttpResponseContextImpl(System.out);
-    assertNotNull(response.getWriter());
-    assertNull(response.getOutputStream());
+        response = new HttpResponseContextImpl(System.out);
+        assertNotNull(response.getWriter());
+        assertNull(response.getOutputStream());
     }
 
     private static boolean encodingEquals(String encodingA,

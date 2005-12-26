@@ -25,16 +25,15 @@ import junit.framework.TestCase;
 import org.iterx.miru.resolver.MockContextResolver;
 import org.iterx.miru.context.http.MockHttpRequestContext;
 import org.iterx.miru.context.http.MockHttpResponseContext;
-import org.iterx.miru.context.factory.ProcessingContextImpl;
 
 public class TestProcessingContextImpl extends TestCase {
 
-    private ProcessingContextImpl processingContext;
+    private ProcessingContextImpl<RequestContext, ResponseContext> processingContext;
 
     protected void setUp() {
 
-        processingContext = new ProcessingContextImpl(MockHttpRequestContext.newInstance("/"),
-                                                      MockHttpResponseContext.newInstance());
+        processingContext = new ProcessingContextImpl<RequestContext, ResponseContext>(MockHttpRequestContext.newInstance("/"),
+                                                                                       MockHttpResponseContext.newInstance());
     }
 
     protected void tearDown() {
@@ -45,11 +44,11 @@ public class TestProcessingContextImpl extends TestCase {
     public void testConstructors() {
         ProcessingContext clone;
 
-        processingContext = new ProcessingContextImpl(MockHttpRequestContext.newInstance("/"),
-                                                                                     MockHttpResponseContext.newInstance());
+        processingContext = new ProcessingContextImpl<RequestContext, ResponseContext>(MockHttpRequestContext.newInstance("/"),
+                                                                                       MockHttpResponseContext.newInstance());
         assertNotNull(processingContext);
 
-        clone = new ProcessingContextImpl(processingContext);
+        clone = new ProcessingContextImpl<RequestContext, ResponseContext>(processingContext);
         assertNotNull(clone);
         assertEquals(processingContext.getRequestContext(),
                      clone.getRequestContext());
@@ -57,24 +56,24 @@ public class TestProcessingContextImpl extends TestCase {
                      clone.getResponseContext());
 
         try {
-            new ProcessingContextImpl(null, null);
+            new ProcessingContextImpl<RequestContext, ResponseContext>(null, null);
             fail("ProcessingContext initialised with null arguments");
         }
         catch(IllegalArgumentException e) {}
         try {
-            new ProcessingContextImpl(null, MockHttpResponseContext.newInstance());
-            fail("ProcessingContext initialised with null arguments");
-        }
-        catch(IllegalArgumentException e) {}
-
-        try {
-            new ProcessingContextImpl(MockHttpRequestContext.newInstance("/"), null);
+            new ProcessingContextImpl<RequestContext, ResponseContext>(null, MockHttpResponseContext.newInstance());
             fail("ProcessingContext initialised with null arguments");
         }
         catch(IllegalArgumentException e) {}
 
         try {
-            new ProcessingContextImpl(null);
+            new ProcessingContextImpl<RequestContext, ResponseContext>(MockHttpRequestContext.newInstance("/"), null);
+            fail("ProcessingContext initialised with null arguments");
+        }
+        catch(IllegalArgumentException e) {}
+
+        try {
+            new ProcessingContextImpl<RequestContext, ResponseContext>(null);
             fail("ProcessingContext initialised from null parent context");
         }
         catch(IllegalArgumentException e) {}

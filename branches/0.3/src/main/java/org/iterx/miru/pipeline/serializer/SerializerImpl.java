@@ -23,11 +23,13 @@ package org.iterx.miru.pipeline.serializer;
 import java.io.IOException;
 
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.pipeline.Stage;
 import org.iterx.miru.pipeline.XmlProducer;
 import org.iterx.miru.pipeline.Serializer;
 
-public class SerializerImpl implements Serializer {
+public class SerializerImpl<S extends RequestContext, T extends ResponseContext> implements Serializer<S, T> {
 
     protected XmlProducer parent;
     
@@ -51,19 +53,16 @@ public class SerializerImpl implements Serializer {
         this.parent = parent;
     }
 
-
     public void init() {
         assert (parent != null) : "parent == null";
                 
         if(parent instanceof Stage) ((Stage) parent).init();
     }
 
-    public void execute(ProcessingContext processingContext) throws IOException {
-        assert (processingContext != null) : "processingContext == null";
+    public void execute(ProcessingContext<? extends S, ? extends T> processingContext) throws IOException {
 
-        if(parent instanceof Stage) ((Stage) parent).execute(processingContext);
+        if(parent instanceof Stage) ((Stage<S, T>) parent).execute(processingContext);
     }
-
 
     public void destroy() {
 

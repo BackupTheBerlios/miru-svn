@@ -21,7 +21,7 @@
 
 package org.iterx.miru.dispatcher.handler;
 
-public interface ContentHandler extends Handler {
+import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.context.RequestContext;
 
-
-}
+public interface ContentHandler<S extends RequestContext, T extends ResponseContext>  extends Handler<S, T> {}

@@ -23,12 +23,14 @@ package org.iterx.miru.pipeline;
 import java.io.IOException;
 
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public interface Stage  {
-    
+public interface Stage<S extends RequestContext, T extends ResponseContext>  {
+
     public void init();
 
-    public void execute(ProcessingContext processingContext) throws IOException;
+    public void execute(ProcessingContext<? extends S, ? extends T> processingContext) throws IOException;
 
     public void destroy();
 

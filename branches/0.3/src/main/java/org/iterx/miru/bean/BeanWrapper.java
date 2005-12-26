@@ -33,6 +33,6 @@ public interface BeanWrapper {
 
     public void setValue(String property, Object value);
 
-    public void setValues(Map map);
+    public void setValues(Map<String, Object> map);
 
 }

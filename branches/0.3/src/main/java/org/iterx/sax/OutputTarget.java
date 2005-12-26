@@ -23,7 +23,6 @@ package org.iterx.sax;
 import java.io.Writer;
 import java.io.OutputStream;
 import java.util.Iterator;
-import java.util.ListIterator;
 
 public class OutputTarget implements Iterable {
 

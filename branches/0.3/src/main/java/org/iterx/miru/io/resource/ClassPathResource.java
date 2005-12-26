@@ -61,7 +61,7 @@ public class ClassPathResource implements ReadableResource {
             throw new IllegalArgumentException("uri == null");
         if((scheme = uri.getScheme()) != null &&
            !(SCHEME.equals(scheme)))
-            throw new IllegalArgumentException("Invalid scheme '" + scheme + "'.");
+            throw new IllegalArgumentException("Invalid scheme '" + scheme + "'");
 
         this.classLoader = ((classLoader == null)?
                             (Thread.currentThread()).getContextClassLoader() :

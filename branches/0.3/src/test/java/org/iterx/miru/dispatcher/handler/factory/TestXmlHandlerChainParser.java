@@ -37,6 +37,8 @@ import org.iterx.miru.dispatcher.handler.Handler;
 import org.iterx.miru.dispatcher.handler.HandlerChainMap;
 import org.iterx.miru.dispatcher.Dispatcher;
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
 
 public class TestXmlHandlerChainParser extends TestCase {
@@ -183,7 +185,7 @@ public class TestXmlHandlerChainParser extends TestCase {
           "</chains>",
           new Integer(1),
           new String[] { "a" },
-          new Handler[] { new MyHandler(new MyMatcher(), null) }
+          new Handler[] { new MyHandler<RequestContext, ResponseContext>(new MyMatcher<RequestContext, ResponseContext>(), null) }
         },
         {
           "<chains xmlns=\"" + NS + "\">" +
@@ -200,7 +202,7 @@ public class TestXmlHandlerChainParser extends TestCase {
           "</chains>",
           new Integer(1),
           new String[] { "a" },
-          new Handler[] { new MyHandler(new MyMatcher(), new MyHandler()) }
+          new Handler[] { new MyHandler<RequestContext, ResponseContext>(new MyMatcher<RequestContext, ResponseContext>(), new MyHandler<RequestContext, ResponseContext>()) }
         },
         {
           "<chains xmlns=\"" + NS + "\">" +
@@ -218,7 +220,7 @@ public class TestXmlHandlerChainParser extends TestCase {
           "</chains>",
           new Integer(1),
           new String[] { "a" },
-          new Handler[] { new MyHandler(new MyMatcher(new MyMatcher()), null) }
+          new Handler[] { new MyHandler<RequestContext, ResponseContext>(new MyMatcher<RequestContext, ResponseContext>(new MyMatcher<RequestContext, ResponseContext>()), null) }
         },
         {
           "<chains xmlns=\"" + NS + "\">" +
@@ -239,13 +241,13 @@ public class TestXmlHandlerChainParser extends TestCase {
           "</chains>",
           new Integer(1),
           new String[] { "a" },
-          new Handler[] { new MyHandler(new MyMatcher(new MyList(new MyMatcher[]{ new MyMatcher(), new MyMatcher()})), null) }
+          new Handler[] { new MyHandler<RequestContext, ResponseContext>(new MyMatcher<RequestContext, ResponseContext>(new MyList(new MyMatcher[]{ new MyMatcher<RequestContext, ResponseContext>(), new MyMatcher<RequestContext, ResponseContext>()})), null) }
         },
     };
 
-    private XmlHandlerChainFactory handlerChainFactory;
-    private XmlHandlerChainParser handlerChainParser;
-    private MockBeanFactory beanFactory;
+    private XmlHandlerChainFactory<RequestContext, ResponseContext> handlerChainFactory;
+    private XmlHandlerChainParser<RequestContext, ResponseContext> handlerChainParser;
+
 
     private Object[] data;
 
@@ -254,8 +256,8 @@ public class TestXmlHandlerChainParser extends TestCase {
 
         suite = new TestSuite();
 
-        for(int i = 0; i < CHAINS.length; i++) {
-            suite.addTest(new TestXmlHandlerChainParser("testParse", CHAINS[i]));
+        for(Object[] chain : CHAINS) {
+            suite.addTest(new TestXmlHandlerChainParser("testParse", chain));
         }
         return suite;
     }
@@ -268,6 +270,7 @@ public class TestXmlHandlerChainParser extends TestCase {
     }
 
     protected void setUp() {
+        MockBeanFactory beanFactory;
 
         beanFactory = new MockBeanFactory();
         beanFactory.addBeanDefinition
@@ -275,15 +278,14 @@ public class TestXmlHandlerChainParser extends TestCase {
         beanFactory.addBeanDefinition
             (beanFactory.createBeanDefinition("my-handler", MyHandler.class, false));
 
-        handlerChainFactory = new XmlHandlerChainFactory(beanFactory);
-        handlerChainParser = new XmlHandlerChainParser(handlerChainFactory);
+        handlerChainFactory = new XmlHandlerChainFactory<RequestContext, ResponseContext>(beanFactory);
+        handlerChainParser = new XmlHandlerChainParser<RequestContext, ResponseContext>(handlerChainFactory);
     }
 
     protected void tearDown() {
 
         handlerChainFactory = null;
         handlerChainParser = null;
-        beanFactory = null;
     }
 
     public void testParse() throws IOException {
@@ -305,17 +307,17 @@ public class TestXmlHandlerChainParser extends TestCase {
 
             assertTrue(iterator.hasNext());
             assertNotNull((chain = (HandlerChainImpl) iterator.next()));
-            assertEquals(((id  = ((String[]) data[2])[i]) != null)? id : null,
-                         chain.getId());
+            if((id  = ((String[]) data[2])[i]) != null) assertEquals(id, chain.getId());
+
             assertEquals(((handler  = ((Handler[]) data[3])[i]) != null)? handler : null,
                          chain.getHandler());
         }
 
     }
 
-    public static class MyHandler implements Handler, Matcher {
+    public static class MyHandler<S extends RequestContext, T extends ResponseContext> implements Handler<S, T>, Matcher<S, T> {
 
-        private Matcher matcher;
+        private Matcher<S, T> matcher;
         private Object object;
 
         public MyHandler() {}
@@ -325,39 +327,39 @@ public class TestXmlHandlerChainParser extends TestCase {
             this.object = object;
         }
 
-        public MyHandler(Matcher matcher, Object object) {
+        public MyHandler(Matcher<? extends S, ? extends T> matcher, Object object) {
 
-            this.matcher = matcher;
+            this.matcher = (Matcher<S, T>) matcher;
             this.object = object;
         }
 
-        public void setMatcher(Matcher matcher) {
+        public void setMatcher(Matcher<? extends S, ? extends T> matcher) {
 
-            this.matcher = matcher;
+            this.matcher = (Matcher<S, T>) matcher;
         }
 
-        public void setHandler(Handler handler) {
+        public void setHandler(Handler<? extends S, ? extends T> handler) {
 
             object = handler;
         }
 
-        public void setHandlers(List handlers) {
+        public void setHandlers(List<Handler<? extends S, ? extends T>> handlers) {
 
             object = handlers;
         }
 
-        public Matches getMatches(ProcessingContext processingContext) {
+        public Matches getMatches(ProcessingContext<? extends S, ? extends T> processingContext) {
 
             return matcher.getMatches(processingContext);
         }
 
-        public boolean hasMatches(ProcessingContext processingContext) {
+        public boolean hasMatches(ProcessingContext<? extends S, ? extends T> processingContext) {
 
             return matcher.hasMatches(processingContext);
         }
 
 
-        public int execute(ProcessingContext processingContext) {
+        public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
 
             return Dispatcher.OK;
         }
@@ -374,7 +376,7 @@ public class TestXmlHandlerChainParser extends TestCase {
     }
 
 
-    public static class MyMatcher implements Matcher {
+    public static class MyMatcher<S extends RequestContext, T extends ResponseContext> implements Matcher<S, T> {
 
         private Object object;
 
@@ -391,26 +393,27 @@ public class TestXmlHandlerChainParser extends TestCase {
             object = string;
         }
 
-        public void setMatcher(Matcher matcher) {
+        public void setMatcher(Matcher<? extends S, ? extends T> matcher) {
 
             object = matcher;
         }
 
-        public void setMatchers(List matchers) {
+        public void setMatchers(List<Matcher<? extends S, ? extends T>> matchers) {
 
             object = matchers;
         }
 
+        public boolean hasMatches(ProcessingContext<? extends S, ? extends T> processingContext) {
 
-        public Matches getMatches(ProcessingContext prcoessingContext) {
+            return false;
+        }
+
+
+        public Matches getMatches(ProcessingContext<? extends S, ? extends T> prcoessingContext) {
 
             return new Matches();
         }
 
-        public boolean hasMatches(ProcessingContext processingContext) {
-
-            return false;
-        }
 
         public int hashCode() {
 
@@ -427,15 +430,14 @@ public class TestXmlHandlerChainParser extends TestCase {
 
     }
 
-
-     public static class MyList extends ArrayList {
+    public static class MyList extends ArrayList<Object> {
 
         public MyList() {}
 
         public MyList(Object[] objects) {
 
-            for(int i = 0; i < objects.length; i++) {
-                add(objects[i]);
+            for(Object object : objects) {
+                add(object);
             }
         }
     }

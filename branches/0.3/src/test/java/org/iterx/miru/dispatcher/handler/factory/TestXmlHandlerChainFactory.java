@@ -28,66 +28,68 @@ import org.iterx.miru.bean.factory.MockBeanFactory;
 import org.iterx.miru.bean.BeanProvider;
 import org.iterx.miru.io.resource.MockResource;
 import org.iterx.miru.io.Resource;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
 public class TestXmlHandlerChainFactory extends TestCase {
 
     public void testConstructors() {
-            XmlHandlerChainFactory factory;
-            BeanProvider beanProvider;
+        XmlHandlerChainFactory<RequestContext, ResponseContext> factory;
+        BeanProvider beanProvider;
 
-            assertNotNull(factory = new XmlHandlerChainFactory());
-            assertNull(factory.getBeanProvider());
+        assertNotNull(factory = new XmlHandlerChainFactory<RequestContext, ResponseContext>());
+        assertNull(factory.getBeanProvider());
 
-            assertNotNull(factory = new XmlHandlerChainFactory(beanProvider = new MockBeanFactory()));
-            assertEquals(beanProvider, factory.getBeanProvider());
+        assertNotNull(factory = new XmlHandlerChainFactory<RequestContext, ResponseContext>(beanProvider = new MockBeanFactory()));
+        assertEquals(beanProvider, factory.getBeanProvider());
+    }
+
+    public void testLoadExceptions() {
+        XmlHandlerChainFactory factory;
+
+        factory = new XmlHandlerChainFactory(new MockBeanFactory());
+
+        try {
+            factory.load((String) null);
+            fail("uri == null");
+        }
+        catch(IllegalArgumentException e) {}
+        catch(Exception e) {
+            fail("Invalid exception thrown " + e.getClass() + ".");
         }
 
-        public void testLoadExceptions() {
-            XmlHandlerChainFactory factory;
-
-            factory = new XmlHandlerChainFactory(new MockBeanFactory());
-
-            try {
-                factory.load((String) null);
-                fail("uri == null");
-            }
-            catch(IllegalArgumentException e) {}
-            catch(Exception e) {
-                fail("Invalid exception thrown " + e.getClass() + ".");
-            }
-
-            try {
-                factory.load((Resource) null);
-                fail("resource == null");
-            }
-            catch(IllegalArgumentException e) {}
-            catch(Exception e) {
-                fail("Invalid exception thrown " + e.getClass() + ".");
-            }
-
-            try {
-                factory.load("scheme://uri-does-not-exist");
-                fail("Failed to detected invalid uri.");
-            }
-            catch(IllegalArgumentException e) {}
-            catch(Exception e) {
-                fail("Invalid exception thrown " + e.getClass() + ".");
-            }
-            try {
-                MockResource resource;
-
-                resource = new MockResource();
-                resource.setData("".getBytes());
-                factory.load(resource);
-                fail("Failed to detect invalid stream.");
-            }
-            catch(IOException e) {}
-            catch(Exception e) {
-                fail("Invalid exception thrown " + e.getClass() + ".");
-            }
-
-
+        try {
+            factory.load((Resource) null);
+            fail("resource == null");
         }
-    
+        catch(IllegalArgumentException e) {}
+        catch(Exception e) {
+            fail("Invalid exception thrown " + e.getClass() + ".");
+        }
+
+        try {
+            factory.load("scheme://uri-does-not-exist");
+            fail("Failed to detected invalid uri.");
+        }
+        catch(IllegalArgumentException e) {}
+        catch(Exception e) {
+            fail("Invalid exception thrown " + e.getClass() + ".");
+        }
+        try {
+            MockResource resource;
+
+            resource = new MockResource();
+            resource.setData("".getBytes());
+            factory.load(resource);
+            fail("Failed to detect invalid stream.");
+        }
+        catch(IOException e) {}
+        catch(Exception e) {
+            fail("Invalid exception thrown " + e.getClass() + ".");
+        }
+
+
+    }
+
 
 }

@@ -18,39 +18,32 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
-
-
 package org.iterx.miru.context.factory;
 
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.Iterator;
 
 import org.iterx.miru.resolver.ContextResolver;
-import org.iterx.miru.context.factory.ProcessingContextFactory;
-import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.context.ProcessingContextImpl;
+import org.iterx.miru.context.ProcessingContext;
 
-public class ProcessingContextFactoryImpl extends ProcessingContextFactory {
+public class ProcessingContextFactoryImpl<S extends RequestContext, T extends ResponseContext> extends ProcessingContextFactory<S, T> {
 
-    private Map contextResolvers;
-
-    {
-        contextResolvers = new HashMap();
-    }
+    private Map<String, ContextResolver> contextResolvers = new HashMap<String, ContextResolver>();
 
     public String[] getContextResolverNames() {
-        Set names;
+        Set<String> names;
 
-        return (String[]) ((names = contextResolvers.keySet()).toArray
-            ((Object[]) new String[names.size()]));
+        names = contextResolvers.keySet();
+        return names.toArray(new String[names.size()]);
     }
 
     public ContextResolver getContextResolver(String name) {
 
-        return (ContextResolver) contextResolvers.get(name);
+        return contextResolvers.get(name);
     }
 
     public void setContextResolver(String name,
@@ -61,21 +54,17 @@ public class ProcessingContextFactoryImpl extends ProcessingContextFactory {
     }
 
 
-    public ProcessingContext getProcessingContext(RequestContext request,
-                                                  ResponseContext response) {
-        ProcessingContext context;
-        context = new ProcessingContextImpl(request, response);
+    public ProcessingContext<S, T> getProcessingContext(S request, T response) {
+        ProcessingContext<S, T> processingContext;
 
-        for(Iterator iterator = (contextResolvers.entrySet()).iterator();
-            iterator.hasNext();) {
-            Map.Entry entry;
+        processingContext = new ProcessingContextImpl<S, T>(request, response);
 
-            entry = (Map.Entry) iterator.next();
-            context.setAttribute((String) entry.getKey(),
-                                 entry.getValue());
+        for(Map.Entry<String, ContextResolver> entry : contextResolvers.entrySet()) {
+            processingContext.setAttribute(entry.getKey(),
+                                           entry.getValue());
         }
-
-        return context;
+        return processingContext;
     }
+
 
 }

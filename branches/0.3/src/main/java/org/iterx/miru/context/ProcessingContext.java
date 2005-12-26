@@ -24,13 +24,13 @@ package org.iterx.miru.context;
 import org.iterx.miru.matcher.Matches;
 
 
-public interface ProcessingContext {
+public interface ProcessingContext<S extends RequestContext, T extends ResponseContext> {
 
     public static final String MATCHES_ATTRIBUTE = (Matches.class).getName();
     
-    public RequestContext getRequestContext();
+    public S getRequestContext();
 
-    public ResponseContext getResponseContext();
+    public T getResponseContext();
 
     public Object getAttribute(String name);
 

@@ -22,8 +22,7 @@
 package org.iterx.miru.dispatcher.handler;
 
 import org.iterx.miru.matcher.Matcher;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public interface FlowHandler extends Handler, Matcher {
-
-    
-}
+public interface FlowHandler<S extends RequestContext, T extends ResponseContext> extends Handler<S, T>, Matcher<S, T> {}

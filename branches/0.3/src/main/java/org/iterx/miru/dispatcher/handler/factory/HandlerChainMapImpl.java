@@ -22,25 +22,33 @@ package org.iterx.miru.dispatcher.handler.factory;
 
 import java.util.Map;
 import java.util.Iterator;
+import java.util.HashMap;
 
+import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.dispatcher.handler.HandlerChainMap;
 import org.iterx.miru.dispatcher.handler.HandlerChain;
 
-public class HandlerChainMapImpl implements HandlerChainMap {
-    private Map handlerChains;
+public class HandlerChainMapImpl<S extends RequestContext,  T extends ResponseContext> implements HandlerChainMap<S, T> {
+    private Map<String, HandlerChain<S, T>> handlerChains;
 
-    public HandlerChainMapImpl(Map handlerChains) {
+    public HandlerChainMapImpl(Map<String, HandlerChain<? extends S, ? extends T>> handlerChains) {
 
-        this.handlerChains = handlerChains;
+        this.handlerChains = new HashMap<String, HandlerChain<S, T>>(handlerChains.size());
+
+        for(Map.Entry<String, HandlerChain<? extends S, ? extends T>> entry : handlerChains.entrySet()) {
+
+            (this.handlerChains).put(entry.getKey(),
+                                     (HandlerChain<S, T>) entry.getValue()); // force upcasting
+        }
     }
 
-    public HandlerChain get(String id) {
+    public HandlerChain<S, T> get(String id) {
 
-        return ((id != null)?
-                (HandlerChain) handlerChains.get(id) : null);
+        return ((id != null)? handlerChains.get(id) : null);
     }
 
-    public Iterator iterator() {
+    public Iterator<HandlerChain<S, T>> iterator() {
 
         return (handlerChains.values()).iterator();
     }

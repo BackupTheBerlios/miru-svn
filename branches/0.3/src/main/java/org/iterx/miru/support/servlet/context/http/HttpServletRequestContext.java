@@ -95,11 +95,10 @@ public final class HttpServletRequestContext
 
 
     public String[] getParameterNames() {
-        Set names;
+        Set<String> names;
 
-        return ((String[])
-            ((names = (httpServletRequest.getParameterMap()).keySet()).toArray
-                ((Object[]) new String[names.size()])));
+        names = httpServletRequest.getParameterMap().keySet();
+        return names.toArray(new String[names.size()]);
     }
 
     public String getContentType() {
@@ -135,12 +134,14 @@ public final class HttpServletRequestContext
     }
 
     public void close() throws IOException {
+        IOException exception;
 
+        exception = null;
         if(inputStream != null)
-            try { inputStream.close(); } catch(IOException e) {}
+            try { inputStream.close(); } catch(IOException e) { exception = e;}
         if(reader != null)
-            try { reader.close(); } catch(IOException e) {}
-
+            try { reader.close(); } catch(IOException e) { exception = e;}
+        if(exception != null) throw exception;
     }
 
 }

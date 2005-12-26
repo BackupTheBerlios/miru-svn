@@ -21,7 +21,11 @@
 
 package org.iterx.miru.dispatcher.handler.flow;
 
+import java.util.List;
+
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.dispatcher.Dispatcher;
 import org.iterx.miru.matcher.Matcher;
 import org.iterx.miru.matcher.Matches;
@@ -29,49 +33,55 @@ import org.iterx.miru.dispatcher.handler.FlowHandler;
 import org.iterx.miru.dispatcher.handler.Handler;
 import org.iterx.util.ArrayUtils;
 
-public class OrFlowHandler implements FlowHandler {
+public class OrFlowHandler<S extends RequestContext, T extends ResponseContext> implements FlowHandler<S, T> {
 
-    private Handler[] handlers = new Handler[0];
+    private Handler<S, T>[] handlers = (Handler<S, T>[]) new Object[0];
 
 
-    public void addHandler(Handler handler) {
+    public void addHandler(Handler<? extends S, ? extends T> handler) {
 
         if(handler == null)
             throw new IllegalArgumentException("handler == null");
 
-        handlers = (Handler[]) ArrayUtils.add(handlers, handler);
+        handlers = (Handler<S, T>[]) ArrayUtils.add(handlers, handler);
     }
 
-    public Handler[] getHandlers() {
+    public Handler<S, T>[] getHandlers() {
 
         return handlers;
     }
 
-    public void setHandlers(Handler[] handlers) {
+    public void setHandlers(List<Handler<? extends S, ? extends T>>  handlers) {
 
         if(handlers == null)
             throw new IllegalArgumentException("handlers == null");
 
-        this.handlers = handlers;
+        this.handlers = handlers.toArray(this.handlers);
     }
 
 
-    public void removeHandler(Handler handler) {
+    public void removeHandler(Handler<? extends S, ? extends T> handler) {
 
-        handlers = (Handler[]) ArrayUtils.remove(handlers, handler);
+        handlers = (Handler<S, T>[]) ArrayUtils.remove(handlers, handler);
+    }
+
+    public boolean hasMatches(ProcessingContext<? extends S, ? extends T> processingContext) {
+
+        for(Handler<S, T> handler : handlers) {
+            if(!(handler instanceof Matcher) ||
+               ((Matcher<S, T>) handler).hasMatches(processingContext)) return true;
+        }
+        return false;
     }
 
 
-    public Matches getMatches(ProcessingContext processingContext) {
+    public Matches getMatches(ProcessingContext<? extends S, ? extends T> processingContext) {
 
-        for(int i = handlers.length; i-- > 0; ) {
-            Handler handler;
-
-            handler = handlers[i];
+        for(Handler<S, T> handler : handlers) {
             if(handler instanceof Matcher) {
                 Matches matches;
 
-                if((matches = ((Matcher) handler).getMatches(processingContext)) != null)
+                if((matches = ((Matcher<S, T>) handler).getMatches(processingContext)) != null)
                     return matches;
             }
             else return new Matches();
@@ -79,27 +89,12 @@ public class OrFlowHandler implements FlowHandler {
         return null;
     }
 
-    public boolean hasMatches(ProcessingContext processingContext) {
 
-        for(int i = 0; i < handlers.length; i++ ) {
-            Handler handler;
+    public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
 
-            handler = handlers[i];
+        for(Handler<S, T> handler : handlers) {            
             if(!(handler instanceof Matcher) ||
-               ((Matcher) handler).hasMatches(processingContext)) return true;
-        }
-        return false;
-    }
-
-
-    public int execute(ProcessingContext processingContext) {
-
-        for(int i = 0; i < handlers.length; i++ ) {
-            Handler handler;
-
-            handler = handlers[i];
-            if(!(handler instanceof Matcher) ||
-               ((Matcher) handler).hasMatches(processingContext))
+               ((Matcher<S, T>) handler).hasMatches(processingContext))
                 return handler.execute(processingContext);
         }
         return Dispatcher.OK;

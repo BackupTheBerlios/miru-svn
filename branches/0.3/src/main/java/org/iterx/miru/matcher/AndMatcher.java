@@ -20,63 +20,64 @@
 */
 package org.iterx.miru.matcher;
 
+import java.util.List;
+
 import org.iterx.util.ArrayUtils;
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public class AndMatcher implements Matcher {
+public class AndMatcher<S extends RequestContext, T extends ResponseContext> implements Matcher<S, T> {
 
-    private Matcher[] matchers;
+    private Matcher<S, T>[] matchers = (Matcher<S, T>[]) new Object[0];
 
-    public Matcher[] getMatchers() {
+    public Matcher<S, T>[] getMatchers() {
 
         return matchers;
     }
 
-    public void setMatchers(Matcher[] matchers) {
+    public void setMatchers(List<Matcher<? extends S, ? extends T>> matchers) {
 
         if(matchers == null)
             throw new IllegalArgumentException("matchers == null");
-        this.matchers = matchers;
+        this.matchers = matchers.toArray(this.matchers);
     }
 
-
-    public Matcher addMatcher(Matcher matcher) {
+    public void addMatcher(Matcher<? extends S, ? extends T> matcher) {
 
         if(matcher == null)
             throw new IllegalArgumentException("matcher == null");
-        matchers = (Matcher[]) ArrayUtils.add(matchers, matcher);
-
-        return matcher;
+        matchers = (Matcher<S, T>[]) ArrayUtils.add(matchers, matcher);
     }
 
-    public void removeMatcher(Matcher matcher) {
+    public void removeMatcher(Matcher<? extends S, ? extends T> matcher) {
 
         if(matcher == null)
             throw new IllegalArgumentException("matcher == null");
-        matchers = (Matcher[]) ArrayUtils.remove(matchers, matcher);
+        matchers = (Matcher<S, T>[]) ArrayUtils.remove(matchers, matcher);
     }
 
 
-    public Matches getMatches(ProcessingContext context) {
+    public Matches getMatches(ProcessingContext<? extends S, ? extends T> processingContext) {
         assert (matchers != null) : "matchers == null";
         Matches matches;
 
         matches = new Matches();
-        for(int i = 0; i < matchers.length; i++) {
+        for(Matcher<S, T> matcher : matchers) {
             Matches value;
 
-            if((value = matchers[i].getMatches(context)) != null)
+            if((value = matcher.getMatches(processingContext)) != null)
                 matches.put(value);
             else return null;
         }
         return matches;
     }
 
-    public boolean hasMatches(ProcessingContext context) {
+    public boolean hasMatches(ProcessingContext<? extends S, ? extends T> processingContext) {
         assert (matchers != null) : "matchers == null";
 
-        for(int i = 0; i < matchers.length; i++) {
-            if(!matchers[i].hasMatches(context)) return false;
+        for(Matcher<S, T> matcher : matchers) {
+            if(!matcher.hasMatches(processingContext)) return false;
         }
         return true;
     }

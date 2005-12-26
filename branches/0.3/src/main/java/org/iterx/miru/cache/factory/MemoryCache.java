@@ -34,30 +34,29 @@ import org.iterx.miru.cache.CacheListener;
 
 import org.iterx.util.KeyValue;
 
-public class MemoryCache
-    implements Cache, CacheListenerAware, CacheNotifiable {
+public class MemoryCache<K, V>
+    implements Cache<K, V>, CacheListenerAware, CacheNotifiable {
 
-    private List cacheListeners = new ArrayList();
-    private Map cache = new HashMap();
+    private Map<K, V> cache = new HashMap<K, V>();
+    private List<CacheListener> cacheListeners = new ArrayList<CacheListener>();
 
-    
-    public Object get(Object key) {
+    public V get(K key) {
 
         notifyListeners(CacheListener.Event.GET, key);
         return cache.get(key);
 
     }
 
-    public void put(Object key, Object object) {
+    public void put(K key, V object) {
 
         synchronized(cache) {
             cache.put(key, object);
             notifyListeners(CacheListener.Event.PUT,
-                            new KeyValue(key, object));
+                            new KeyValue<K, V>(key, object));
         }
     }
 
-    public void remove(Object key) {
+    public void remove(K key) {
 
         synchronized(cache) {
             cache.remove(key);
@@ -65,7 +64,7 @@ public class MemoryCache
         }
     }
 
-    public Iterator keys() {
+    public Iterator<K> keys() {
 
         return (cache.keySet()).iterator();
     }
@@ -90,11 +89,10 @@ public class MemoryCache
         if((size = cacheListeners.size()) > 0) {
             CacheListener[] listeners;
 
-            listeners = (CacheListener[])
-                cacheListeners.toArray(new CacheListener[size]);
+            listeners = cacheListeners.toArray(new CacheListener[size]);
             for(int i = listeners.length; i-- > 0; ) {
                 try {
-                    ((CacheListener) listeners[i]).cacheEvent(this, event, data);
+                    listeners[i].cacheEvent(this, event, data);
                 }
                 catch(Exception e) {}
             }
@@ -105,7 +103,7 @@ public class MemoryCache
 
         switch(event) {
             case EXPIRE:
-                remove(data);
+                remove((K) data);
                 break;
             case CLEAR:
             case DESTROY:
@@ -116,7 +114,7 @@ public class MemoryCache
 
                             keys = (cache.keySet()).toArray();
                             for(int i = keys.length; i-- > 0; ) {
-                                remove(keys[i]);
+                                remove((K) keys[i]);
                             }
                         }
                         else cache.clear();

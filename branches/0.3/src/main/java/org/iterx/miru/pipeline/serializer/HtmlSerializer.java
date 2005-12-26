@@ -28,10 +28,12 @@ import com.sun.org.apache.xml.internal.serializer.ToHTMLStream;
 import org.iterx.miru.pipeline.Stage;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.stream.StreamResponseContext;
 import org.iterx.miru.io.StreamTarget;
 
 
-public class HtmlSerializer extends SerializerImpl {
+public class HtmlSerializer<S extends RequestContext, T extends StreamResponseContext> extends SerializerImpl<S, T> {
 
 
     private ToHTMLStream htmlStream;
@@ -91,14 +93,12 @@ public class HtmlSerializer extends SerializerImpl {
         if(parent instanceof Stage) ((Stage) parent).init();
     }
 
-    public void execute(ProcessingContext processingContext) throws IOException {
-        assert (processingContext != null) : "processingContext == null";
-
-        ResponseContext responseContext;
+    public void execute(ProcessingContext<? extends S, ? extends T> processingContext) throws IOException {
+        StreamResponseContext responseContext;
         Writer writer;
 
         responseContext = processingContext.getResponseContext();
-        writer = ((StreamTarget) responseContext).getWriter();
+        writer = responseContext.getWriter();
 
         htmlStream.setWriter(writer);
         super.execute(processingContext);

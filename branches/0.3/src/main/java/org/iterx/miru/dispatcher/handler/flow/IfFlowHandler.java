@@ -28,51 +28,56 @@ import org.iterx.miru.matcher.Matcher;
 import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.dispatcher.Dispatcher;
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public class IfFlowHandler implements FlowHandler {
+public class IfFlowHandler<S extends RequestContext, T extends ResponseContext> implements FlowHandler<S, T> {
 
-    private Matcher matcher;
-    private Handler handler;
+    private Matcher<S, T> matcher;
+    private Handler<S, T> handler;
 
-    public Matcher getMatcher() {
+    public Matcher<S, T> getMatcher() {
 
         return matcher;
     }
 
-    public void setMatcher(Matcher matcher) {
+    public void setMatcher(Matcher<? extends S, ? extends T> matcher) {
 
-        this.matcher = matcher;
+        this.matcher = (Matcher<S, T>) matcher;
     }
 
-    public Handler getHandler()  {
+    public Handler<S, T> getHandler()  {
 
         return handler;
     }
 
-    public void setHandler(Handler handler)  {
+    public void setHandler(Handler<? extends S, ? extends T> handler)  {
 
         if(handler == null)
             throw new IllegalArgumentException("handler == null");
 
-        this.handler = handler;
+        this.handler = (Handler<S, T>) handler;
     }
 
-    public Matches getMatches(ProcessingContext processingContext) {
-
-        return (matcher == null)? new Matches() : matcher.getMatches(processingContext);
-    }
-
-    public boolean hasMatches(ProcessingContext processingContext) {
+    public boolean hasMatches(ProcessingContext<? extends S, ? extends T> processingContext) {
 
         return ((matcher == null) || matcher.hasMatches(processingContext));
     }
 
-    public int execute(ProcessingContext processingContext) {
+
+    public Matches getMatches(ProcessingContext<? extends S, ? extends T> processingContext) {
+
+        return (matcher == null)? new Matches() : matcher.getMatches(processingContext);
+    }
+
+
+    public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
         assert (handler != null) : "handler == null";
         Matches matches;
 
         if(!(handler instanceof Matcher) ||
-           (matches = ((Matcher) handler).getMatches(processingContext)) != null) {
+           (matches = ((Matcher<S, T>) handler).getMatches(processingContext)) != null) {
+
 
 
             //TODO: Create new ProcessingContext and set matches

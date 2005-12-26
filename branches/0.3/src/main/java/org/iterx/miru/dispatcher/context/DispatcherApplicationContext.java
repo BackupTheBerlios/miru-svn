@@ -21,11 +21,13 @@
 package org.iterx.miru.dispatcher.context;
 
 import org.iterx.miru.context.ApplicationContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactory;
 
-public interface DispatcherApplicationContext extends ApplicationContext {
+public interface DispatcherApplicationContext<S extends RequestContext, T extends ResponseContext> extends ApplicationContext {
 
-    public HandlerChainFactory getHandlerChainFactory();
+    public HandlerChainFactory<S, T> getHandlerChainFactory();
 
 
 }

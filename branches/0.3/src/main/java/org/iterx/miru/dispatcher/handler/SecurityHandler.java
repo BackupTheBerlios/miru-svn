@@ -21,6 +21,7 @@
 
 package org.iterx.miru.dispatcher.handler;
 
-public interface SecurityHandler {
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-}
+public interface SecurityHandler<S extends RequestContext, T extends ResponseContext> {}

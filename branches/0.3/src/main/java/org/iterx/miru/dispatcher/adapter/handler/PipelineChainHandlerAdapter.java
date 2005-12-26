@@ -28,9 +28,12 @@ import org.apache.commons.logging.LogFactory;
 import org.iterx.miru.dispatcher.adapter.HandlerAdapter;
 import org.iterx.miru.dispatcher.Dispatcher;
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.pipeline.PipelineChain;
+import org.iterx.miru.aop.Poolable;
 
-public class PipelineChainHandlerAdapter implements HandlerAdapter {
+public class PipelineChainHandlerAdapter<S extends RequestContext, T extends ResponseContext> implements HandlerAdapter<S, T> {
 
     private static final Log LOGGER = LogFactory.getLog(PipelineChainHandlerAdapter.class);
 
@@ -39,12 +42,21 @@ public class PipelineChainHandlerAdapter implements HandlerAdapter {
         return (handler instanceof PipelineChain);
     }
 
-    public int execute(ProcessingContext processingContext, Object handler) {
+    public int execute(ProcessingContext<? extends S, ? extends T> processingContext, Object handler) {
 
         try {
-            //TODO: Check if handler implements Poolable
-            //TODO: Fixup ProcessingContext
-            ((PipelineChain) handler).execute(processingContext);
+            if(handler instanceof Poolable) {
+                Poolable<PipelineChain<S, T>> poolableHandler;
+                PipelineChain<S, T> pipelineChain;
+
+                poolableHandler = (Poolable<PipelineChain<S, T>>) handler;
+                pipelineChain = poolableHandler.getInstance();
+                pipelineChain.execute(processingContext);
+
+                poolableHandler.recycleInstance(pipelineChain);
+
+            }
+            else ((PipelineChain<S, T>) handler).execute(processingContext);
             return Dispatcher.OK;
         }
         catch(Exception e) {

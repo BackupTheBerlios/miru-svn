@@ -52,36 +52,36 @@ public class HttpDispatcherServlet extends HttpServlet {
 
     private static final Log LOGGER = LogFactory.getLog(HttpDispatcherServlet.class);
 
-    private ProcessingContextFactory processingContextFactory;
-    private Dispatcher dispatcher;
+    private ProcessingContextFactory<HttpServletRequestContext, HttpServletResponseContext> processingContextFactory;
+    private Dispatcher<HttpServletRequestContext, HttpServletResponseContext> dispatcher;
 
     public HttpDispatcherServlet() {}
 
-    public HttpDispatcherServlet(Dispatcher dispatcher) {
+    public HttpDispatcherServlet(Dispatcher<HttpServletRequestContext, HttpServletResponseContext> dispatcher) {
 
         if(dispatcher == null)
             throw new IllegalArgumentException("dispatcher == null");
         this.dispatcher = dispatcher;
     }
 
-    public Dispatcher getDispatcher() {
+    public Dispatcher<HttpServletRequestContext, HttpServletResponseContext> getDispatcher() {
 
         return dispatcher;
     }
 
-    public void setDispatcher(Dispatcher dispatcher) {
+    public void setDispatcher(Dispatcher<HttpServletRequestContext, HttpServletResponseContext> dispatcher) {
 
         if(dispatcher == null)
             throw new IllegalArgumentException("dispatcher == null");
         this.dispatcher = dispatcher;
     }
 
-    public ProcessingContextFactory getProcessingContextFactory() {
+    public ProcessingContextFactory<HttpServletRequestContext, HttpServletResponseContext> getProcessingContextFactory() {
 
         return processingContextFactory;
     }
 
-    public void setProcessingContextFactory(ProcessingContextFactory processingContextFactory) {
+    public void setProcessingContextFactory(ProcessingContextFactory<HttpServletRequestContext, HttpServletResponseContext> processingContextFactory) {
 
         if(processingContextFactory != null)
             throw new IllegalArgumentException("processingContextFactory == null");
@@ -125,8 +125,8 @@ public class HttpDispatcherServlet extends HttpServlet {
             }
 
             if(dispatcher == null &&
-               (dispatcher = (Dispatcher) applicationContext.getBeanOfType(Dispatcher.class)) == null)
-                dispatcher = new Dispatcher();
+               (dispatcher = (Dispatcher<HttpServletRequestContext, HttpServletResponseContext>) applicationContext.getBeanOfType(Dispatcher.class)) == null)
+                dispatcher = new Dispatcher<HttpServletRequestContext, HttpServletResponseContext>();
 
             dispatcher.setHandlerChainMap(handlerChainFactory.getHandlerChains());
             processingContextFactory = applicationContext.getProcessingContextFactory();
@@ -145,9 +145,9 @@ public class HttpDispatcherServlet extends HttpServlet {
         assert (processingContextFactory != null) : "processingContextFactory == null";
 
         try {
+            ProcessingContext<HttpServletRequestContext, HttpServletResponseContext> processingContext;
             HttpServletResponseContext responseContext;
             HttpServletRequestContext requestContext;
-            ProcessingContext processingContext;
 
             processingContext = processingContextFactory.getProcessingContext
                 (requestContext = new HttpServletRequestContext(request),

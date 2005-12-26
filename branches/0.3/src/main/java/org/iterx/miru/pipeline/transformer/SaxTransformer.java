@@ -26,8 +26,10 @@ import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.SAXException;
 
 import org.iterx.miru.pipeline.Stage;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
-public class SaxTransformer extends TransformerImpl {
+public class SaxTransformer<S extends RequestContext, T extends ResponseContext> extends TransformerImpl<S, T> {
 
     private static final String LEXICAL_HANDLER =
         "http://xml.org/sax/properties/lexical-handler";

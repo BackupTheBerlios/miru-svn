@@ -47,6 +47,7 @@ import org.iterx.miru.dispatcher.event.ErrorEvent;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.context.stream.StreamResponseContext;
 import org.iterx.miru.io.factory.ResourceFactory;
 import org.iterx.miru.io.ReadableResource;
 import org.iterx.miru.io.StreamTarget;
@@ -55,7 +56,7 @@ import org.iterx.miru.cache.factory.CacheFactory;
 import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.util.MiruUtils;
 
-public class VelocityContentHandler implements ContentHandler {
+public class VelocityContentHandler<S extends RequestContext, T extends StreamResponseContext> implements ContentHandler<S, T> {
 
     private static final Log LOGGER = LogFactory.getLog(VelocityContentHandler.class);
 
@@ -82,7 +83,7 @@ public class VelocityContentHandler implements ContentHandler {
             engine.init();
         }
         catch(Exception e) {
-            throw new RuntimeException("Failed to initialise Velocity.", e);
+            throw new RuntimeException("Failed to initialise Velocity", e);
         }
     }
 
@@ -126,15 +127,14 @@ public class VelocityContentHandler implements ContentHandler {
           this.resourceFactory = resourceFactory;
       }
 
-    public int execute(ProcessingContext processingContext) {
+    public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
         RequestContext requestContext;
-        ResponseContext responseContext;
+        StreamResponseContext responseContext;
         URI uri;
 
         uri = null;
         requestContext = processingContext.getRequestContext();
         responseContext = processingContext.getResponseContext();
-        assert (responseContext instanceof StreamTarget) : "responseContext is not a StreamTarget";
 
         try {
             Template template;
@@ -152,7 +152,7 @@ public class VelocityContentHandler implements ContentHandler {
             velocityContext.put("res", responseContext);
 
             template.merge(velocityContext,
-                           ((StreamTarget) responseContext).getWriter());
+                           responseContext.getWriter());
             return Dispatcher.OK;
         }
         catch(ResourceNotFoundException e) {
