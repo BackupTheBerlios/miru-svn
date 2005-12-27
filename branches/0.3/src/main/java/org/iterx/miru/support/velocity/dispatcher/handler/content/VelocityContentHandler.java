@@ -42,15 +42,13 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 
 import org.iterx.miru.dispatcher.handler.ContentHandler;
-import org.iterx.miru.dispatcher.Dispatcher;
+import org.iterx.miru.dispatcher.Status;
 import org.iterx.miru.dispatcher.event.ErrorEvent;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.RequestContext;
-import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.context.stream.StreamResponseContext;
 import org.iterx.miru.io.factory.ResourceFactory;
 import org.iterx.miru.io.ReadableResource;
-import org.iterx.miru.io.StreamTarget;
 import org.iterx.miru.cache.Cache;
 import org.iterx.miru.cache.factory.CacheFactory;
 import org.iterx.miru.matcher.Matches;
@@ -127,7 +125,7 @@ public class VelocityContentHandler<S extends RequestContext, T extends StreamRe
           this.resourceFactory = resourceFactory;
       }
 
-    public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
+    public Status execute(ProcessingContext<? extends S, ? extends T> processingContext) {
         RequestContext requestContext;
         StreamResponseContext responseContext;
         URI uri;
@@ -153,18 +151,18 @@ public class VelocityContentHandler<S extends RequestContext, T extends StreamRe
 
             template.merge(velocityContext,
                            responseContext.getWriter());
-            return Dispatcher.OK;
+            return Status.OK;
         }
         catch(ResourceNotFoundException e) {
-            LOGGER.error("Velocity template '" + uri + "' not found.", e);
+            LOGGER.error("Velocity template '" + uri + "' not found", e);
             //TODO: Fix error status passing - need conversion based on on ctx.
             throw new ErrorEvent(404);
         }
         catch(Exception e) {
-            LOGGER.error("Velocity transform failed for '" + uri + "'.", e);
+            LOGGER.error("Velocity transform failed for '" + uri + "'", e);
         }
 
-        return Dispatcher.ERROR;
+        return Status.ERROR;
     }
 
 

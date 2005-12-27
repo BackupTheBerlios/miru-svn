@@ -45,28 +45,44 @@ public final class MiruUtils {
                 char c;
 
                 OUTER: switch(c = buffer[i]) {
-                    case '{':
-                        String key;
+                    case '$':
+                        if((c = buffer[++i]) == '{') {
+                            String key;
 
-                        key = null;
-                        for(int j = i; j < buffer.length; j++) {
-                            if(key == null && buffer[j] == ':') {
-                                key = new String(buffer, i + 1, j - 1);
-                                i = j;
-                            }
-                            else if(buffer[j] == '}') {
-                                if(key != null) {
-                                    int index;
+                            key = null;
 
-                                    index = Integer.parseInt
-                                        (new String(buffer, i + 1, j - i - 1));
+                            for(int j = i; j < buffer.length; j++) {
+                                c = buffer[j];
 
-                                    builder.append
-                                        ((matches.get(key))[index]);
+                                if(key == null && c == '[') {
+                                    key = new String(buffer, i + 1, j - 2);
                                     i = j;
-                                    break OUTER;
                                 }
-                                break;
+                                else if(c == '}') {
+                                    if(key == null) {
+                                        builder.append
+                                            ((matches.get(key))[0]);
+                                        i = j;
+                                        break OUTER;
+                                    }
+                                    break;
+                                }
+                                else if(c == ']') {
+                                    if(j < buffer.length -1 &&
+                                       buffer[++j] == '}' &&
+                                       key != null) {
+                                        int index;
+
+                                        index = Integer.parseInt
+                                            (new String(buffer, i + 1, j - i - 2));
+
+                                        builder.append
+                                            ((matches.get(key))[index]);
+                                        i = j;
+                                        break OUTER;
+                                    }
+                                    break;
+                                }
                             }
                         }
                         throw new IllegalArgumentException

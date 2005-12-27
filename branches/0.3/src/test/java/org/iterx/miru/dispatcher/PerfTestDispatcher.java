@@ -128,7 +128,7 @@ public class PerfTestDispatcher extends TestCase {
                    new HttpResponseContextImpl(writer));
 
               dispatcher.dispatch(processingContext);
-              assertEquals(Dispatcher.OK,
+              assertEquals(Status.OK,
                            dispatcher.dispatch(processingContext));
               reader.close();
               writer.close();
@@ -138,7 +138,7 @@ public class PerfTestDispatcher extends TestCase {
 
     private static class SimpleHandler<S extends StreamRequestContext, T extends StreamResponseContext> implements ContentHandler<S, T> {
 
-        public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
+        public Status execute(ProcessingContext<? extends S, ? extends T> processingContext) {
             StreamRequestContext requestContext;
             StreamResponseContext responseContext;
 
@@ -158,11 +158,11 @@ public class PerfTestDispatcher extends TestCase {
                 while((length = reader.read(buffer, 0, 256)) != -1) {
                     writer.write(buffer, 0, length);
                 }
-                return Dispatcher.OK;
+                return Status.OK;
             }
             catch(IOException e) {}
 
-            return Dispatcher.ERROR;
+            return Status.ERROR;
         }
     }
 

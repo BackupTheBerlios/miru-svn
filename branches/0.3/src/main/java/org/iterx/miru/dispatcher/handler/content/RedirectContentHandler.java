@@ -24,7 +24,7 @@ import java.net.URI;
 
 import org.iterx.miru.dispatcher.handler.ContentHandler;
 import org.iterx.miru.dispatcher.event.RedirectEvent;
-import org.iterx.miru.matcher.Matcher;
+import org.iterx.miru.dispatcher.Status;
 import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.RequestContext;
@@ -57,7 +57,7 @@ public class RedirectContentHandler<S extends RequestContext, T extends Response
     }
 
 
-    public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
+    public Status execute(ProcessingContext<? extends S, ? extends T> processingContext) {
         URI uri;
 
         uri = MiruUtils.resolve((this.uri != null)? this.uri : ((processingContext.getRequestContext()).getURI()).getPath(),

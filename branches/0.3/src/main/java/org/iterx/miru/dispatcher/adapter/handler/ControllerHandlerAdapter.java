@@ -28,7 +28,7 @@ import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.dispatcher.adapter.HandlerAdapter;
 import org.iterx.miru.dispatcher.controller.Controller;
-import org.iterx.miru.dispatcher.Dispatcher;
+import org.iterx.miru.dispatcher.Status;
 
 public class ControllerHandlerAdapter<S extends RequestContext, T extends ResponseContext> implements HandlerAdapter<S, T> {
 
@@ -39,7 +39,7 @@ public class ControllerHandlerAdapter<S extends RequestContext, T extends Respon
         return (handler instanceof Controller);
     }
 
-    public int execute(ProcessingContext<? extends S, ? extends T> processingContext, Object handler) {
+    public Status execute(ProcessingContext<? extends S, ? extends T> processingContext, Object handler) {
 
         try {
             return ((Controller<S, T>) handler).execute(processingContext);
@@ -47,6 +47,6 @@ public class ControllerHandlerAdapter<S extends RequestContext, T extends Respon
         catch(Exception e) {
             LOGGER.warn("Controller [" + handler + "]failure.", e);
         }
-        return Dispatcher.ERROR;
+        return Status.ERROR;
     }
 }

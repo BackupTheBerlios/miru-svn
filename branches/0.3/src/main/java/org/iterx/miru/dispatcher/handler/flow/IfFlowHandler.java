@@ -26,15 +26,27 @@ import org.iterx.miru.dispatcher.handler.FlowHandler;
 import org.iterx.miru.dispatcher.handler.Handler;
 import org.iterx.miru.matcher.Matcher;
 import org.iterx.miru.matcher.Matches;
-import org.iterx.miru.dispatcher.Dispatcher;
+import org.iterx.miru.dispatcher.Status;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.context.ApplicationContextAware;
+import org.iterx.miru.context.ApplicationContext;
+import org.iterx.miru.context.factory.ProcessingContextFactory;
 
-public class IfFlowHandler<S extends RequestContext, T extends ResponseContext> implements FlowHandler<S, T> {
+public class IfFlowHandler<S extends RequestContext, T extends ResponseContext>
+    implements FlowHandler<S, T>, ApplicationContextAware<S, T> {
+
+    private ProcessingContextFactory<S, T> processingContextFactory = ProcessingContextFactory.getProcessingContextFactory();
 
     private Matcher<S, T> matcher;
     private Handler<S, T> handler;
+
+
+    public void setApplicationContext(ApplicationContext<? extends S, ? extends T> applicationContext) {
+
+        processingContextFactory = (ProcessingContextFactory<S, T>) applicationContext.getProcessingContextFactory();
+    }
 
     public Matcher<S, T> getMatcher() {
 
@@ -71,19 +83,19 @@ public class IfFlowHandler<S extends RequestContext, T extends ResponseContext> 
     }
 
 
-    public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
+    public Status execute(ProcessingContext<? extends S, ? extends T> processingContext) {
         assert (handler != null) : "handler == null";
         Matches matches;
 
-        if(!(handler instanceof Matcher) ||
-           (matches = ((Matcher<S, T>) handler).getMatches(processingContext)) != null) {
+        if((matches = getMatches(processingContext)) != null) {
 
-
-
-            //TODO: Create new ProcessingContext and set matches
-            return handler.execute(processingContext);
+            ProcessingContext<S, T> childProcessingContext;
+            childProcessingContext = processingContextFactory.getProcessingContext(processingContext.getRequestContext(),
+                                                                                   processingContext.getResponseContext());
+            childProcessingContext.setAttribute(ProcessingContext.MATCHES_ATTRIBUTE, matches);
+            return handler.execute(childProcessingContext);
         }
 
-        return Dispatcher.DECLINE;
+        return Status.DECLINE;
     }
 }

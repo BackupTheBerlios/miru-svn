@@ -29,6 +29,7 @@ import junit.framework.TestCase;
 import org.iterx.miru.dispatcher.adapter.HandlerAdapter;
 import org.iterx.miru.dispatcher.handler.HandlerChainMap;
 import org.iterx.miru.dispatcher.handler.Handler;
+import org.iterx.miru.dispatcher.Status;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
@@ -93,15 +94,16 @@ public class TestHandlerChainMapFactoryImpl extends TestCase {
 
         handlerChainFactory.setHandlerAdapters(handlerAdapterList);
 
-        assertTrue(Arrays.equals(handlerAdapterList.toArray(handlerAdapters), 
+        assertTrue(Arrays.equals(handlerAdapterList.toArray(handlerAdapters),
                                  handlerChainFactory.getHandlerAdapters()));
     }
 
 
     public class MockHandler<S extends RequestContext, T extends ResponseContext> implements Handler<S, T>  {
 
-        public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
-            return 0;
+        public Status execute(ProcessingContext<? extends S, ? extends T> processingContext) {
+
+            return Status.OK;
         }
 
     }
@@ -113,7 +115,7 @@ public class TestHandlerChainMapFactoryImpl extends TestCase {
             return (handler instanceof MockHandler) ;
         }
 
-        public int execute(ProcessingContext<? extends S, ? extends T> processingContext, Object handler) {
+        public Status execute(ProcessingContext<? extends S, ? extends T> processingContext, Object handler) {
 
             return ((MockHandler<S, T>) handler).execute(processingContext);
         }

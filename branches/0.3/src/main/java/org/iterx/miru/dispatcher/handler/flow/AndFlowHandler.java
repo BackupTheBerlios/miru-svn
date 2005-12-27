@@ -26,23 +26,25 @@ import java.util.List;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
-import org.iterx.miru.dispatcher.Dispatcher;
+import org.iterx.miru.context.ApplicationContextAware;
+import org.iterx.miru.context.ApplicationContext;
+import org.iterx.miru.context.factory.ProcessingContextFactory;
+import org.iterx.miru.dispatcher.Status;
 import org.iterx.miru.dispatcher.handler.FlowHandler;
 import org.iterx.miru.dispatcher.handler.Handler;
 import org.iterx.miru.matcher.Matcher;
 import org.iterx.miru.matcher.Matches;
 import org.iterx.util.ArrayUtils;
 
-public class AndFlowHandler<S extends RequestContext, T extends ResponseContext>  implements FlowHandler<S, T> {
+public class AndFlowHandler<S extends RequestContext, T extends ResponseContext>
+    implements FlowHandler<S, T>, ApplicationContextAware<S, T> {
 
     private Handler<S, T>[] handlers = (Handler<S, T>[]) new Object[0];
+    private ProcessingContextFactory<S, T> processingContextFactory = ProcessingContextFactory.getProcessingContextFactory();
 
-    public void addHandler(Handler<? extends S, ? extends T> handler) {
+    public void setApplicationContext(ApplicationContext<? extends S, ? extends T> applicationContext) {
 
-        if(handler == null)
-            throw new IllegalArgumentException("handler == null");
-
-        handlers = (Handler<S, T>[]) ArrayUtils.add(handlers, handler);
+        processingContextFactory = (ProcessingContextFactory<S, T>) applicationContext.getProcessingContextFactory();
     }
 
     public Handler<S, T>[] getHandlers() {
@@ -58,6 +60,14 @@ public class AndFlowHandler<S extends RequestContext, T extends ResponseContext>
         this.handlers = handlers.toArray(this.handlers);
     }
 
+
+    public void addHandler(Handler<? extends S, ? extends T> handler) {
+
+        if(handler == null)
+            throw new IllegalArgumentException("handler == null");
+
+        handlers = (Handler<S, T>[]) ArrayUtils.add(handlers, handler);
+    }
 
     public void removeHandler(Handler<? extends S, ? extends T> handler) {
 
@@ -89,17 +99,26 @@ public class AndFlowHandler<S extends RequestContext, T extends ResponseContext>
         return matches;
     }
 
+    public Status execute(ProcessingContext<? extends S, ? extends T> processingContext) {
+        Matches matches;
 
-    public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
+        if((matches = getMatches(processingContext)) != null) {
+            ProcessingContext<S, T> childProcessingContext;
+            Status status;
 
-        for(Handler<S, T> handler : handlers) {
-            int status;
+            status = Status.OK;
+            childProcessingContext = processingContextFactory.getProcessingContext(processingContext.getRequestContext(),
+                                                                                   processingContext.getResponseContext());
+            childProcessingContext.setAttribute(ProcessingContext.MATCHES_ATTRIBUTE, matches);
+            for(Handler<S, T> handler : handlers) {
 
-            status = handler.execute(processingContext);
-            if(status == Dispatcher.ERROR ||
-               status == Dispatcher.DONE) return status;
+                status = handler.execute(childProcessingContext);
+                if(status == Status.ERROR ||
+                   status == Status.DONE) break;
+            }
+            return status;
         }
-        return Dispatcher.OK;
+        return Status.DECLINE;
     }
 
 }

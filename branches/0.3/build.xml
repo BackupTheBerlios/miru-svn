@@ -28,6 +28,11 @@
 
   <taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
     <classpath refid="ant.library.path"/>
+    <classpath>
+      <fileset dir="${library.dir}">
+        <include name="**/*.jar"/>
+      </fileset>
+    </classpath>
   </taskdef>
 
 
@@ -87,7 +92,7 @@
                   from="^(.*).aj$$"
                   to="${java.target.dir}/\1.class"/>
     </uptodate>
-    <!--antcall target="compile:aspects"/-->
+    <antcall target="compile:aspects"/>
 
   </target>
 

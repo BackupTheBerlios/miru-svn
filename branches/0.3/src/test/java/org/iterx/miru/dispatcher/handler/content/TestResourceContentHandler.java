@@ -36,7 +36,7 @@ import org.iterx.miru.context.stream.StreamResponseContext;
 import org.iterx.miru.context.http.MockHttpRequestContext;
 import org.iterx.miru.context.http.MockHttpResponseContext;
 import org.iterx.miru.resolver.MockResourceResolver;
-import org.iterx.miru.dispatcher.Dispatcher;
+import org.iterx.miru.dispatcher.Status;
 
 public class TestResourceContentHandler extends TestCase {
 
@@ -121,18 +121,18 @@ public class TestResourceContentHandler extends TestCase {
         contentHandler.setResourceFactory(resourceFactory);
 
         source.setData(DATA);
-        assertEquals(Dispatcher.OK, contentHandler.execute(processingContext));
+        assertEquals(Status.OK, contentHandler.execute(processingContext));
         assertTrue(Arrays.equals(DATA, response.getData()));
 
 
         source.reset();
         response.reset();
         contentHandler.setUri(PATH);
-        assertEquals(Dispatcher.OK, contentHandler.execute(processingContext));
+        assertEquals(Status.OK, contentHandler.execute(processingContext));
         assertTrue(Arrays.equals(DATA, response.getData()));
 
         contentHandler.setUri("does-not-exist");
-        assertEquals(Dispatcher.ERROR, contentHandler.execute(processingContext));
+        assertEquals(Status.ERROR, contentHandler.execute(processingContext));
     }
 
 }

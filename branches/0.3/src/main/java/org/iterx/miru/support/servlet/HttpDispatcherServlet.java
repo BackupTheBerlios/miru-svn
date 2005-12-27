@@ -153,16 +153,15 @@ public class HttpDispatcherServlet extends HttpServlet {
                 (requestContext = new HttpServletRequestContext(request),
                  responseContext = new HttpServletResponseContext(response));
 
-            int status = dispatcher.dispatch(processingContext);
-            switch(status) {
-                case Dispatcher.DONE:
+            switch(dispatcher.dispatch(processingContext)) {
+                case DONE:
                     requestContext.close();
                     responseContext.close();
                     break;
-                case Dispatcher.OK:
-                case Dispatcher.DECLINE:
+                case OK:
+                case DECLINE:
                     break;
-                case Dispatcher.ERROR:
+                case ERROR:
                     responseContext.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     break;
                 default:

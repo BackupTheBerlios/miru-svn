@@ -28,14 +28,8 @@ import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.dispatcher.handler.HandlerChain;
 import org.iterx.miru.dispatcher.handler.HandlerChainMap;
 import org.iterx.miru.dispatcher.resolver.HandlerResolver;
-import org.iterx.miru.matcher.Matches;
 
 public class Dispatcher<S extends RequestContext, T extends ResponseContext> {
-
-    public static final int ERROR   = -1;
-    public static final int OK      = 0;
-    public static final int DECLINE = 1;
-    public static final int DONE    = 2;
 
     private HandlerChainMap<S, T> handlerChainMap;
     private HandlerResolver<S, T> handlerResolver;
@@ -72,12 +66,12 @@ public class Dispatcher<S extends RequestContext, T extends ResponseContext> {
     }
 
 
-    public  int dispatch(ProcessingContext<? extends S, ? extends T> processingContext) {
+    public Status dispatch(ProcessingContext<? extends S, ? extends T> processingContext) {
         assert (handlerChainMap != null) : "handlerChainMap == null";
         Iterator<HandlerChain<S, T>> chains;
-        int status;
+        Status status;
 
-        status = DECLINE;
+        status = Status.DECLINE;
 
         if((chains = ((handlerResolver == null)?
                       handlerChainMap.iterator() :
@@ -85,14 +79,9 @@ public class Dispatcher<S extends RequestContext, T extends ResponseContext> {
                                               processingContext))) != null) {
             while(chains.hasNext()) {
                 HandlerChain<S, T> handlerChain;
-                Matches matches;
 
                 handlerChain = chains.next();
-                if((matches = handlerChain.getMatches(processingContext)) != null) {
-                    processingContext.setAttribute(ProcessingContext.MATCHES_ATTRIBUTE, matches);
-                    if((status = handlerChain.execute(processingContext)) != DECLINE)
-                        break;
-                }
+                if((status = handlerChain.execute(processingContext)) != Status.DECLINE) break;
             }
         }
         return status;

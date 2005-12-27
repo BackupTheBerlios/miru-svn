@@ -24,17 +24,28 @@ package org.iterx.miru.dispatcher.handler.factory;
 
 import org.iterx.miru.dispatcher.handler.HandlerChain;
 import org.iterx.miru.dispatcher.handler.Handler;
+import org.iterx.miru.dispatcher.Status;
 import org.iterx.miru.matcher.Matcher;
 import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
+import org.iterx.miru.context.ApplicationContextAware;
+import org.iterx.miru.context.ApplicationContext;
+import org.iterx.miru.context.factory.ProcessingContextFactory;
 
-public class HandlerChainImpl<S extends RequestContext, T extends ResponseContext> implements HandlerChain<S, T> {
+public class HandlerChainImpl<S extends RequestContext, T extends ResponseContext>
+    implements HandlerChain<S, T>, ApplicationContextAware<S, T> {
 
+    private ProcessingContextFactory<S, T> processingContextFactory = ProcessingContextFactory.getProcessingContextFactory();
 
     private Handler<S, T> handler;
     private String id;
+
+    public void setApplicationContext(ApplicationContext<? extends S, ? extends T> applicationContext) {
+
+        processingContextFactory = (ProcessingContextFactory<S, T>) applicationContext.getProcessingContextFactory();
+    }
 
 
     public String getId() {
@@ -75,9 +86,18 @@ public class HandlerChainImpl<S extends RequestContext, T extends ResponseContex
                 ((Matcher<S, T>) handler).hasMatches(processingContext));
     }
 
-    public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
+    public Status execute(ProcessingContext<? extends S, ? extends T> processingContext) {
         assert (handler != null) : "handler == null";
+        Matches matches;
 
-        return handler.execute(processingContext);
+        if((matches = getMatches(processingContext)) != null) {
+            ProcessingContext<S, T> childProcessingContext;
+            childProcessingContext = processingContextFactory.getProcessingContext(processingContext.getRequestContext(),                                                                                   processingContext.getResponseContext());
+
+            childProcessingContext.setAttribute(ProcessingContext.MATCHES_ATTRIBUTE, matches);
+            return handler.execute(childProcessingContext);
+        }
+
+        return Status.DECLINE;
     }
 }

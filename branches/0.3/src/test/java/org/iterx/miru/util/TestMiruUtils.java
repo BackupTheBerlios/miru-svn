@@ -38,16 +38,16 @@ public class TestMiruUtils extends TestCase {
         { PATH, PATH.toString(), null, MATCHES },
         { BASE, PATH.toString(), BASE, MATCHES },
         { BASE, PATH.toString(), BASE, MATCHES },
-        { URI.create("0"), "{key:0}", null, MATCHES },
-        { URI.create("1"), "{key:1}", null, MATCHES },
-        { URI.create(BASE + "0"), "{key:0}", BASE, MATCHES },
-        { URI.create(BASE + "1"), "{key:1}", BASE, MATCHES },
+        { URI.create("0"), "${key[0]}", null, MATCHES },
+        { URI.create("1"), "${key[1]}", null, MATCHES },
+        { URI.create(BASE + "0"), "${key[0]}", BASE, MATCHES },
+        { URI.create(BASE + "1"), "${key[1]}", BASE, MATCHES },
         { null, null, null, null},
         { null, null, BASE, null},
         { null, null, BASE, MATCHES},
-        { null, "{unknown:0}", BASE, MATCHES },
-        { null, "{unknown}", BASE, MATCHES },
-        { null, "{key:3}", BASE, MATCHES },
+        { null, "${unknown[0]}", BASE, MATCHES },
+        { null, "${unknown}", BASE, MATCHES },
+        { null, "${key[3]}", BASE, MATCHES },
     };
 
     static {
@@ -75,8 +75,6 @@ public class TestMiruUtils extends TestCase {
                                                 (Matches) TESTS[i][3]));
         }
 
-
     }
-
 
 }

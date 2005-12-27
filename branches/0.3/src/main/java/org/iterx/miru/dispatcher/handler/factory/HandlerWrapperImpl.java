@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import org.iterx.miru.dispatcher.handler.HandlerWrapper;
 import org.iterx.miru.dispatcher.handler.Handler;
 import org.iterx.miru.dispatcher.adapter.HandlerAdapter;
+import org.iterx.miru.dispatcher.Status;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
@@ -140,7 +141,7 @@ public class HandlerWrapperImpl<S extends RequestContext, T extends ResponseCont
             this.object = handler;
         }
 
-        public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
+        public Status execute(ProcessingContext<? extends S, ? extends T> processingContext) {
 
             return adapter.execute(processingContext, object);
         }

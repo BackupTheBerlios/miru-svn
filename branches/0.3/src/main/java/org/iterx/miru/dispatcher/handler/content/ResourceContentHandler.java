@@ -30,13 +30,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.iterx.miru.dispatcher.handler.ContentHandler;
-import org.iterx.miru.dispatcher.Dispatcher;
+import org.iterx.miru.dispatcher.Status;
 import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.stream.StreamRequestContext;
 import org.iterx.miru.context.stream.StreamResponseContext;
 import org.iterx.miru.io.Resource;
-import org.iterx.miru.io.StreamTarget;
 import org.iterx.miru.io.StreamSource;
 import org.iterx.miru.io.factory.ResourceFactory;
 import org.iterx.miru.util.MiruUtils;
@@ -86,7 +85,7 @@ public class ResourceContentHandler<S extends StreamRequestContext, T extends St
     }
 
 
-    public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
+    public Status execute(ProcessingContext<? extends S, ? extends T> processingContext) {
         assert (resourceFactory != null) : "resourceFactory == null";
 
         StreamResponseContext responseContext;
@@ -118,7 +117,7 @@ public class ResourceContentHandler<S extends StreamRequestContext, T extends St
                     out.write(buffer, 0, count);
                 }
                 out.flush();
-                return Dispatcher.OK;
+                return Status.OK;
             }
             catch(IOException e) {
 
@@ -132,8 +131,8 @@ public class ResourceContentHandler<S extends StreamRequestContext, T extends St
         }
         //throw resource not found exception?
         //or set error on responseContext
-        LOGGER.warn("Resource '" + uri + "' not found.");
-        return Dispatcher.ERROR;
+        LOGGER.warn("Resource '" + uri + "' not found");
+        return Status.ERROR;
     }
 
 

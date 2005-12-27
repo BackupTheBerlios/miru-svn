@@ -32,6 +32,7 @@ import org.apache.commons.logging.LogFactory;
 
 import org.iterx.miru.dispatcher.handler.ContentHandler;
 import org.iterx.miru.dispatcher.Dispatcher;
+import org.iterx.miru.dispatcher.Status;
 import org.iterx.miru.dispatcher.event.http.HttpErrorEvent;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.ApplicationContextAware;
@@ -69,7 +70,7 @@ public class ServletDispatcherContentHandler<S extends HttpServletRequestContext
         servletContext = ((ServletApplicationContext) applicationContext).getServletContext();
     }
 
-    public int execute(ProcessingContext<? extends S, ? extends T>  processingContext) {
+    public Status execute(ProcessingContext<? extends S, ? extends T>  processingContext) {
         assert (servletContext != null) : "servletContext == null";
 
         HttpServletRequestContext requestContext;
@@ -111,11 +112,11 @@ public class ServletDispatcherContentHandler<S extends HttpServletRequestContext
                 //TODO: set original URI for passthrough
 
                 dispatcher.forward(request, response);
-                return Dispatcher.OK;
+                return Status.OK;
             }
             catch(Exception e) {
                 LOGGER.error("Processing failure for '"+uri+"'.", e);
-                return Dispatcher.ERROR;
+                return Status.ERROR;
             }
         }
         throw new HttpErrorEvent(HttpErrorEvent.NOT_FOUND);

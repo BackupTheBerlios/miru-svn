@@ -21,8 +21,8 @@
 
 package org.iterx.miru.context;
 
-public interface ApplicationContextAware {
+public interface ApplicationContextAware<S extends RequestContext, T extends ResponseContext> {
 
-    public void setApplicationContext(ApplicationContext applicationContext);
+    public void setApplicationContext(ApplicationContext<? extends S, ? extends T> applicationContext);
 
 }

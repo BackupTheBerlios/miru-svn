@@ -35,7 +35,7 @@ import org.iterx.miru.matcher.Matcher;
 import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.dispatcher.handler.Handler;
 import org.iterx.miru.dispatcher.handler.HandlerChainMap;
-import org.iterx.miru.dispatcher.Dispatcher;
+import org.iterx.miru.dispatcher.Status;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
@@ -359,9 +359,9 @@ public class TestXmlHandlerChainParser extends TestCase {
         }
 
 
-        public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
+        public Status execute(ProcessingContext<? extends S, ? extends T> processingContext) {
 
-            return Dispatcher.OK;
+            return Status.OK;
         }
 
         public boolean equals(Object object) {

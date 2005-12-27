@@ -26,17 +26,26 @@ import java.util.List;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
-import org.iterx.miru.dispatcher.Dispatcher;
+import org.iterx.miru.context.ApplicationContext;
+import org.iterx.miru.context.ApplicationContextAware;
+import org.iterx.miru.context.factory.ProcessingContextFactory;
+import org.iterx.miru.dispatcher.Status;
 import org.iterx.miru.matcher.Matcher;
 import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.dispatcher.handler.FlowHandler;
 import org.iterx.miru.dispatcher.handler.Handler;
 import org.iterx.util.ArrayUtils;
 
-public class OrFlowHandler<S extends RequestContext, T extends ResponseContext> implements FlowHandler<S, T> {
+public class OrFlowHandler<S extends RequestContext, T extends ResponseContext>
+    implements FlowHandler<S, T>, ApplicationContextAware<S, T> {
 
     private Handler<S, T>[] handlers = (Handler<S, T>[]) new Object[0];
+    private ProcessingContextFactory<S, T> processingContextFactory = ProcessingContextFactory.getProcessingContextFactory();
 
+    public void setApplicationContext(ApplicationContext<? extends S, ? extends T> applicationContext) {
+
+        processingContextFactory = (ProcessingContextFactory<S, T>) applicationContext.getProcessingContextFactory();
+    }
 
     public void addHandler(Handler<? extends S, ? extends T> handler) {
 
@@ -90,14 +99,22 @@ public class OrFlowHandler<S extends RequestContext, T extends ResponseContext> 
     }
 
 
-    public int execute(ProcessingContext<? extends S, ? extends T> processingContext) {
+    public Status execute(ProcessingContext<? extends S, ? extends T> processingContext) {
+        Matches matches;
 
-        for(Handler<S, T> handler : handlers) {            
+        matches = null;
+        for(Handler<S, T> handler : handlers) {
             if(!(handler instanceof Matcher) ||
-               ((Matcher<S, T>) handler).hasMatches(processingContext))
-                return handler.execute(processingContext);
+               ((Matcher<S, T>) handler).hasMatches(processingContext)) {
+                ProcessingContext<S, T> childProcessingContext;
+
+                childProcessingContext = processingContextFactory.getProcessingContext(processingContext.getRequestContext(),
+                                                                                       processingContext.getResponseContext());
+                childProcessingContext.setAttribute(ProcessingContext.MATCHES_ATTRIBUTE, matches);
+                return handler.execute(childProcessingContext);
+            }
         }
-        return Dispatcher.OK;
+        return Status.DECLINE;
     }
 
 }

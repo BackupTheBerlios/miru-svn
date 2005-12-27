@@ -27,7 +27,7 @@ import org.iterx.miru.context.factory.ProcessingContextFactory;
 
 public interface ApplicationContext<S extends RequestContext, T extends ResponseContext> extends BeanProvider {
 
-    public ApplicationContext getParent();
+    public ApplicationContext<S, T> getParent();
 
     public ResourceFactory getResourceFactory();
 

@@ -26,7 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.iterx.miru.dispatcher.adapter.HandlerAdapter;
-import org.iterx.miru.dispatcher.Dispatcher;
+import org.iterx.miru.dispatcher.Status;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
@@ -42,7 +42,7 @@ public class PipelineChainHandlerAdapter<S extends RequestContext, T extends Res
         return (handler instanceof PipelineChain);
     }
 
-    public int execute(ProcessingContext<? extends S, ? extends T> processingContext, Object handler) {
+    public Status execute(ProcessingContext<? extends S, ? extends T> processingContext, Object handler) {
 
         try {
             if(handler instanceof Poolable) {
@@ -57,12 +57,12 @@ public class PipelineChainHandlerAdapter<S extends RequestContext, T extends Res
 
             }
             else ((PipelineChain<S, T>) handler).execute(processingContext);
-            return Dispatcher.OK;
+            return Status.OK;
         }
         catch(Exception e) {
             LOGGER.warn("PipelineChain [" + handler + "] failure.", e);
         }
-        return Dispatcher.ERROR;
+        return Status.ERROR;
     }
 
 }
