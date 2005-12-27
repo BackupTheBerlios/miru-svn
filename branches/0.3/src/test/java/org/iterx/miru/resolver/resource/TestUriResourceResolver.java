@@ -42,7 +42,7 @@ public class TestUriResourceResolver extends TestCase {
         String absolute;
 
         loader = (TestUriResourceResolver.class).getClassLoader();
-        absolute = (loader.getSystemResource(PATH)).toString();
+        absolute = (loader.getResource(PATH)).toString();
         absoluteUri = new URI(absolute);
         relativeUri = new URI(PATH);
         baseUri = new URI(absolute.substring

@@ -29,9 +29,6 @@ import java.nio.charset.Charset;
 
 import junit.framework.TestCase;
 
-import org.iterx.miru.context.http.HttpResponseContext;
-import org.iterx.miru.context.http.HttpResponseContextImpl;
-
 public class TestHttpResponseContextImpl extends TestCase {
 
     private static final String ENCODING = System.getProperty("file.encoding");

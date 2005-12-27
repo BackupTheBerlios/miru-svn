@@ -45,7 +45,7 @@ public class TestResourceFactoryImpl extends TestCase {
     ClassLoader loader;
 
     loader = (TestResourceFactoryImpl.class).getClassLoader();
-    resourceUri = new URI((loader.getSystemResource(URI)).toString());
+    resourceUri = new URI((loader.getResource(URI)).toString());
     bogusUri = new URI("file:///.bogus");
 
     resourceFactory = new ResourceFactoryImpl();

@@ -29,13 +29,14 @@ import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.MockProcessingContext;
 import org.iterx.miru.context.http.MockHttpRequestContext;
 import org.iterx.miru.context.http.MockHttpResponseContext;
-import org.iterx.miru.resolver.http.HttpLocaleContextResolver;
+import org.iterx.miru.context.http.HttpRequestContext;
+import org.iterx.miru.context.http.HttpResponseContext;
 
 public class TestHttpLocaleContextResolver extends TestCase {
 
     private static final String ACCEPT_LANGUAGE  = "Accept-Language";
 
-    private ProcessingContext processingContext;
+    private ProcessingContext<HttpRequestContext, HttpResponseContext> processingContext;
 
     private static Object[][] LOCALES = {
         { "en", Locale.ENGLISH },
@@ -56,7 +57,7 @@ public class TestHttpLocaleContextResolver extends TestCase {
 
     protected void setUp() {
 
-        processingContext = new MockProcessingContext
+        processingContext = new MockProcessingContext<HttpRequestContext, HttpResponseContext>
             (MockHttpRequestContext.newInstance("/"),
              MockHttpResponseContext.newInstance());
 
@@ -68,19 +69,19 @@ public class TestHttpLocaleContextResolver extends TestCase {
     }
 
     public void testConstructors() {
-        HttpLocaleContextResolver resolver;
+        HttpLocaleContextResolver<HttpRequestContext, HttpResponseContext> resolver;
 
-        resolver = new HttpLocaleContextResolver();
+        resolver = new HttpLocaleContextResolver<HttpRequestContext, HttpResponseContext>();
         assertNotNull(resolver);
     }
 
 
     public void testDefaultLocaleAccessors() {
-        HttpLocaleContextResolver resolver;
+        HttpLocaleContextResolver<HttpRequestContext, HttpResponseContext> resolver;
         Locale locale;
 
 
-        resolver = new HttpLocaleContextResolver();
+        resolver = new HttpLocaleContextResolver<HttpRequestContext, HttpResponseContext>();
 
         assertEquals(locale = Locale.getDefault(), resolver.getDefaultLocale());
         assertEquals(locale, resolver.resolve(processingContext));
@@ -91,20 +92,20 @@ public class TestHttpLocaleContextResolver extends TestCase {
     }
 
     public void testResolve() {
+        HttpLocaleContextResolver<HttpRequestContext, HttpResponseContext> resolver;
         MockHttpRequestContext request;
-        HttpLocaleContextResolver resolver;
         Locale locale;
 
         request = (MockHttpRequestContext) processingContext.getRequestContext();
-        resolver = new HttpLocaleContextResolver();
+        resolver = new HttpLocaleContextResolver<HttpRequestContext, HttpResponseContext>();
 
-        locale = (Locale) resolver.resolve(processingContext);
+        locale = resolver.resolve(processingContext);
         assertEquals(Locale.getDefault(), locale);
 
         for(int i = 0; i < LOCALES.length; i++) {
             request.setHeader(ACCEPT_LANGUAGE,
                               (String) LOCALES[i][0]);
-            locale = (Locale) resolver.resolve(processingContext);
+            locale = resolver.resolve(processingContext);
             assertEquals(LOCALES[i][1], locale);
         }
     }

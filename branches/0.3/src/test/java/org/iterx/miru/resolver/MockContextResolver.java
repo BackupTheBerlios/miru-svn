@@ -23,9 +23,11 @@
 package org.iterx.miru.resolver;
 
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
 
-public class MockContextResolver implements ContextResolver {
+public class MockContextResolver<S extends RequestContext, T extends ResponseContext> implements ContextResolver<Object, S, T> {
 
     private Object resolved;
 
@@ -45,7 +47,7 @@ public class MockContextResolver implements ContextResolver {
     }
 
 
-    public Object resolve(ProcessingContext processingContext) {
+    public Object resolve(ProcessingContext<? extends S, ? extends T> processingContext) {
 
         return resolved;
     }

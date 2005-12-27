@@ -13,6 +13,8 @@ import org.iterx.miru.pipeline.generator.XmlGenerator;
 import org.iterx.miru.context.factory.ProcessingContextFactory;
 import org.iterx.miru.context.http.MockHttpRequestContext;
 import org.iterx.miru.context.http.MockHttpResponseContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
 public class TestXsltTransformer extends TestCase {
 
@@ -31,7 +33,7 @@ public class TestXsltTransformer extends TestCase {
 
 
 
-    private ProcessingContextFactory processingContextFactory;
+    private ProcessingContextFactory<RequestContext, ResponseContext> processingContextFactory;
     private ResourceFactory resourceFactory;
 
     protected void setUp() {
@@ -54,16 +56,16 @@ public class TestXsltTransformer extends TestCase {
 
 
     public void testTransformer() throws IOException {
-        PipelineChainImpl pipelineChain;
-        MockHttpResponseContext response;
-        XsltTransformer transformer;
+        PipelineChainImpl<RequestContext, ResponseContext> pipelineChain;
+        XsltTransformer<RequestContext, ResponseContext> transformer;
+        MockHttpResponseContext response;        
         XmlSerializer serializer;
 
-        pipelineChain = new PipelineChainImpl(new XmlGenerator(),
-                                              serializer = new XmlSerializer());
+        pipelineChain = new PipelineChainImpl<RequestContext, ResponseContext>(new XmlGenerator(),
+                                                                               serializer = new XmlSerializer());
         serializer.setOmitXMLDeclaration(true);
 
-        pipelineChain.addTransformer(transformer = new XsltTransformer());
+        pipelineChain.addTransformer(transformer = new XsltTransformer<RequestContext, ResponseContext>());
         transformer.setUri("template.xsl");
         transformer.setResourceFactory(resourceFactory);
 

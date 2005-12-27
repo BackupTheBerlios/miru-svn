@@ -21,7 +21,6 @@
 package org.iterx.miru.dispatcher;
 
 import junit.framework.TestCase;
-import org.iterx.miru.context.factory.ProcessingContextFactory;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.dispatcher.handler.factory.HandlerChainFactoryImpl;
@@ -29,21 +28,18 @@ import org.iterx.miru.dispatcher.handler.HandlerChainMap;
 
 public class TestDispatcher extends TestCase {
 
-    private ProcessingContextFactory<RequestContext, ResponseContext> processingContextFactory;
     private HandlerChainMap<RequestContext, ResponseContext> handlerChainMap;
 
     protected void setUp() {
-        HandlerChainFactoryImpl handlerChainFactory;
+        HandlerChainFactoryImpl<RequestContext, ResponseContext> handlerChainFactory;
 
-        handlerChainFactory = new HandlerChainFactoryImpl();
+        handlerChainFactory = new HandlerChainFactoryImpl<RequestContext, ResponseContext>();
 
         handlerChainMap = handlerChainFactory.getHandlerChains();
-        processingContextFactory = ProcessingContextFactory.getProcessingContextFactory();
     }
 
     protected void tearDown() {
 
-        processingContextFactory = null;
         handlerChainMap = null;
     }
 

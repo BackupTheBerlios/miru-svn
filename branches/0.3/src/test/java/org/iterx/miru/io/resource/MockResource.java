@@ -36,12 +36,10 @@ public class MockResource implements ReadableResource {
     private String type, encoding;
     private InputStream in;
     private Reader reader;
-    private byte[] data;
     private URI uri;
 
-    {
-        data = new byte[0];
-    }
+    private byte[] data = new byte[0];
+
 
     public MockResource() {}
 

@@ -1,9 +1,7 @@
 package org.iterx.util;
 
-import java.util.Properties;
 
 import junit.framework.TestCase;
-
 
 public class TestSystemUtils extends TestCase {
 

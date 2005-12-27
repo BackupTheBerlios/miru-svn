@@ -34,7 +34,7 @@ import org.iterx.miru.io.resource.MockResource;
 import org.iterx.miru.bean.BeanException;
 import org.xml.sax.SAXException;
 
-public class TestXmlBeanParser extends TestCase  {
+public class TestXmlBeanParser extends TestCase {
 
     private static final String NS = "http://iterx.org/miru/1.0/beans";
 
@@ -42,7 +42,7 @@ public class TestXmlBeanParser extends TestCase  {
         //singletons
         {
             "<beans xmlns=\"" + NS + "\">" +
-            "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\" singleton=\"true\"/>" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\" singleton=\"true\"/>" +
             "</beans>",
             "a",
             MyObject.class,
@@ -51,7 +51,7 @@ public class TestXmlBeanParser extends TestCase  {
         },
         {
             "<beans xmlns=\"" + NS + "\">" +
-            "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\" singleton=\"false\"/>" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\" singleton=\"false\"/>" +
             "</beans>",
             "a",
             MyObject.class,
@@ -61,7 +61,7 @@ public class TestXmlBeanParser extends TestCase  {
         //propertyValue setters
         {
             "<beans xmlns=\"" + NS + "\">" +
-            "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
             "<string value=\"value\"/>" +
             "</bean>" +
             "</beans>",
@@ -72,7 +72,7 @@ public class TestXmlBeanParser extends TestCase  {
         },
         {
             "<beans xmlns=\"" + NS + "\">" +
-            "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
             "<string>value</string>" +
             "</bean>" +
             "</beans>",
@@ -83,7 +83,7 @@ public class TestXmlBeanParser extends TestCase  {
         },
         {
             "<beans xmlns=\"" + NS + "\">" +
-            "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
             "<object value=\"value\"/>" +
             "</bean>" +
             "</beans>",
@@ -95,7 +95,7 @@ public class TestXmlBeanParser extends TestCase  {
         //property editors
         {
             "<beans xmlns=\"" + NS + "\">" +
-            "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
             "<uri value=\"" + NS + "\"/>" +
             "</bean>" +
             "</beans>",
@@ -108,10 +108,10 @@ public class TestXmlBeanParser extends TestCase  {
         //bean references
         {
             "<beans xmlns=\"" + NS + "\">" +
-            "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
             "<object ref=\"b\"/>" +
             "</bean>" +
-            "<bean id=\"b\" class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean id=\"b\" class=\"" + (MyObject.class).getName() + "\">" +
             "<string value=\"value\"/>" +
             "</bean>" +
             "</beans>",
@@ -122,10 +122,10 @@ public class TestXmlBeanParser extends TestCase  {
         },
         {
             "<beans xmlns=\"" + NS + "\">" +
-            "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
             "<object ref=\"b\"/>" +
             "</bean>" +
-            "<bean id=\"b\" class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean id=\"b\" class=\"" + (MyObject.class).getName() + "\">" +
             "<string value=\"b\"/>" +
             "</bean>" +
             "</beans>",
@@ -137,9 +137,9 @@ public class TestXmlBeanParser extends TestCase  {
         //anonymous beans
         {
             "<beans xmlns=\"" + NS + "\">" +
-            "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
             "<object>" +
-            "<bean class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean class=\"" + (MyObject.class).getName() + "\">" +
             "<string value=\"anonymous\"/>" +
             "</bean>" +
             "</object>" +
@@ -152,9 +152,9 @@ public class TestXmlBeanParser extends TestCase  {
         },
         {
             "<beans xmlns=\"" + NS + "\">" +
-            "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
             "<object>" +
-            "<bean class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean class=\"" + (MyObject.class).getName() + "\">" +
             "<string value=\"value\"/>" +
             "</bean>" +
             "</object>" +
@@ -167,11 +167,11 @@ public class TestXmlBeanParser extends TestCase  {
         },
         {
             "<beans xmlns=\"" + NS + "\">" +
-            "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
             "<object>" +
-            "<bean class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean class=\"" + (MyObject.class).getName() + "\">" +
             "<object>" +
-            "<bean class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean class=\"" + (MyObject.class).getName() + "\">" +
             "<string value=\"value\"/>" +
             "</bean>" +
             "</object>" +
@@ -186,190 +186,190 @@ public class TestXmlBeanParser extends TestCase  {
         },
         //lists & maps
         {
-          "<beans xmlns=\"" + NS + "\">" +
-          "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
-          "<object ref=\"list\"/>" +
-          "</bean>" +
-          "<bean id=\"list\" class=\"" + (MyList.class).getName() + "\">" +
-          "<addAll><list>" +
-          "<entry value=\"a\"/>" +
-          "<entry value=\"b\"/>" +
-          "<entry value=\"c\"/>" +
-          "</list></addAll>" +
-          "</bean>" +
-          "</beans>",
-          "a",
-          MyObject.class,
-          Boolean.TRUE,
-          new MyList(new String[] { "a", "b", "c" })
+            "<beans xmlns=\"" + NS + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
+            "<object ref=\"list\"/>" +
+            "</bean>" +
+            "<bean id=\"list\" class=\"" + (MyList.class).getName() + "\">" +
+            "<addAll><list>" +
+            "<entry value=\"a\"/>" +
+            "<entry value=\"b\"/>" +
+            "<entry value=\"c\"/>" +
+            "</list></addAll>" +
+            "</bean>" +
+            "</beans>",
+            "a",
+            MyObject.class,
+            Boolean.TRUE,
+            new MyList(new String[]{"a", "b", "c"})
         },
         {
-          "<beans xmlns=\"" + NS + "\">" +
-          "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
-          "<object ref=\"list\"/>" +
-          "</bean>" +
-          "<bean id=\"list\" class=\"" + (MyList.class).getName() + "\">" +
-          "<addAll><list>" +
-          "<entry>a</entry>" +
-          "<entry>b</entry>" +
-          "<entry>c</entry>" +
-          "</list></addAll>" +
-          "</bean>" +
-          "</beans>",
-          "a",
-          MyObject.class,
-          Boolean.TRUE,
-          new MyList(new String[] { "a", "b", "c" })
+            "<beans xmlns=\"" + NS + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
+            "<object ref=\"list\"/>" +
+            "</bean>" +
+            "<bean id=\"list\" class=\"" + (MyList.class).getName() + "\">" +
+            "<addAll><list>" +
+            "<entry>a</entry>" +
+            "<entry>b</entry>" +
+            "<entry>c</entry>" +
+            "</list></addAll>" +
+            "</bean>" +
+            "</beans>",
+            "a",
+            MyObject.class,
+            Boolean.TRUE,
+            new MyList(new String[]{"a", "b", "c"})
         },
         {
-          "<beans xmlns=\"" + NS + "\">" +
-          "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
-          "<object ref=\"list\"/>" +
-          "</bean>" +
-          "<bean id=\"list\" class=\"" + (MyList.class).getName() + "\">" +
-          "<addAll><list>" +
-          "<entry>a</entry>" +
-          "<entry ref=\"b\"></entry>" +
-          "<entry>" +
-          "<bean class=\"" + (MyObject.class).getName()  + "\">" +
-          "<string value=\"c\"/>" +
-          "</bean>" +
-          "</entry>" +
-          "</list></addAll>" +
-          "</bean>" +
-          "<bean id=\"b\" class=\"" + (MyObject.class).getName()  + "\">" +
-          "<string value=\"b\"/>" +
-          "</bean>" +
-          "</beans>",
-          "a",
-          MyObject.class,
-          Boolean.TRUE,
-          new MyList(new Object[] { "a", new MyObject("b"), new MyObject("c") })
+            "<beans xmlns=\"" + NS + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
+            "<object ref=\"list\"/>" +
+            "</bean>" +
+            "<bean id=\"list\" class=\"" + (MyList.class).getName() + "\">" +
+            "<addAll><list>" +
+            "<entry>a</entry>" +
+            "<entry ref=\"b\"></entry>" +
+            "<entry>" +
+            "<bean class=\"" + (MyObject.class).getName() + "\">" +
+            "<string value=\"c\"/>" +
+            "</bean>" +
+            "</entry>" +
+            "</list></addAll>" +
+            "</bean>" +
+            "<bean id=\"b\" class=\"" + (MyObject.class).getName() + "\">" +
+            "<string value=\"b\"/>" +
+            "</bean>" +
+            "</beans>",
+            "a",
+            MyObject.class,
+            Boolean.TRUE,
+            new MyList(new Object[]{"a", new MyObject("b"), new MyObject("c")})
         },
         {
-          "<beans xmlns=\"" + NS + "\">" +
-          "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
-          "<object ref=\"list\"/>" +
-          "</bean>" +
-          "<bean id=\"list\" class=\"" + (MyList.class).getName() + "\">" +
-          "<addAll><list>" +
-          "<entry>" +
-          "<bean class=\"" + (MyList.class).getName()  + "\">" +
-          "<addAll><list>" +
-          "<entry>a</entry>" +
-          "</list></addAll>" +
-          "</bean>" +
-          "</entry>" +
-          "</list></addAll>" +
-          "</bean>" +
-          "</beans>",
-          "a",
-          MyObject.class,
-          Boolean.TRUE,
-          new MyList(new Object[] { new MyList(new Object[] { "a" }) })
+            "<beans xmlns=\"" + NS + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
+            "<object ref=\"list\"/>" +
+            "</bean>" +
+            "<bean id=\"list\" class=\"" + (MyList.class).getName() + "\">" +
+            "<addAll><list>" +
+            "<entry>" +
+            "<bean class=\"" + (MyList.class).getName() + "\">" +
+            "<addAll><list>" +
+            "<entry>a</entry>" +
+            "</list></addAll>" +
+            "</bean>" +
+            "</entry>" +
+            "</list></addAll>" +
+            "</bean>" +
+            "</beans>",
+            "a",
+            MyObject.class,
+            Boolean.TRUE,
+            new MyList(new Object[]{new MyList(new Object[]{"a"})})
         },
         {
-          "<beans xmlns=\"" + NS + "\">" +
-          "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
-          "<object ref=\"map\"/>" +
-          "</bean>" +
-          "<bean id=\"map\" class=\"" + (MyMap.class).getName() + "\">" +
-          "<putAll><map>" +
-          "<entry key=\"1\" value=\"a\"/>" +
-          "<entry key=\"2\" value=\"b\"/>" +
-          "<entry key=\"3\" value=\"c\"/>" +
-          "</map></putAll>" +
-          "</bean>" +
-          "</beans>",
-          "a",
-          MyObject.class,
-          Boolean.TRUE,
-          new MyMap(new String[] { "1", "a", "2", "b", "3", "c" })
+            "<beans xmlns=\"" + NS + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
+            "<object ref=\"map\"/>" +
+            "</bean>" +
+            "<bean id=\"map\" class=\"" + (MyMap.class).getName() + "\">" +
+            "<putAll><map>" +
+            "<entry key=\"1\" value=\"a\"/>" +
+            "<entry key=\"2\" value=\"b\"/>" +
+            "<entry key=\"3\" value=\"c\"/>" +
+            "</map></putAll>" +
+            "</bean>" +
+            "</beans>",
+            "a",
+            MyObject.class,
+            Boolean.TRUE,
+            new MyMap(new String[]{"1", "a", "2", "b", "3", "c"})
         },
         {
-          "<beans xmlns=\"" + NS + "\">" +
-          "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
-          "<object ref=\"map\"/>" +
-          "</bean>" +
-          "<bean id=\"map\" class=\"" + (MyMap.class).getName() + "\">" +
-          "<putAll><map>" +
-          "<entry key=\"1\">a</entry>" +
-          "<entry key=\"2\">b</entry>" +
-          "<entry key=\"3\">c</entry>" +
-          "</map></putAll>" +
-          "</bean>" +
-          "</beans>",
-          "a",
-          MyObject.class,
-          Boolean.TRUE,
-          new MyMap(new String[] { "1", "a", "2", "b", "3", "c" })
+            "<beans xmlns=\"" + NS + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
+            "<object ref=\"map\"/>" +
+            "</bean>" +
+            "<bean id=\"map\" class=\"" + (MyMap.class).getName() + "\">" +
+            "<putAll><map>" +
+            "<entry key=\"1\">a</entry>" +
+            "<entry key=\"2\">b</entry>" +
+            "<entry key=\"3\">c</entry>" +
+            "</map></putAll>" +
+            "</bean>" +
+            "</beans>",
+            "a",
+            MyObject.class,
+            Boolean.TRUE,
+            new MyMap(new String[]{"1", "a", "2", "b", "3", "c"})
         },
         {
-          "<beans xmlns=\"" + NS + "\">" +
-          "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
-          "<object ref=\"map\"/>" +
-          "</bean>" +
-          "<bean id=\"map\" class=\"" + (MyMap.class).getName() + "\">" +
-          "<putAll><map>" +
-          "<entry key=\"1\">a</entry>" +
-          "<entry key=\"2\" ref=\"b\"/>" +
-          "<entry key=\"3\">" +
-          "<bean class=\"" + (MyObject.class).getName()  + "\">" +
-          "<string value=\"c\"/>" +
-          "</bean>" +
-          "</entry>" +
-          "</map></putAll>" +
-          "</bean>" +
-          "<bean id=\"b\" class=\"" + (MyObject.class).getName()  + "\">" +
-          "<string value=\"b\"/>" +
-          "</bean>" +
-          "</beans>",
-          "a",
-          MyObject.class,
-          Boolean.TRUE,
-          new MyMap(new Object[] { "1", "a",
+            "<beans xmlns=\"" + NS + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
+            "<object ref=\"map\"/>" +
+            "</bean>" +
+            "<bean id=\"map\" class=\"" + (MyMap.class).getName() + "\">" +
+            "<putAll><map>" +
+            "<entry key=\"1\">a</entry>" +
+            "<entry key=\"2\" ref=\"b\"/>" +
+            "<entry key=\"3\">" +
+            "<bean class=\"" + (MyObject.class).getName() + "\">" +
+            "<string value=\"c\"/>" +
+            "</bean>" +
+            "</entry>" +
+            "</map></putAll>" +
+            "</bean>" +
+            "<bean id=\"b\" class=\"" + (MyObject.class).getName() + "\">" +
+            "<string value=\"b\"/>" +
+            "</bean>" +
+            "</beans>",
+            "a",
+            MyObject.class,
+            Boolean.TRUE,
+            new MyMap(new Object[]{"1", "a",
                                    "2", new MyObject("b"),
                                    "3", new MyObject("c")})
         },
 
         {
-          "<beans xmlns=\"" + NS + "\">" +
-          "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
-          "<object ref=\"map\"/>" +
-          "</bean>" +
-          "<bean id=\"map\" class=\"" + (MyMap.class).getName() + "\">" +
-          "<putAll><map>" +
-          "<entry key=\"1\">" +
-          "<bean class=\"" + (MyMap.class).getName() + "\">" +
-          "<putAll><map>" +
-          "<entry key=\"1\" value=\"a\"/>" +
-          "</map></putAll>" +
-          "</bean>" +
-          "</entry>" +
-          "</map></putAll>" +
-          "</bean>" +
-          "</beans>",
-          "a",
-          MyObject.class,
-          Boolean.TRUE,
-          new MyMap(new Object[] { "1", new MyMap(new Object[] { "1", "a" })  })
+            "<beans xmlns=\"" + NS + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
+            "<object ref=\"map\"/>" +
+            "</bean>" +
+            "<bean id=\"map\" class=\"" + (MyMap.class).getName() + "\">" +
+            "<putAll><map>" +
+            "<entry key=\"1\">" +
+            "<bean class=\"" + (MyMap.class).getName() + "\">" +
+            "<putAll><map>" +
+            "<entry key=\"1\" value=\"a\"/>" +
+            "</map></putAll>" +
+            "</bean>" +
+            "</entry>" +
+            "</map></putAll>" +
+            "</bean>" +
+            "</beans>",
+            "a",
+            MyObject.class,
+            Boolean.TRUE,
+            new MyMap(new Object[]{"1", new MyMap(new Object[]{"1", "a"})})
         },
         {
-          "<beans xmlns=\"" + NS + "\">" +
-          "<bean id=\"a\" class=\"" + (MyObject.class).getName()  + "\">" +
-          "<array>" +
-          "<list>" +
-          "<entry value=\"a\"/>" +
-          "<entry value=\"b\"/>" +
-          "<entry value=\"c\"/>" +
-          "</list>" +
-          "</array>" +
-          "</bean>" +
-          "</beans>",
-          "a",
-          MyObject.class,
-          Boolean.TRUE,
-          new MyList(new String[] { "a", "b", "c" })
+            "<beans xmlns=\"" + NS + "\">" +
+            "<bean id=\"a\" class=\"" + (MyObject.class).getName() + "\">" +
+            "<array>" +
+            "<list>" +
+            "<entry value=\"a\"/>" +
+            "<entry value=\"b\"/>" +
+            "<entry value=\"c\"/>" +
+            "</list>" +
+            "</array>" +
+            "</bean>" +
+            "</beans>",
+            "a",
+            MyObject.class,
+            Boolean.TRUE,
+            new MyList(new String[]{"a", "b", "c"})
         },
 
     };
@@ -396,7 +396,7 @@ public class TestXmlBeanParser extends TestCase  {
         },
         {
             "<beans xmlns=\"" + NS + "\">" +
-            "<bean id=\"bean\" class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean id=\"bean\" class=\"" + (MyObject.class).getName() + "\">" +
             "<bogus value=\"value\"/>" +
             "</bean>" +
             "</beans>",
@@ -404,7 +404,7 @@ public class TestXmlBeanParser extends TestCase  {
         },
         {
             "<beans xmlns=\"" + NS + "\">" +
-            "<bean id=\"bean\" class=\"" + (MyObject.class).getName()  + "\">" +
+            "<bean id=\"bean\" class=\"" + (MyObject.class).getName() + "\">" +
             "<string value=\"value\">value</string>" +
             "</bean>" +
             "</beans>",
@@ -412,7 +412,7 @@ public class TestXmlBeanParser extends TestCase  {
         },
         {
             "<beans xmlns=\"" + NS + "\">" +
-            "<my-bean id=\"bean\" class=\"" + (MyObject.class).getName()  + "\">" +
+            "<my-bean id=\"bean\" class=\"" + (MyObject.class).getName() + "\">" +
             "<string value=\"value\">value</string>" +
             "</my-bean>" +
             "</beans>",
@@ -420,8 +420,8 @@ public class TestXmlBeanParser extends TestCase  {
         },
         {
             "<beans xmlns=\"" + NS + "\">" +
-            "<bean id=\"bean\" class=\"" + (MyObject.class).getName()  + "\">" +
-            "<bean class=\"" + (MyObject.class).getName()  + "\"/>" +
+            "<bean id=\"bean\" class=\"" + (MyObject.class).getName() + "\">" +
+            "<bean class=\"" + (MyObject.class).getName() + "\"/>" +
             "</bean>" +
             "</beans>",
             BeanException.class
@@ -433,18 +433,18 @@ public class TestXmlBeanParser extends TestCase  {
     private Object[] data;
 
     public static Test suite() {
-          TestSuite suite;
+        TestSuite suite;
 
-          suite = new TestSuite();
+        suite = new TestSuite();
 
-          for(int i = 0; i < BEANS.length; i++) {
-              suite.addTest(new TestXmlBeanParser("testParse", BEANS[i]));
-          }
-          for(int i = 0; i < BAD_BEANS.length; i++) {
-              suite.addTest(new TestXmlBeanParser("testFailure", BAD_BEANS[i]));
-          }
-          return suite;
-      }
+        for(int i = 0; i < BEANS.length; i++) {
+            suite.addTest(new TestXmlBeanParser("testParse", BEANS[i]));
+        }
+        for(int i = 0; i < BAD_BEANS.length; i++) {
+            suite.addTest(new TestXmlBeanParser("testFailure", BAD_BEANS[i]));
+        }
+        return suite;
+    }
 
     private TestXmlBeanParser(String name, Object[] data) {
 
@@ -454,9 +454,9 @@ public class TestXmlBeanParser extends TestCase  {
 
     protected void setUp() {
 
-         beanFactory = new XmlBeanFactory();
-         beanParser = new XmlBeanParser(beanFactory);
-     }
+        beanFactory = new XmlBeanFactory();
+        beanParser = new XmlBeanParser(beanFactory);
+    }
 
 
     protected void tearDown() {
@@ -490,7 +490,7 @@ public class TestXmlBeanParser extends TestCase  {
         }
         assertEquals(data[4], ((MyObject) bean).getObject());
 
-     }
+    }
 
     public void testFailure() throws IOException {
         MockResource resource;
@@ -551,7 +551,7 @@ public class TestXmlBeanParser extends TestCase  {
 
         public int hashCode() {
 
-            return (object != null)? object.hashCode() : 0;
+            return (object != null) ? object.hashCode() : 0;
         }
 
         public boolean equals(Object object) {

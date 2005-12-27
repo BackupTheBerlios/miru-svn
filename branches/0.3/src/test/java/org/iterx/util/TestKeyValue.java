@@ -26,52 +26,52 @@ import junit.framework.TestCase;
 public class TestKeyValue extends TestCase {
 
     public void testConstructors() {
-        KeyValue keyValue;
+        KeyValue<String, Object> keyValue;
         Object value;
 
-        assertNotNull(keyValue = new KeyValue("name", value = new Object()));
+        assertNotNull(keyValue = new KeyValue<String, Object>("name", value = new Object()));
         assertEquals("name", keyValue.getKey());
         assertEquals(value, keyValue.getValue());
 
-        assertNotNull(keyValue = new KeyValue("name", null));
+        assertNotNull(keyValue = new KeyValue<String, Object>("name", null));
         assertEquals("name", keyValue.getKey());
         assertNull(keyValue.getValue());
 
         try {
-            new KeyValue(null, new Object());
+            new KeyValue<String, Object>(null, new Object());
             fail("name == value");
         }
         catch(IllegalArgumentException e) {}
     }
 
     public void testHashCode() {
-        KeyValue keyValue;
+        KeyValue<String, String> keyValue;
 
-        assertTrue((keyValue = new KeyValue("name", "value")).hashCode() ==
+        assertTrue((keyValue = new KeyValue<String, String>("name", "value")).hashCode() ==
                      keyValue.hashCode());
-        assertTrue((new KeyValue("name", "value")).hashCode() ==
-                   (new KeyValue("name", "value")).hashCode());
+        assertTrue((new KeyValue<String, String>("name", "value")).hashCode() ==
+                   (new KeyValue<String, String>("name", "value")).hashCode());
         
-        assertFalse((new KeyValue("a", "value")).hashCode() ==
-                    (new KeyValue("b", "value")).hashCode());
-        assertFalse((new KeyValue("name", "a")).hashCode() ==
-                    (new KeyValue("name", "b")).hashCode());
-        assertFalse((new KeyValue("name", null)).hashCode() ==
-                    (new KeyValue("name", "value")).hashCode());
+        assertFalse((new KeyValue<String, String>("a", "value")).hashCode() ==
+                    (new KeyValue<String, String>("b", "value")).hashCode());
+        assertFalse((new KeyValue<String, String>("name", "a")).hashCode() ==
+                    (new KeyValue<String, String>("name", "b")).hashCode());
+        assertFalse((new KeyValue<String, String>("name", null)).hashCode() ==
+                    (new KeyValue<String, String>("name", "value")).hashCode());
     }
 
 
     public void testEquals() {
-        KeyValue keyValue;
+        KeyValue<String, String> keyValue;
 
-        assertTrue((keyValue = new KeyValue("name", "value")).equals(keyValue));
-        assertTrue((new KeyValue("name", "value")).equals(new KeyValue("name", "value")));
-        assertTrue((new KeyValue("name", null)).equals(new KeyValue("name", null)));
+        assertTrue((keyValue = new KeyValue<String, String>("name", "value")).equals(keyValue));
+        assertTrue((new KeyValue<String, String>("name", "value")).equals(new KeyValue<String, String>("name", "value")));
+        assertTrue((new KeyValue<String, String>("name", null)).equals(new KeyValue<String, String>("name", null)));
 
-        assertFalse((new KeyValue("a", "value")).equals(new KeyValue("b", "value")));
-        assertFalse((new KeyValue("name", "a")).equals(new KeyValue("name", "b")));
-        assertFalse((new KeyValue("name", "value")).equals(new KeyValue("name", null)));
-        assertFalse((new KeyValue("name", null)).equals(new KeyValue("name", "value")));
+        assertFalse((new KeyValue<String, String>("a", "value")).equals(new KeyValue<String, String>("b", "value")));
+        assertFalse((new KeyValue<String, String>("name", "a")).equals(new KeyValue<String, String>("name", "b")));
+        assertFalse((new KeyValue<String, String>("name", "value")).equals(new KeyValue<String, String>("name", null)));
+        assertFalse((new KeyValue<String, String>("name", null)).equals(new KeyValue<String, String>("name", "value")));
     }
 
 }

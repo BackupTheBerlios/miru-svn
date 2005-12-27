@@ -31,6 +31,8 @@ import org.iterx.miru.io.factory.ResourceFactory;
 import org.iterx.miru.io.factory.ResourceFactoryImpl;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.MockProcessingContext;
+import org.iterx.miru.context.stream.StreamRequestContext;
+import org.iterx.miru.context.stream.StreamResponseContext;
 import org.iterx.miru.context.http.MockHttpRequestContext;
 import org.iterx.miru.context.http.MockHttpResponseContext;
 import org.iterx.miru.resolver.MockResourceResolver;
@@ -47,16 +49,16 @@ public class TestResourceContentHandler extends TestCase {
     }
 
     public void testConstructors() {
-        ResourceContentHandler contentHandler;
+        ResourceContentHandler<StreamRequestContext, StreamResponseContext> contentHandler;
 
-        assertNotNull(contentHandler = new ResourceContentHandler());
+        assertNotNull(contentHandler = new ResourceContentHandler<StreamRequestContext, StreamResponseContext>());
         assertNull(contentHandler.getResourceFactory());
     }
 
     public void testUriAccessors() {
-        ResourceContentHandler contentHandler;
+        ResourceContentHandler<StreamRequestContext, StreamResponseContext> contentHandler;
 
-        contentHandler = new ResourceContentHandler();
+        contentHandler = new ResourceContentHandler<StreamRequestContext, StreamResponseContext>();
         assertNull(contentHandler.getUri());
 
         contentHandler.setUri(PATH);
@@ -65,9 +67,9 @@ public class TestResourceContentHandler extends TestCase {
 
 
     public void testBaseAccessors() {
-        ResourceContentHandler contentHandler;
+        ResourceContentHandler<StreamRequestContext, StreamResponseContext> contentHandler;
 
-        contentHandler = new ResourceContentHandler();
+        contentHandler = new ResourceContentHandler<StreamRequestContext, StreamResponseContext>();
         assertNull(contentHandler.getBaseUri());
 
         contentHandler.setBaseUri(BASE);
@@ -78,12 +80,12 @@ public class TestResourceContentHandler extends TestCase {
     }
 
     public void testResourceFactoryAccessors() {
-        ResourceContentHandler contentHandler;
+        ResourceContentHandler<StreamRequestContext, StreamResponseContext> contentHandler;
         ResourceFactory resourceFactory;
 
         resourceFactory = ResourceFactory.getResourceFactory();
 
-        contentHandler = new ResourceContentHandler();
+        contentHandler = new ResourceContentHandler<StreamRequestContext, StreamResponseContext>();
         assertNull(contentHandler.getResourceFactory());
 
         contentHandler.setResourceFactory(resourceFactory);
@@ -91,7 +93,7 @@ public class TestResourceContentHandler extends TestCase {
 
         try {
             contentHandler.setResourceFactory(null);
-            fail("ResourceFactory is null.");
+            fail("ResourceFactory is null");
         }
         catch(Exception e){}
 
@@ -99,14 +101,14 @@ public class TestResourceContentHandler extends TestCase {
 
 
     public void testHandler() throws Exception {
-        ProcessingContext processingContext;
-        ResourceContentHandler contentHandler;
+        ProcessingContext<StreamRequestContext, StreamResponseContext> processingContext;
+        ResourceContentHandler<StreamRequestContext, StreamResponseContext> contentHandler;
         ResourceFactoryImpl resourceFactory;
         MockHttpResponseContext response;
         MockResourceResolver resolver;
         MockResource source;
 
-        processingContext = new MockProcessingContext
+        processingContext = new MockProcessingContext<StreamRequestContext, StreamResponseContext>
             (MockHttpRequestContext.newInstance("/"),
              response = MockHttpResponseContext.newInstance());
         resourceFactory = new ResourceFactoryImpl();
@@ -115,7 +117,7 @@ public class TestResourceContentHandler extends TestCase {
         resolver.setResource(source = new MockResource(URI.create(PATH)));
         resourceFactory.addResourceResolver(resolver);
 
-        contentHandler = new ResourceContentHandler();
+        contentHandler = new ResourceContentHandler<StreamRequestContext, StreamResponseContext>();
         contentHandler.setResourceFactory(resourceFactory);
 
         source.setData(DATA);

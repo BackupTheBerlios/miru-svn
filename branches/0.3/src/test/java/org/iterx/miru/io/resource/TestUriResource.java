@@ -29,7 +29,6 @@ import java.net.URISyntaxException;
 
 import junit.framework.TestCase;
 
-import org.iterx.miru.io.Resource;
 import org.iterx.miru.io.ReadableResource;
 
 
@@ -45,7 +44,7 @@ public class TestUriResource extends TestCase {
         ClassLoader loader;
 
         loader = (TestUriResource.class).getClassLoader();
-        resourceUri = new URI((loader.getSystemResource(CLASS_URI)).toString());
+        resourceUri = new URI((loader.getResource(CLASS_URI)).toString());
         resource = new UriResource(resourceUri);
         bogusUri = new URI("file:///.bogus");
         bogus = new UriResource(bogusUri);

@@ -55,7 +55,7 @@ public class TestXmlHandlerChainFactory extends TestCase {
         }
         catch(IllegalArgumentException e) {}
         catch(Exception e) {
-            fail("Invalid exception thrown " + e.getClass() + ".");
+            fail("Invalid exception thrown " + e.getClass());
         }
 
         try {
@@ -69,7 +69,7 @@ public class TestXmlHandlerChainFactory extends TestCase {
 
         try {
             factory.load("scheme://uri-does-not-exist");
-            fail("Failed to detected invalid uri.");
+            fail("Failed to detected invalid uri");
         }
         catch(IllegalArgumentException e) {}
         catch(Exception e) {
@@ -81,11 +81,11 @@ public class TestXmlHandlerChainFactory extends TestCase {
             resource = new MockResource();
             resource.setData("".getBytes());
             factory.load(resource);
-            fail("Failed to detect invalid stream.");
+            fail("Failed to detect invalid stream");
         }
         catch(IOException e) {}
         catch(Exception e) {
-            fail("Invalid exception thrown " + e.getClass() + ".");
+            fail("Invalid exception thrown " + e.getClass());
         }
 
 

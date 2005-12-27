@@ -33,9 +33,6 @@ import junit.extensions.RepeatedTest;
 import com.clarkware.junitperf.LoadTest;
 import com.clarkware.junitperf.TimedTest;
 
-import org.iterx.miru.io.StreamSource;
-import org.iterx.miru.io.StreamTarget;
-
 import org.iterx.miru.bean.factory.BeanFactoryImpl;
 
 import org.iterx.miru.context.ProcessingContext;
@@ -86,10 +83,10 @@ public class PerfTestDispatcher extends TestCase {
 
 
               handlerChainFactory = new HandlerChainFactoryImpl<RequestContext, ResponseContext>(new BeanFactoryImpl());
-              HandlerWrapper handlerWrapper = handlerChainFactory.assignHandlerWrapper
+              HandlerWrapper<RequestContext, ResponseContext> handlerWrapper = handlerChainFactory.assignHandlerWrapper
                   (handlerChainFactory.createHandlerChain());
               handlerWrapper.setHandler(new SimpleHandler());
-              handlerChainFactory.addHandlerChain((HandlerChain) handlerWrapper.getWrappedInstance());
+              handlerChainFactory.addHandlerChain((HandlerChain<RequestContext, ResponseContext>) handlerWrapper.getWrappedInstance());
               handlerChainFactory.recycleHandlerWrapper(handlerWrapper);
 
               dispatcher = new Dispatcher<RequestContext, ResponseContext>(handlerChainFactory.getHandlerChains());

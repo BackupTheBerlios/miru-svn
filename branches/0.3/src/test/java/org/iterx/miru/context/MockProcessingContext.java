@@ -24,8 +24,7 @@ package org.iterx.miru.context;
 
 public class MockProcessingContext<S extends RequestContext, T extends ResponseContext> extends ProcessingContextImpl<S, T> {
 
-    public MockProcessingContext(S request,
-                                 T response) {
+    public MockProcessingContext(S request, T response) {
         super(request, response);
     }
 

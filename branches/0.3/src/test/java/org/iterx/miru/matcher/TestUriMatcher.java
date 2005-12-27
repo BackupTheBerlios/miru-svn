@@ -103,8 +103,8 @@ public class TestUriMatcher extends TestCase {
 
 
         matcher = new UriMatcher<RequestContext, ResponseContext>(ID);
-        processingContext = new MockProcessingContext(MockHttpRequestContext.newInstance(URI),
-                                                      MockHttpResponseContext.newInstance());
+        processingContext = new MockProcessingContext<RequestContext, ResponseContext>(MockHttpRequestContext.newInstance(URI),
+                                                                                       MockHttpResponseContext.newInstance());
 
         for(Object[] test : TESTS) {
             Object[] values;

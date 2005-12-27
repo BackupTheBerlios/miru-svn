@@ -31,6 +31,8 @@ import com.clarkware.junitperf.LoadTest;
 import com.clarkware.junitperf.TimedTest;
 
 import org.iterx.miru.context.ProcessingContext;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.context.http.HttpRequestContextImpl;
 import org.iterx.miru.context.http.HttpResponseContextImpl;
 import org.iterx.miru.context.factory.ProcessingContextFactory;
@@ -56,8 +58,8 @@ public class PerfTestPipelineChainImpl extends TestCase {
 
     public static class PipelineChainImplTest extends TestCase {
 
-        private ProcessingContextFactory processingContextFactory;
-        private PipelineChain[] pipelines;
+        private ProcessingContextFactory<RequestContext, ResponseContext> processingContextFactory;
+        private PipelineChain<RequestContext, ResponseContext>[] pipelines;
         private int next, recycle;
         {
             Runtime runtime;
@@ -77,11 +79,12 @@ public class PerfTestPipelineChainImpl extends TestCase {
                                " bytes");
 
             memory = runtime.freeMemory();
-            pipelines = new PipelineChainImpl[CONCURRENCY];
+            pipelines = (PipelineChain<RequestContext, ResponseContext>[]) new PipelineChainImpl[CONCURRENCY];
             for(int i = CONCURRENCY; i-- > 0; ) {
-                PipelineChainImpl pipelineChain;
+                PipelineChainImpl<RequestContext, ResponseContext> pipelineChain;
                 XmlSerializer xmlSerializer;
-                pipelineChain = (new PipelineChainImpl
+
+                pipelineChain = (new PipelineChainImpl<RequestContext, ResponseContext>
                                  (new XmlGenerator(),
                                   xmlSerializer = new XmlSerializer()));
                 xmlSerializer.setOmitXMLDeclaration(true);
@@ -110,14 +113,14 @@ public class PerfTestPipelineChainImpl extends TestCase {
                      "</child></parent>");
         }
 
-        private PipelineChain getPipeline() {
+        private PipelineChain<RequestContext, ResponseContext> getPipeline() {
 
             synchronized(pipelines) {
                 return pipelines[(next = (++next % CONCURRENCY))];
             }
         }
 
-        private void recyclePipeline(PipelineChain pipelineChain) {
+        private void recyclePipeline(PipelineChain<RequestContext, ResponseContext> pipelineChain) {
 
             synchronized(pipelines) {
                 pipelines[(recycle = (++recycle % CONCURRENCY))] = pipelineChain;
@@ -125,10 +128,10 @@ public class PerfTestPipelineChainImpl extends TestCase {
         }
 
         public void testPipeline() throws Exception {
-            ProcessingContext processingContext;
+            ProcessingContext<RequestContext, ResponseContext> processingContext;
+            PipelineChain<RequestContext, ResponseContext> pipelineChain;
             StringReader reader;
-            StringWriter writer;
-            PipelineChain pipelineChain;
+            StringWriter writer;            
             String message;
 
             message = createMessage();

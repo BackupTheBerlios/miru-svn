@@ -24,7 +24,7 @@ package org.iterx.miru.support.spring.bean;
 import java.util.HashMap;
 
 import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl; 
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import junit.framework.TestCase;
@@ -33,119 +33,119 @@ import org.iterx.miru.support.spring.bean.SpringBeanWrapper;
 
 public class TestSpringBeanWrapper extends TestCase {
 
-    private  MockDefaultListableBeanFactory beanFactory;
+    private MockDefaultListableBeanFactory beanFactory;
 
-    protected void setUp()  {
+    protected void setUp() {
 
-	beanFactory = new MockDefaultListableBeanFactory();
+        beanFactory = new MockDefaultListableBeanFactory();
     }
 
     protected void tearDown() {
 
-	beanFactory = null;
+        beanFactory = null;
     }
-   
-    public void testConstructors(){
-	SpringBeanWrapper beanWrapper;
 
-	beanWrapper = new SpringBeanWrapper
-	    (beanFactory.assignBeanWrapper(new Object()));
-	assertNotNull(beanWrapper);
+    public void testConstructors() {
+        SpringBeanWrapper beanWrapper;
 
-	try {
-	    beanWrapper = new SpringBeanWrapper(null);	    
-	    fail("SpringBeanWrapper initialised with null arguments");
-	}
-	catch(IllegalArgumentException e) {}
-    }   
+        beanWrapper = new SpringBeanWrapper
+            (beanFactory.assignBeanWrapper(new Object()));
+        assertNotNull(beanWrapper);
 
-    
+        try {
+            beanWrapper = new SpringBeanWrapper(null);
+            fail("SpringBeanWrapper initialised with null arguments");
+        }
+        catch(IllegalArgumentException e) {}
+    }
+
+
     public void testWrappedInstanceAccessors() {
-	SpringBeanWrapper beanWrapper;
-	Object object;
+        SpringBeanWrapper beanWrapper;
+        Object object;
 
-	beanWrapper = new SpringBeanWrapper
-	    (beanFactory.assignBeanWrapper(object = new Object()));
-	assertEquals(object, beanWrapper.getWrappedInstance());
+        beanWrapper = new SpringBeanWrapper
+            (beanFactory.assignBeanWrapper(object = new Object()));
+        assertEquals(object, beanWrapper.getWrappedInstance());
 
-	beanWrapper.setWrappedInstance(object = new Object());
-	assertEquals(object, beanWrapper.getWrappedInstance());
-	
-	try {
-	    beanWrapper.setWrappedInstance(null);
-	    fail("Object is null");
-	}
-	catch(IllegalArgumentException e) {}
+        beanWrapper.setWrappedInstance(object = new Object());
+        assertEquals(object, beanWrapper.getWrappedInstance());
+
+        try {
+            beanWrapper.setWrappedInstance(null);
+            fail("Object is null");
+        }
+        catch(IllegalArgumentException e) {}
     }
 
     public void testPropertyAccessors() {
-	SpringBeanWrapper beanWrapper;
-	MockObject object;
-	HashMap map;
-	String value;
+        SpringBeanWrapper beanWrapper;
+        MockObject object;
+        HashMap<String, String> map;
+        String value;
 
 
-	beanWrapper = new SpringBeanWrapper
-	    (beanFactory.assignBeanWrapper(object = new MockObject()));
-	assertNull(beanWrapper.getValue("string"));
-	assertNull(object.getString());
+        beanWrapper = new SpringBeanWrapper
+            (beanFactory.assignBeanWrapper(object = new MockObject()));
+        assertNull(beanWrapper.getValue("string"));
+        assertNull(object.getString());
 
-	beanWrapper.setValue("string", (value = "value"));
-	assertEquals(value, beanWrapper.getValue("string"));
-	assertEquals(value, object.getString());
+        beanWrapper.setValue("string", (value = "value"));
+        assertEquals(value, beanWrapper.getValue("string"));
+        assertEquals(value, object.getString());
 
-	map = new HashMap();
-	map.put("string", (value = "map"));
+        map = new HashMap<String, String>();
+        map.put("string", (value = "map"));
 
-	beanWrapper.setValues(map);
-	assertEquals(value, beanWrapper.getValue("string"));
-	assertEquals(value, object.getString());	
+        beanWrapper.setValues(map);
+        assertEquals(value, beanWrapper.getValue("string"));
+        assertEquals(value, object.getString());
 
-	try {
-	    beanWrapper.getValue("method-does-not-exist");
-	    fail("Failed to detect non-existant property");
-	}
-	catch(Exception e) {}
+        try {
+            beanWrapper.getValue("method-does-not-exist");
+            fail("Failed to detect non-existant property");
+        }
+        catch(Exception e) {}
 
-	map = new HashMap();
-	map.put("method-does-not-exist", "value");
-	try {
+        map = new HashMap<String, String>();
+        map.put("method-does-not-exist", "value");
+        try {
 
-	    beanWrapper.setValues(map);
-	    fail("Failed to detect non-existant property");
-	}
-	catch(Exception e) {}
+            beanWrapper.setValues(map);
+            fail("Failed to detect non-existant property");
+        }
+        catch(Exception e) {}
 
     }
 
     private class MockObject {
 
-	private String string;
+        private String string;
 
-	public MockObject() {}
-	
+        public MockObject() {}
 
-	public String getString() {
 
-	    return string;
-	}
+        public String getString() {
 
-	public void setString(String string) {
+            return string;
+        }
 
-	    this.string = string;
-	}
+        public void setString(String string) {
+
+            this.string = string;
+        }
     }
 
     private class MockDefaultListableBeanFactory
-	extends DefaultListableBeanFactory {
+        extends DefaultListableBeanFactory {
 
-	private MockDefaultListableBeanFactory() {}
+        private MockDefaultListableBeanFactory() {}
 
-	private BeanWrapper assignBeanWrapper(Object object) {
+        private BeanWrapper assignBeanWrapper(Object object) {
             BeanWrapper beanWrapper;
 
             initBeanWrapper(beanWrapper = new BeanWrapperImpl(object));
-	    return beanWrapper;
-	}
+            return beanWrapper;
+        }
     }
 }

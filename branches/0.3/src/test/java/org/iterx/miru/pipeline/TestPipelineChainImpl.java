@@ -25,39 +25,41 @@ import junit.framework.TestCase;
 import org.iterx.miru.pipeline.transformer.TransformerImpl;
 import org.iterx.miru.pipeline.generator.GeneratorImpl;
 import org.iterx.miru.pipeline.serializer.SerializerImpl;
+import org.iterx.miru.context.RequestContext;
+import org.iterx.miru.context.ResponseContext;
 
 
 public class TestPipelineChainImpl extends TestCase {
 
     public void testConstructors() {
-        PipelineChainImpl pipelineChain;
+        PipelineChainImpl<RequestContext, ResponseContext> pipelineChain;
         Generator generator;
         Transformer[] transformers;
         Serializer serializer;
 
-        pipelineChain = new PipelineChainImpl();
+        pipelineChain = new PipelineChainImpl<RequestContext, ResponseContext>();
         assertNotNull(pipelineChain);
         assertNull(pipelineChain.getGenerator());
         assertNull(pipelineChain.getTransformers());
         assertNull(pipelineChain.getSerializer());
 
-        pipelineChain = new PipelineChainImpl((generator = new GeneratorImpl()),
-                                              (serializer = new SerializerImpl()));
+        pipelineChain = new PipelineChainImpl<RequestContext, ResponseContext>((generator = new GeneratorImpl()),
+                                                                               (serializer = new SerializerImpl()));
         assertNotNull(pipelineChain);
         assertEquals(generator, pipelineChain.getGenerator());
         assertNull(pipelineChain.getTransformers());
         assertEquals(serializer, pipelineChain.getSerializer());
 
-        pipelineChain = new PipelineChainImpl((generator = new GeneratorImpl()),
-                                              null,
-                                              (serializer = new SerializerImpl()));
+        pipelineChain = new PipelineChainImpl<RequestContext, ResponseContext>((generator = new GeneratorImpl()),
+                                                                               null,
+                                                                               (serializer = new SerializerImpl()));
         assertNotNull(pipelineChain);
         assertEquals(generator, pipelineChain.getGenerator());
         assertNull(pipelineChain.getTransformers());
         assertEquals(serializer, pipelineChain.getSerializer());
 
 
-        pipelineChain = new PipelineChainImpl
+        pipelineChain = new PipelineChainImpl<RequestContext, ResponseContext>
             ((generator = new GeneratorImpl()),
              (transformers = new Transformer[] { new TransformerImpl() }),
              (serializer = new SerializerImpl()));
@@ -68,25 +70,25 @@ public class TestPipelineChainImpl extends TestCase {
 
 
         try {
-            pipelineChain = new PipelineChainImpl(null,
-                                                  new SerializerImpl());
+            pipelineChain = new PipelineChainImpl<RequestContext, ResponseContext>(null,
+                                                                                   new SerializerImpl());
             fail("Failed to detect null Generator");
         }
         catch(IllegalArgumentException e) {}
 
         try {
-            pipelineChain = new PipelineChainImpl(new GeneratorImpl(),
-                                                  null);
+            pipelineChain = new PipelineChainImpl<RequestContext, ResponseContext>(new GeneratorImpl(),
+                                                                                   null);
             fail("Failed to detect null Generator");
         }
         catch(IllegalArgumentException e) {}
     }
 
     public void testGeneratorAccessors() {
-        PipelineChainImpl pipelineChain;
+        PipelineChainImpl<RequestContext, ResponseContext> pipelineChain;
         Generator generator;
 
-        pipelineChain = new PipelineChainImpl();
+        pipelineChain = new PipelineChainImpl<RequestContext, ResponseContext>();
         assertNull(pipelineChain.getGenerator());
 
         pipelineChain.setGenerator((generator = new GeneratorImpl()));
@@ -97,10 +99,10 @@ public class TestPipelineChainImpl extends TestCase {
     }
 
     public void testSerializerAccessors() {
-        PipelineChainImpl pipelineChain;
+        PipelineChainImpl<RequestContext, ResponseContext> pipelineChain;
         Serializer serializer;
 
-        pipelineChain = new PipelineChainImpl();
+        pipelineChain = new PipelineChainImpl<RequestContext, ResponseContext>();
         assertNull(pipelineChain.getSerializer());
 
         pipelineChain.setSerializer((serializer = new SerializerImpl()));
@@ -111,11 +113,11 @@ public class TestPipelineChainImpl extends TestCase {
     }
 
     public void testTransformerAccessors() {
-        PipelineChainImpl pipelineChain;
+        PipelineChainImpl<RequestContext, ResponseContext> pipelineChain;
         Transformer[] transformers;
         Transformer transformer;
 
-        pipelineChain = new PipelineChainImpl();
+        pipelineChain = new PipelineChainImpl<RequestContext, ResponseContext>();
         assertNull(pipelineChain.getTransformers());
 
         pipelineChain.addTransformer((transformer = new TransformerImpl()));
