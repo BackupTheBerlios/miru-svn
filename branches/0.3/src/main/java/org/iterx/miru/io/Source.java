@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.io.WritableResource
+  org.iterx.miru.io.Source
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -21,4 +21,4 @@
 
 package org.iterx.miru.io;
 
-public interface WritableResource extends Resource, StreamTarget {}
+public interface Source {}
