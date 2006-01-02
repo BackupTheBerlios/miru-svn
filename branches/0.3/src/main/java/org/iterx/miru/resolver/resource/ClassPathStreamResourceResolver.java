@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.resolver.resource.ClassPathResourceResolver
+  org.iterx.miru.resolver.stream.ClassPathStreamResourceResolver
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -24,16 +24,16 @@ package org.iterx.miru.resolver.resource;
 import java.net.URI;
 
 import org.iterx.miru.io.Resource;
-import org.iterx.miru.io.resource.ClassPathResource;
+import org.iterx.miru.io.stream.ClassPathStreamResource;
 import org.iterx.miru.resolver.ResourceResolver;
 
-public class ClassPathResourceResolver implements ResourceResolver {
+public class ClassPathStreamResourceResolver implements ResourceResolver {
 
     protected ClassLoader classLoader;
 
-    public ClassPathResourceResolver() {}
+    public ClassPathStreamResourceResolver() {}
 
-    public ClassPathResourceResolver(ClassLoader classLoader) {
+    public ClassPathStreamResourceResolver(ClassLoader classLoader) {
 
         this.classLoader = classLoader;
     }
@@ -53,7 +53,7 @@ public class ClassPathResourceResolver implements ResourceResolver {
     public Resource resolve(URI uri) {
         Resource resource;
 
-        resource = new ClassPathResource(uri, classLoader);
+        resource = new ClassPathStreamResource(uri, classLoader);
         return (resource.exists())? resource : null;
     }
 

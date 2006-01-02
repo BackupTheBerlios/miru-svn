@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.resolver.resource.UriResourceResolver
+  org.iterx.miru.resolver.stream.UriStreamResourceResolver
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -25,22 +25,22 @@ import java.io.File;
 import java.net.URI;
 
 import org.iterx.miru.io.Resource;
-import org.iterx.miru.io.resource.UriResource;
+import org.iterx.miru.io.stream.UriStreamResource;
 import org.iterx.miru.resolver.ResourceResolver;
 
-public class UriResourceResolver implements ResourceResolver {
+public class UriStreamResourceResolver implements ResourceResolver {
 
     protected static final URI BASE_URI =
         (new File(System.getProperty("user.dir"))).toURI();
 
     protected URI baseUri;
 
-    public UriResourceResolver() {
+    public UriStreamResourceResolver() {
 
         baseUri = BASE_URI;
     }
 
-    public UriResourceResolver(URI base) {
+    public UriStreamResourceResolver(URI base) {
 
         setBaseUri(base);
     }
@@ -63,7 +63,7 @@ public class UriResourceResolver implements ResourceResolver {
         Resource resource;
 
         if(uri.getScheme() == null) uri = baseUri.resolve(uri);
-        resource = new UriResource(uri);
+        resource = new UriStreamResource(uri);
 
         return (resource.exists())? resource : null;
     }
