@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.iterx.miru.io.resource.MockResource;
+import org.iterx.miru.io.stream.MockResource;
 import org.iterx.miru.io.factory.ResourceFactory;
 import org.iterx.miru.io.factory.ResourceFactoryImpl;
 import org.iterx.miru.context.ProcessingContext;

@@ -24,7 +24,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 import org.iterx.miru.io.Resource;
-import org.iterx.miru.io.resource.MockResource;
+import org.iterx.miru.io.stream.MockResource;
 
 public class TestXmlBeanFactory extends TestCase {
 
@@ -51,7 +51,7 @@ public class TestXmlBeanFactory extends TestCase {
 
         try {
             factory.load((Resource) null);
-            fail("resource == null");
+            fail("stream == null");
         }
         catch(IllegalArgumentException e) {}
         catch(Exception e) {

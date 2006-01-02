@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.resolver.http.TestHttpLocaleContextResolver
+  org.iterx.miru.resolver.context.TestHttpLocaleContextResolver
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,7 @@
   All Rights Reserved.
 */
 
-package org.iterx.miru.resolver.http;
+package org.iterx.miru.resolver.context;
 
 import java.util.Locale;
 
@@ -52,7 +52,8 @@ public class TestHttpLocaleContextResolver extends TestCase {
         { "en-cockney", new Locale("en", "COCKNEY") },
         { "x-pig-latin", new Locale("x", "PIG-LATIN") },
         { "", Locale.getDefault() },
-        {null, Locale.getDefault() }};
+        { null, Locale.getDefault() }
+    };
 
 
     protected void setUp() {

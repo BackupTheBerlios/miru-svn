@@ -6,7 +6,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.iterx.miru.io.factory.ResourceFactory;
 import org.iterx.miru.io.MockResourceFactory;
-import org.iterx.miru.io.resource.MockResource;
+import org.iterx.miru.io.stream.MockResource;
 import org.iterx.miru.pipeline.PipelineChainImpl;
 import org.iterx.miru.pipeline.serializer.XmlSerializer;
 import org.iterx.miru.pipeline.generator.XmlGenerator;

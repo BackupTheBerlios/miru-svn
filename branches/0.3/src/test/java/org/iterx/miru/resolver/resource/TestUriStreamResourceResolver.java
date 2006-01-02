@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.resolver.resource.TestUriResourceResolver
+  org.iterx.miru.resolver.stream.TestUriStreamResourceResolver
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -27,12 +27,11 @@ import java.net.URISyntaxException;
 import junit.framework.TestCase;
 
 import org.iterx.miru.io.Resource;
-import org.iterx.miru.resolver.resource.UriResourceResolver;
 
-public class TestUriResourceResolver extends TestCase {
+public class TestUriStreamResourceResolver extends TestCase {
 
     private static final String PATH =
-        "org/iterx/miru/resolver/resource/TestUriResourceResolver.class";
+        "org/iterx/miru/resolver/resource/TestUriStreamResourceResolver.class";
 
     private URI absoluteUri, relativeUri, baseUri;
 
@@ -41,7 +40,7 @@ public class TestUriResourceResolver extends TestCase {
         ClassLoader loader;
         String absolute;
 
-        loader = (TestUriResourceResolver.class).getClassLoader();
+        loader = (TestUriStreamResourceResolver.class).getClassLoader();
         absolute = (loader.getResource(PATH)).toString();
         absoluteUri = new URI(absolute);
         relativeUri = new URI(PATH);
@@ -55,34 +54,34 @@ public class TestUriResourceResolver extends TestCase {
     }
 
     public void testConstructors() {
-        UriResourceResolver resourceResolver;
+        UriStreamResourceResolver resourceResolver;
 
-        resourceResolver = new UriResourceResolver();
+        resourceResolver = new UriStreamResourceResolver();
         assertNotNull(resourceResolver);
 
-        resourceResolver = new UriResourceResolver(baseUri);
+        resourceResolver = new UriStreamResourceResolver(baseUri);
         assertNotNull(resourceResolver);
         assertEquals(baseUri, resourceResolver.getBaseUri());
 
         try {
-            resourceResolver = new UriResourceResolver(null);
-            fail("UriResourceResolver initialised with null arguments");
+            resourceResolver = new UriStreamResourceResolver(null);
+            fail("UriStreamResourceResolver initialised with null arguments");
         }
         catch(IllegalArgumentException e) {}
 
         try {
-            resourceResolver = new UriResourceResolver(relativeUri);
-            fail("UriResourceResolver initialised with relative uri");
+            resourceResolver = new UriStreamResourceResolver(relativeUri);
+            fail("UriStreamResourceResolver initialised with relative uri");
         }
         catch(IllegalArgumentException e) {}
     }
 
     public void testBaseAccessors() {
-        UriResourceResolver resourceResolver;
+        UriStreamResourceResolver resourceResolver;
 
-        resourceResolver = new UriResourceResolver();
+        resourceResolver = new UriStreamResourceResolver();
 
-        assertEquals(UriResourceResolver.BASE_URI,
+        assertEquals(UriStreamResourceResolver.BASE_URI,
                      resourceResolver.getBaseUri());
 
         resourceResolver.setBaseUri(baseUri);
@@ -102,10 +101,10 @@ public class TestUriResourceResolver extends TestCase {
     }
 
     public void testResolve() {
-        UriResourceResolver resourceResolver;
+        UriStreamResourceResolver resourceResolver;
         Resource resourceA, resourceB;
 
-        resourceResolver = new UriResourceResolver();
+        resourceResolver = new UriStreamResourceResolver();
 
         assertNotNull(resourceResolver.resolve(absoluteUri));
         assertNull(resourceResolver.resolve(relativeUri));

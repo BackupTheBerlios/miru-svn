@@ -26,7 +26,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.iterx.miru.bean.factory.MockBeanFactory;
 import org.iterx.miru.bean.BeanProvider;
-import org.iterx.miru.io.resource.MockResource;
+import org.iterx.miru.io.stream.MockResource;
 import org.iterx.miru.io.Resource;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
@@ -60,7 +60,7 @@ public class TestXmlHandlerChainFactory extends TestCase {
 
         try {
             factory.load((Resource) null);
-            fail("resource == null");
+            fail("stream == null");
         }
         catch(IllegalArgumentException e) {}
         catch(Exception e) {

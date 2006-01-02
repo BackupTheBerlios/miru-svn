@@ -33,7 +33,7 @@ import junit.framework.TestCase;
 import org.iterx.miru.bean.factory.BeanFactory;
 import org.iterx.miru.bean.BeanWrapper;
 import org.iterx.miru.bean.BeanWrapperAware;
-import org.iterx.miru.io.resource.MockResource;
+import org.iterx.miru.io.stream.MockResource;
 import org.iterx.miru.support.spring.bean.factory.XmlSpringBeanFactory;
 
 
@@ -45,7 +45,7 @@ public class TestXmlSpringBeanFactory extends TestCase {
         byte[] data;
 
         data = ("<!DOCTYPE beans PUBLIC \"-//SPRING//DTD BEAN//EN\" " +
-                "\"http://www.springframework.org/dtd/spring-beans.dtd\">\n" +
+                "\"context://www.springframework.org/dtd/spring-beans.dtd\">\n" +
                 "<beans>" +
                 "<bean id=\"bean\" singleton=\"true\" " +
                 "class=\"org.iterx.miru.support.spring.bean.factory.XmlSpringBeanFactory\"/>" +

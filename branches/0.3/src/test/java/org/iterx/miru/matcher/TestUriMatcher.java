@@ -32,7 +32,7 @@ import org.iterx.miru.context.http.MockHttpResponseContext;
 public class TestUriMatcher extends TestCase {
 
     private static final String ID         = "id";
-    private static final String URI        = "http://localhost:8000/a/path?query_string";
+    private static final String URI        = "context://localhost:8000/a/path?query_string";
     private static final Integer MASK_URI  = new Integer(UriMatcher.MASK_URI);
     private static final Integer MASK_PATH = new Integer(UriMatcher.MASK_PATH);
     private static final Integer MASK_HOST = new Integer(UriMatcher.MASK_SCHEME|UriMatcher.MASK_AUTHORITY);
@@ -41,7 +41,7 @@ public class TestUriMatcher extends TestCase {
           { MASK_URI, "^$", null},
           { MASK_URI, "does-not-exist", null},
           { MASK_URI, ".*", new String[]{ URI }},
-          { MASK_URI, "^http://", new String[]{ URI }},
+          { MASK_URI, "^context://", new String[]{ URI }},
           { MASK_URI, "?query_string$", new String[]{ URI }},
           { MASK_URI, "/a/path", new String[]{ URI }},
           { MASK_URI, "//(\\w*):(\\d*)/", new String[]{ URI, "localhost", "8000" }},
@@ -49,8 +49,8 @@ public class TestUriMatcher extends TestCase {
           { MASK_PATH, ".*", new String[]{ "/a/path" }},
           { MASK_PATH, "(path)", new String[]{ "/a/path", "path" }},
           { MASK_HOST, "/a/path", null },
-          { MASK_HOST, "^http://", new String[]{ "http://localhost:8000" }},
-          { MASK_HOST, "//(\\w*):(\\d*)", new String[]{ "http://localhost:8000", "localhost", "8000" }},
+          { MASK_HOST, "^context://", new String[]{ "context://localhost:8000" }},
+          { MASK_HOST, "//(\\w*):(\\d*)", new String[]{ "context://localhost:8000", "localhost", "8000" }},
       };
   
     public void testConstructors() {

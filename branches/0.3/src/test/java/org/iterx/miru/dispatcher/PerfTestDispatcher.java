@@ -23,8 +23,6 @@ package org.iterx.miru.dispatcher;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.io.StringReader;
-import java.io.StringWriter;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -40,8 +38,8 @@ import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.context.stream.StreamRequestContext;
 import org.iterx.miru.context.stream.StreamResponseContext;
-import org.iterx.miru.context.http.HttpRequestContextImpl;
-import org.iterx.miru.context.http.HttpResponseContextImpl;
+import org.iterx.miru.context.http.MockHttpRequestContext;
+import org.iterx.miru.context.http.MockHttpResponseContext;
 import org.iterx.miru.context.factory.ProcessingContextFactory;
 
 import org.iterx.miru.dispatcher.handler.ContentHandler;
@@ -116,23 +114,23 @@ public class PerfTestDispatcher extends TestCase {
 
           public void testDispatcher() throws Exception {
               ProcessingContext<RequestContext, ResponseContext> processingContext;
-              StringReader reader;
-              StringWriter writer;
+              MockHttpRequestContext requestContext;
+              MockHttpResponseContext responseContext;
               String message;
 
               message = createMessage();
-              reader = new StringReader(message);
-              writer = new StringWriter();
-              processingContext = processingContextFactory.getProcessingContext
-                  (new HttpRequestContextImpl(reader),
-                   new HttpResponseContextImpl(writer));
+              requestContext = MockHttpRequestContext.newInstance("/", message.getBytes());
+              responseContext = MockHttpResponseContext.newInstance();
 
-              dispatcher.dispatch(processingContext);
+              processingContext = processingContextFactory.getProcessingContext(requestContext,
+                                                                                responseContext);
               assertEquals(Status.OK,
                            dispatcher.dispatch(processingContext));
-              reader.close();
-              writer.close();
-              assertEquals(message, writer.toString());
+
+              requestContext.close();
+              responseContext.close();
+
+              assertEquals(message, new String(responseContext.getData()));
           }
       }
 

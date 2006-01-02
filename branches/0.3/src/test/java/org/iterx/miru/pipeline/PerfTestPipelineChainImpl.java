@@ -20,9 +20,6 @@
 */
 package org.iterx.miru.pipeline;
 
-import java.io.StringReader;
-import java.io.StringWriter;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.extensions.RepeatedTest;
@@ -33,8 +30,8 @@ import com.clarkware.junitperf.TimedTest;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
-import org.iterx.miru.context.http.HttpRequestContextImpl;
-import org.iterx.miru.context.http.HttpResponseContextImpl;
+import org.iterx.miru.context.http.MockHttpRequestContext;
+import org.iterx.miru.context.http.MockHttpResponseContext;
 import org.iterx.miru.context.factory.ProcessingContextFactory;
 
 import org.iterx.miru.pipeline.generator.XmlGenerator;
@@ -130,26 +127,22 @@ public class PerfTestPipelineChainImpl extends TestCase {
         public void testPipeline() throws Exception {
             ProcessingContext<RequestContext, ResponseContext> processingContext;
             PipelineChain<RequestContext, ResponseContext> pipelineChain;
-            StringReader reader;
-            StringWriter writer;            
+            MockHttpRequestContext requestContext;
+            MockHttpResponseContext responseContext;
             String message;
 
             message = createMessage();
-            reader = new StringReader(message);
-            writer = new StringWriter();
-            processingContext = processingContextFactory.getProcessingContext
-                                  (new HttpRequestContextImpl(reader),
-                                   new HttpResponseContextImpl(writer));
+            requestContext = MockHttpRequestContext.newInstance("/", message.getBytes());
+            responseContext = MockHttpResponseContext.newInstance();
+
+            processingContext = processingContextFactory.getProcessingContext(requestContext,
+                                                                              responseContext);
 
             pipelineChain = getPipeline();
             pipelineChain.execute(processingContext);
             recyclePipeline(pipelineChain);
 
-            reader.close();
-            writer.close();
-
-            assertTrue((writer.toString()).length() > 0 );
-            assertEquals(message, writer.toString());
+            assertEquals(message, new String(responseContext.getData()));
         }
     }
 }

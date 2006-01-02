@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.http.MockHttpRequestContext
+  org.iterx.miru.context.context.MockHttpRequestContext
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -21,26 +21,24 @@
 
 package org.iterx.miru.context.http;
 
-import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
+import org.iterx.miru.io.stream.StreamSourceImpl;
 
 public class MockHttpRequestContext extends HttpRequestContextImpl {
 
     private MockHttpRequestContext(String uri) {
 
-        super((InputStream) null);
-        setURI(uri);
+        this(uri, new byte[0]);
     }
 
     private MockHttpRequestContext(String uri, byte[] data) {
 
-        super(new ByteArrayInputStream(data));
-        setURI(uri);
+        super(URI.create(uri),
+              new StreamSourceImpl(new ByteArrayInputStream(data)));
     }
 
     public static MockHttpRequestContext newInstance(String uri) {
@@ -55,12 +53,7 @@ public class MockHttpRequestContext extends HttpRequestContextImpl {
 
     public void setURI(String uri) {
 
-        try {
-            setURI(new URI(uri));
-        }
-        catch(URISyntaxException e) {
-            throw new IllegalArgumentException("Invalid uri '" + uri + "'.");
-        }
+        this.uri = URI.create(uri);
     }
 
     public void reset() {

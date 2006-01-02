@@ -30,7 +30,7 @@ import junit.framework.TestCase;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.iterx.miru.bean.factory.MockBeanFactory;
-import org.iterx.miru.io.resource.MockResource;
+import org.iterx.miru.io.stream.MockResource;
 import org.iterx.miru.matcher.Matcher;
 import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.dispatcher.handler.Handler;
@@ -43,7 +43,7 @@ import org.iterx.miru.context.ResponseContext;
 
 public class TestXmlHandlerChainParser extends TestCase {
 
-    private static final String NS = "http://iterx.org/miru/1.0/chains";
+    private static final String NS = "context://iterx.org/miru/1.0/chains";
 
 
     private static final Object[][] CHAINS = {

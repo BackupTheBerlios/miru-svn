@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.http.TestHttpRequestContextImpl
+  org.iterx.miru.context.context.TestHttpRequestContextImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -21,70 +21,61 @@
 
 package org.iterx.miru.context.http;
 
-import java.io.Reader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import java.nio.charset.Charset;
-
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.iterx.miru.io.stream.StreamSource;
+import org.iterx.miru.context.stream.TestStreamRequestContextImpl;
 
 
-public class TestHttpRequestContextImpl extends TestCase {
+public class TestHttpRequestContextImpl<T extends HttpRequestContextImpl> extends TestStreamRequestContextImpl<T> {
 
-    private static final String ENCODING = System.getProperty("file.encoding");
+    public T createRequestContext(URI uri, StreamSource streamSource) {
+
+        return (T) new HttpRequestContextImpl(uri, streamSource);
+    }
 
     public void testConstructors() throws IOException {
-        HttpRequestContextImpl request;
-        Reader reader;
 
-        request = new HttpRequestContextImpl(System.in);
-        assertNotNull(request);
-        assertEquals(System.in, request.getInputStream());
-        assertEquals(null, request.getCharacterEncoding());
-
-        request = new HttpRequestContextImpl(System.in, ENCODING);
-        assertNotNull(request);
-        assertEquals(System.in, request.getInputStream());
-        assertTrue(encodingEquals(ENCODING, request.getCharacterEncoding()));
-
-        request = new HttpRequestContextImpl((reader = new InputStreamReader(System.in)));
-        assertNotNull(request);
-        assertEquals(reader, request.getReader());
-
-        assertTrue(encodingEquals(ENCODING, request.getCharacterEncoding()));
-
-        request = new HttpRequestContextImpl
-            ((reader = new InputStreamReader(System.in, ENCODING)));
-        assertNotNull(request);
-        assertEquals(reader, request.getReader());
-        assertTrue(encodingEquals(ENCODING, request.getCharacterEncoding()));
+        assertNotNull(new HttpRequestContextImpl(SOURCE_URI, streamSource));
+        try {
+            new HttpRequestContextImpl(SOURCE_URI, null);
+            fail("streamSource == null");
+        }
+        catch(Exception e){}
+        try {
+            new HttpRequestContextImpl(null, streamSource);
+            fail("uri == null");
+        }
+        catch(Exception e){}
     }
 
     public void testURIAccessors() throws URISyntaxException {
-        HttpRequestContextImpl request;
+        T request;
         URI uri;
 
         uri = new URI("/dev/null");
 
-        request = new HttpRequestContextImpl(System.in);
-        assertNull(request.getURI());
+        request = createRequestContext(SOURCE_URI, streamSource);
+        assertEquals(SOURCE_URI, request.getURI());
 
         request.setURI(uri);
         assertEquals(uri, request.getURI());
 
-        request.setURI(null);
-        assertNull(request.getURI());
+        try {
+            request.setURI(null);
+            fail("uri == null");
+        }
+        catch(Exception e) {}
     }
 
     public void testPropertyAccessors() {
-        HttpRequestContextImpl request;
+        T request;
         String value;
 
-        request = new HttpRequestContextImpl(System.in);
+        request = createRequestContext(SOURCE_URI, streamSource);
         assertNull(request.getHeader("key"));
 
         request.setHeader("key", (value = "value"));
@@ -102,11 +93,11 @@ public class TestHttpRequestContextImpl extends TestCase {
     }
 
     public void testParameterAccessors() {
-        HttpRequestContextImpl request;
+        T request;
         String[] values;
         String value;
 
-        request = new HttpRequestContextImpl(System.in);
+        request = createRequestContext(SOURCE_URI, streamSource);
         assertEquals(0, (request.getParameterNames()).length);
         assertNull(request.getParameter("a"));
 
@@ -116,8 +107,9 @@ public class TestHttpRequestContextImpl extends TestCase {
         assertEquals(1, (values = request.getParameterValues("a")).length);
         assertEquals(value, values[0]);
 
-        request.setParameterValues("b", (values = new String[]{value, ""}));
-        assertEquals(values, request.getParameterValues("b"));
+        values = new String[]{ value, "" };
+        request.setParameterValues("b", Arrays.asList(values));
+        assertTrue(Arrays.equals(values, request.getParameterValues("b")));
         assertEquals(value, request.getParameter("b"));
 
         assertEquals(2, (values = request.getParameterNames()).length);
@@ -132,78 +124,15 @@ public class TestHttpRequestContextImpl extends TestCase {
         request.setParameter("b", null);
         assertNull(request.getParameter("b"));
         assertEquals(0, (request.getParameterNames()).length);
+
+        request.addParameterValue("a", "value");
+        assertEquals(1, (request.getParameterNames()).length);
+        assertEquals(value, request.getParameter("a"));
+
+        request.removeParameterValue("a", "value");
+        assertEquals(0, (request.getParameterNames()).length);
     }
 
-    public void testContentLengthAccessors() {
-        HttpRequestContextImpl request;
 
-        request = new HttpRequestContextImpl(System.in);
-        assertEquals(-1, request.getContentLength());
-    }
-
-    public void testContentTypeAccessors() {
-        HttpRequestContextImpl request;
-        String value;
-
-        request = new HttpRequestContextImpl(System.in);
-        assertNull(request.getContentType());
-
-        request.setContentType((value = "text/xml"));
-        assertEquals(value, request.getContentType());
-
-        request.setContentType(null);
-        assertNull(request.getContentType());
-    }
-
-    public void testCharacterEncodingAccessors() {
-        HttpRequestContextImpl request;
-
-        request = new HttpRequestContextImpl(System.in);
-        assertNull(request.getCharacterEncoding());
-    }
-
-    public void testInputStream() throws IOException {
-        HttpRequestContextImpl request;
-        Reader reader;
-
-        request = new HttpRequestContextImpl(System.in);
-        assertEquals(System.in, request.getInputStream());
-        assertNull(request.getReader());
-
-
-        request = new HttpRequestContextImpl
-            ((reader = new InputStreamReader(System.in)));
-        assertNull(request.getInputStream());
-        assertEquals(reader, request.getReader());
-        assertNull(request.getInputStream());
-    }
-
-    public void testReader() throws IOException {
-        HttpRequestContextImpl request;
-        Reader reader;
-
-        request = new HttpRequestContextImpl
-            ((reader = new InputStreamReader(System.in)));
-        assertNull(request.getInputStream());
-        assertEquals(reader, request.getReader());
-        assertNull(request.getInputStream());
-
-        request = new HttpRequestContextImpl(System.in);
-        assertNotNull(request.getReader());
-
-        assertNull(request.getInputStream());
-    }
-
-    private static boolean encodingEquals(String encodingA,
-                                          String encodingB) {
-
-        try {
-            return (Charset.forName(encodingA)).equals
-                (Charset.forName(encodingB));
-        }
-        catch(Exception e) {}
-
-        return false;
-    }
 
 }
