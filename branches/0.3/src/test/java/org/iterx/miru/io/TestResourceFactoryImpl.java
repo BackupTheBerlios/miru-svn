@@ -1,4 +1,3 @@
-
 /*
   org.iterx.miru.io.TestResourceFactoryImpl
 
@@ -27,7 +26,7 @@ import java.net.URISyntaxException;
 
 import junit.framework.TestCase;
 
-import org.iterx.miru.io.resource.MockResource;
+import org.iterx.miru.io.stream.MockResource;
 import org.iterx.miru.io.factory.ResourceFactoryImpl;
 
 import org.iterx.miru.resolver.ResourceResolver;
@@ -36,73 +35,73 @@ import org.iterx.miru.resolver.MockResourceResolver;
 public class TestResourceFactoryImpl extends TestCase {
 
     private static final String URI =
-    "org/iterx/miru/io/TestResourceFactoryImpl.class";
+        "org/iterx/miru/io/TestResourceFactoryImpl.class";
 
     private ResourceFactoryImpl resourceFactory;
     private URI resourceUri, bogusUri;
 
     protected void setUp() throws URISyntaxException {
-    ClassLoader loader;
+        ClassLoader loader;
 
-    loader = (TestResourceFactoryImpl.class).getClassLoader();
-    resourceUri = new URI((loader.getResource(URI)).toString());
-    bogusUri = new URI("file:///.bogus");
+        loader = (TestResourceFactoryImpl.class).getClassLoader();
+        resourceUri = new URI((loader.getResource(URI)).toString());
+        bogusUri = new URI("file:///.bogus");
 
-    resourceFactory = new ResourceFactoryImpl();
+        resourceFactory = new ResourceFactoryImpl();
 
     }
 
     protected void tearDown() {
 
-    resourceUri = null;
-    bogusUri = null;
+        resourceUri = null;
+        bogusUri = null;
     }
 
 
     public void testConstructors() {
-    ResourceFactoryImpl resourceFactory;
+        ResourceFactoryImpl resourceFactory;
 
-    resourceFactory = new ResourceFactoryImpl();
-    assertNotNull(resourceFactory);
+        resourceFactory = new ResourceFactoryImpl();
+        assertNotNull(resourceFactory);
     }
 
     public void testResourceResolverAccessors() {
-    MockResourceResolver resourceResolver;
-    ResourceResolver[] resourceResolvers;
+        MockResourceResolver resourceResolver;
+        ResourceResolver[] resourceResolvers;
 
-    resourceResolver = new MockResourceResolver();
+        resourceResolver = new MockResourceResolver();
 
-    assertNotNull
-        (resourceResolvers = resourceFactory.getResourceResolvers());
-    assertEquals(0, resourceResolvers.length);
+        assertNotNull
+            (resourceResolvers = resourceFactory.getResourceResolvers());
+        assertEquals(0, resourceResolvers.length);
 
-    resourceFactory.addResourceResolver(resourceResolver);
-    assertNotNull
-        (resourceResolvers = resourceFactory.getResourceResolvers());
-    assertEquals(1, resourceResolvers.length);
-    assertEquals(resourceResolver, resourceResolvers[0]);
+        resourceFactory.addResourceResolver(resourceResolver);
+        assertNotNull
+            (resourceResolvers = resourceFactory.getResourceResolvers());
+        assertEquals(1, resourceResolvers.length);
+        assertEquals(resourceResolver, resourceResolvers[0]);
 
-    resourceFactory.removeResourceResolver(resourceResolver);
-    assertNotNull
-        (resourceResolvers = resourceFactory.getResourceResolvers());
-    assertEquals(0, resourceResolvers.length);
+        resourceFactory.removeResourceResolver(resourceResolver);
+        assertNotNull
+            (resourceResolvers = resourceFactory.getResourceResolvers());
+        assertEquals(0, resourceResolvers.length);
     }
 
 
     public void testResource() throws URISyntaxException {
-    MockResourceResolver resourceResolver;
-    MockResource resource;
+        MockResourceResolver resourceResolver;
+        MockResource resource;
 
-    resourceFactory.addResourceResolver
-        (resourceResolver = new MockResourceResolver());
+        resourceFactory.addResourceResolver
+            (resourceResolver = new MockResourceResolver());
 
 
-    assertNull(resourceFactory.getResource(resourceUri));
+        assertNull(resourceFactory.getResource(resourceUri));
 
-    resourceResolver.setResource(resource = new MockResource(resourceUri));
-    assertEquals(resource, resourceFactory.getResource(resourceUri));
+        resourceResolver.setResource(resource = new MockResource(resourceUri));
+        assertEquals(resource, resourceFactory.getResource(resourceUri));
 
-    assertNull(resourceFactory.getResource(bogusUri));
+        assertNull(resourceFactory.getResource(bogusUri));
 
     }
 
