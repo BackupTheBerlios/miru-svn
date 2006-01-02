@@ -32,7 +32,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletContext;
 
 import org.iterx.miru.io.Loadable;
-import org.iterx.miru.io.resource.UriResource;
+import org.iterx.miru.io.stream.UriStreamResource;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.factory.ProcessingContextFactory;
 import org.iterx.miru.context.ApplicationContext;
@@ -110,8 +110,8 @@ public class HttpDispatcherServlet extends HttpServlet {
                 URL url;
 
                 if((url = (servletContext.getResource(parameter))) != null)
-                    ((Loadable) applicationContext).load(new UriResource(url.toURI()));
-                else throw new IOException("Invalid resource ["+  parameter + "]");
+                    ((Loadable) applicationContext).load(new UriStreamResource(url.toURI()));
+                else throw new IOException("Invalid stream ["+  parameter + "]");
             }
 
             handlerChainFactory = applicationContext.getHandlerChainFactory();
@@ -120,8 +120,8 @@ public class HttpDispatcherServlet extends HttpServlet {
                 URL url;
 
                 if((url = (servletContext.getResource(parameter))) != null)
-                    ((Loadable) handlerChainFactory).load(new UriResource(url.toURI()));
-                else throw new IOException("Invalid resource ["+  parameter + "]");
+                    ((Loadable) handlerChainFactory).load(new UriStreamResource(url.toURI()));
+                else throw new IOException("Invalid stream ["+  parameter + "]");
             }
 
             if(dispatcher == null &&

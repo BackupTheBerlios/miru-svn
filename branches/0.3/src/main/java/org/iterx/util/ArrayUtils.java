@@ -21,6 +21,8 @@
 package org.iterx.util;
 
 import java.lang.reflect.Array;
+import java.util.List;
+import java.util.ArrayList;
 
 public final class ArrayUtils {
 
@@ -30,11 +32,11 @@ public final class ArrayUtils {
         Object[] clone;
         int length;
 
-        clone = (Object[]) 
-            Array.newInstance((array.getClass()).getComponentType(), 
+        clone = (Object[])
+            Array.newInstance((array.getClass()).getComponentType(),
                               size);
 
-        length = (size > array.length)? array.length : size;        
+        length = (size > array.length)? array.length : size;
         System.arraycopy(array, 0, clone, 0, length);
         return clone;
     }
@@ -44,24 +46,24 @@ public final class ArrayUtils {
         Object[] clone;
         int length;
 
-        clone = (Object[]) 
-            Array.newInstance((array.getClass()).getComponentType(), 
+        clone = (Object[])
+            Array.newInstance((array.getClass()).getComponentType(),
                               1 + (length = array.length));
-        
+
         System.arraycopy(array, 0, clone, 0, length);
         clone[length] = object;
         return clone;
     }
-    
+
     public static boolean contains(Object[] array, Object object) {
 
         for(int i = array.length; i-- > 0;) {
             Object value;
-            
+
             if((value = array[i]) == object ||
                (value != null && value.equals(object)))
                 return true;
-        } 
+        }
         return false;
     }
 
@@ -69,11 +71,11 @@ public final class ArrayUtils {
 
         for(int i = 0; i < array.length; i++) {
             Object value;
-            
+
             if((value = array[i]) == object ||
                (value != null && value.equals(object)))
                 return i;
-        } 
+        }
         return -1;
     }
 
@@ -81,11 +83,11 @@ public final class ArrayUtils {
 
         for(int i = array.length; i-- > 0;) {
             Object value;
-            
+
             if((value = array[i]) == object ||
                (value != null && value.equals(object)))
                 return i;
-        } 
+        }
         return -1;
     }
 
@@ -93,26 +95,23 @@ public final class ArrayUtils {
 
         for(int i = array.length; i-- > 0;) {
             Object value;
-            
+
             if((value = array[i]) == object ||
                (value != null && value.equals(object))) {
                 Object[] clone;
                 int length;
-                
-                clone = (Object[]) 
+
+                clone = (Object[])
                     Array.newInstance((array.getClass()).getComponentType(),
                                       (length = array.length) - 1);
-                
-                if(i > 0) 
+
+                if(i > 0)
                     System.arraycopy(array, 0, clone, 0, i);
-                if(i < length - 1) 
+                if(i < length - 1)
                     System.arraycopy(array, i + 1, clone, i, length - i - 1);
                 return clone;
             }
-        } 
+        }
         return array;
     }
-
-
-
 }

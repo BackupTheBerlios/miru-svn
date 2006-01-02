@@ -36,7 +36,7 @@ import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.stream.StreamRequestContext;
 import org.iterx.miru.context.stream.StreamResponseContext;
 import org.iterx.miru.io.Resource;
-import org.iterx.miru.io.StreamSource;
+import org.iterx.miru.io.stream.StreamSource;
 import org.iterx.miru.io.factory.ResourceFactory;
 import org.iterx.miru.util.MiruUtils;
 
@@ -129,7 +129,7 @@ public class ResourceContentHandler<S extends StreamRequestContext, T extends St
                     try { out.close(); } catch(IOException e) {}
             }
         }
-        //throw resource not found exception?
+        //throw stream not found exception?
         //or set error on responseContext
         LOGGER.warn("Resource '" + uri + "' not found");
         return Status.ERROR;

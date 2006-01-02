@@ -47,7 +47,7 @@ import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.io.factory.ResourceFactory;
 import org.iterx.miru.io.Resource;
-import org.iterx.miru.io.ReadableResource;
+import org.iterx.miru.io.stream.ReadableStreamResource;
 import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.util.MiruUtils;
 
@@ -134,10 +134,10 @@ public class XsltTransformer<S extends RequestContext, T extends ResponseContext
                 Resource resource;
 
                 if((resource = resourceFactory.getResource(uri)) == null ||
-                   !(resource instanceof ReadableResource))
+                   !(resource instanceof ReadableStreamResource))
                     throw new PipelineChainException("Invalid template [" + uri + "].");
                 template = transformerFactory.newTemplates
-                    (new StreamSource(((ReadableResource) resource).getReader()));
+                    (new StreamSource(((ReadableStreamResource) resource).getReader()));
 
                 synchronized(templates) {
                     templates.put(uri, template);

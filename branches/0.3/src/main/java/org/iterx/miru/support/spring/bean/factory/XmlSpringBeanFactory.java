@@ -31,8 +31,8 @@ import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 
 import org.iterx.miru.io.Resource;
 import org.iterx.miru.io.Loadable;
-import org.iterx.miru.io.StreamSource;
-import org.iterx.miru.io.resource.UriResource;
+import org.iterx.miru.io.stream.StreamSource;
+import org.iterx.miru.io.stream.UriStreamResource;
 import org.iterx.miru.bean.factory.BeanFactory;
 import org.iterx.miru.bean.BeanWrapper;
 import org.iterx.miru.support.spring.bean.SpringBeanWrapper;
@@ -66,7 +66,7 @@ public class XmlSpringBeanFactory extends SpringBeanFactory implements Loadable 
     public void load(String uri) throws IOException {
         Resource resource;
 
-        if((resource = new UriResource(uri)).exists()) load(resource);
+        if((resource = new UriStreamResource(uri)).exists()) load(resource);
         else throw new IllegalArgumentException
                        ("Resource [" + uri + "] does not exist.");
     }
@@ -75,9 +75,9 @@ public class XmlSpringBeanFactory extends SpringBeanFactory implements Loadable 
     public void load(Resource resource) throws IOException {
 
         if(resource == null)
-            throw new IllegalArgumentException("resource == null");
+            throw new IllegalArgumentException("stream == null");
         if(!(resource instanceof StreamSource))
-            throw new IllegalArgumentException("resource is not a 'StreamSource'");
+            throw new IllegalArgumentException("stream is not a 'StreamSource'");
         ((XmlSpringBeanFactoryProxy) beanFactory).parse((StreamSource) resource);
     }
 

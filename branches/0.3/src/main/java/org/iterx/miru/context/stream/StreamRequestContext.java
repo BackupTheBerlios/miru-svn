@@ -22,6 +22,6 @@
 package org.iterx.miru.context.stream;
 
 import org.iterx.miru.context.RequestContext;
-import org.iterx.miru.io.StreamSource;
+import org.iterx.miru.io.stream.StreamSource;
 
 public interface StreamRequestContext extends RequestContext, StreamSource {}

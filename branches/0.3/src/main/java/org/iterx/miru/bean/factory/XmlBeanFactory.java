@@ -25,8 +25,8 @@ import java.io.IOException;
 import org.iterx.miru.bean.BeanProvider;
 import org.iterx.miru.io.Resource;
 import org.iterx.miru.io.Loadable;
-import org.iterx.miru.io.StreamSource;
-import org.iterx.miru.io.resource.UriResource;
+import org.iterx.miru.io.stream.StreamSource;
+import org.iterx.miru.io.stream.UriStreamResource;
 
 public class XmlBeanFactory extends BeanFactoryImpl implements Loadable {
 
@@ -40,7 +40,7 @@ public class XmlBeanFactory extends BeanFactoryImpl implements Loadable {
     public void load(String uri) throws IOException {
         Resource resource;
 
-        if((resource = new UriResource(uri)).exists()) load(resource);
+        if((resource = new UriStreamResource(uri)).exists()) load(resource);
         else throw new IllegalArgumentException
                        ("Resource [" + uri + "] does not exist.");
     }
@@ -50,9 +50,9 @@ public class XmlBeanFactory extends BeanFactoryImpl implements Loadable {
         XmlBeanParser parser;
 
         if(resource == null)
-            throw new IllegalArgumentException("resource == null");
+            throw new IllegalArgumentException("stream == null");
         if(!(resource instanceof StreamSource))
-            throw new IllegalArgumentException("resource is not a StreamSource.");
+            throw new IllegalArgumentException("stream is not a StreamSource.");
 
         parser = new XmlBeanParser(this);
         parser.parse((StreamSource) resource);

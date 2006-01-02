@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.stream.StreamRequestContext
+  org.iterx.miru.io.stream.WritableStreamResource
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -18,9 +18,9 @@
   Copyright (C)2004-2005 Darren Graves <darren@iterx.org>
   All Rights Reserved.
 */
-package org.iterx.miru.context.stream;
 
-import org.iterx.miru.context.ResponseContext;
-import org.iterx.miru.io.stream.StreamTarget;
+package org.iterx.miru.io.stream;
 
-public interface StreamResponseContext extends ResponseContext, StreamTarget {}
+import org.iterx.miru.io.Resource;
+
+public interface WritableStreamResource extends Resource, StreamTarget {}

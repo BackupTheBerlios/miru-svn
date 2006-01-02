@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.http.HttpResponseContextImpl
+  org.iterx.miru.context.context.HttpResponseContextImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -24,67 +24,23 @@ package org.iterx.miru.context.http;
 import java.util.Map;
 import java.util.HashMap;
 
-import java.io.Writer;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.IOException;
-import java.io.Closeable;
-
 import org.iterx.util.CaseInsensitiveKey;
+import org.iterx.miru.context.stream.StreamResponseContextImpl;
+import org.iterx.miru.io.stream.StreamTarget;
 
-public class HttpResponseContextImpl implements HttpResponseContext, Closeable {
+public class HttpResponseContextImpl extends StreamResponseContextImpl
+    implements HttpResponseContext {
 
     protected Map<CaseInsensitiveKey, String> headers;
-    protected boolean _mutable = true;
-
-    private Writer writer;
-    private OutputStream outputStream;
-
-    private String encoding, type;
-    private int length = -1;
-    private int status = OK;
 
     protected HttpResponseContextImpl() {}
 
-    public HttpResponseContextImpl(OutputStream out) {
+    public HttpResponseContextImpl(StreamTarget streamTarget) {
 
-        this(out, null);
-    }
-
-    public HttpResponseContextImpl(Writer writer) {
-
-        this(writer, null);
-    }
-
-    public HttpResponseContextImpl(OutputStream out, String encoding) {
-
+        super(streamTarget);
         headers = new HashMap<CaseInsensitiveKey, String>(2);
-        this.outputStream = out;
-        this.encoding = encoding;
+        status = OK;
     }
-
-    public HttpResponseContextImpl(Writer writer, String encoding) {
-
-        if (encoding == null &&
-            writer instanceof OutputStreamWriter)
-            encoding = ((OutputStreamWriter) writer).getEncoding();
-
-        headers = new HashMap<CaseInsensitiveKey, String>(2);
-        this.writer = writer;
-        this.encoding = encoding;
-    }
-
-
-    public int getStatus() {
-
-        return status;
-    }
-
-    public void setStatus(int status) {
-
-        this.status = status;
-    }
-
 
     public String getHeader(String name) {
 
@@ -97,68 +53,4 @@ public class HttpResponseContextImpl implements HttpResponseContext, Closeable {
         else headers.put(new CaseInsensitiveKey(name), value);
     }
 
-    public String getCharacterEncoding() {
-
-        return encoding;
-    }
-
-    public void setCharacterEncoding(String encoding) {
-        assert (_mutable) : "Immutable object.";
-
-        this.encoding = encoding;
-    }
-
-    public String getContentType() {
-
-        return type;
-    }
-
-    public void setContentType(String type) {
-        assert (_mutable) : "Immutable object.";
-
-        this.type = type;
-    }
-
-    public int getContentLength() {
-
-        return length;
-    }
-
-    public void setContentLength(int length) {
-        assert (_mutable) : "Immutable object.";
-        assert (length >= -1) : "Invalid length.";
-
-        this.length = length;
-    }
-
-    public OutputStream getOutputStream() throws IOException {
-
-        if (_mutable && outputStream != null) {
-            _mutable = false;
-            writer = null;
-        }
-        return outputStream;
-    }
-
-    public Writer getWriter() throws IOException {
-
-        if (_mutable) {
-            if (outputStream != null)
-                writer = ((encoding != null) ?
-                          new OutputStreamWriter(outputStream, encoding) :
-                          new OutputStreamWriter(outputStream));
-            _mutable = false;
-            outputStream = null;
-        }
-        return writer;
-    }
-
-
-    public void close() throws IOException {
-
-        if(outputStream != null)
-            try { outputStream.close(); } catch(IOException e) {}
-        if(writer != null)
-            try { writer.close(); } catch(IOException e) {}
-    }
 }

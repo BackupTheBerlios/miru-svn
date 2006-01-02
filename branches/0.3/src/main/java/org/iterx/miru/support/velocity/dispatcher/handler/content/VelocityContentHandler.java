@@ -48,7 +48,7 @@ import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.stream.StreamResponseContext;
 import org.iterx.miru.io.factory.ResourceFactory;
-import org.iterx.miru.io.ReadableResource;
+import org.iterx.miru.io.stream.ReadableStreamResource;
 import org.iterx.miru.cache.Cache;
 import org.iterx.miru.cache.factory.CacheFactory;
 import org.iterx.miru.matcher.Matches;
@@ -263,16 +263,16 @@ public class VelocityContentHandler<S extends RequestContext, T extends StreamRe
                 ResourceFactory resourceFactory;
 
                 if((resourceFactory = velocityContentHandler.getResourceFactory()) != null) {
-                    ReadableResource resource;
+                    ReadableStreamResource resource;
 
-                    resource = (ReadableResource) resourceFactory.getResource(URI.create(name));
+                    resource = (ReadableStreamResource) resourceFactory.getResource(URI.create(name));
                     return resource.getInputStream();
                 }
             }
             catch(IOException e) {
                 LOGGER.error("Resource failure.", e);
             }
-            throw new ResourceNotFoundException("Failed to load resource '" + name + "'.");
+            throw new ResourceNotFoundException("Failed to load stream '" + name + "'.");
         }
     }
 

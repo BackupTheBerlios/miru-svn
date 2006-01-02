@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.support.servlet.resolver.resource.ServletContextResourceResolver
+  org.iterx.miru.support.servlet.resolver.stream.ServletContextResourceResolver
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -31,7 +31,7 @@ import javax.servlet.ServletContext;
 
 import org.iterx.miru.resolver.ResourceResolver;
 import org.iterx.miru.io.Resource;
-import org.iterx.miru.io.resource.UriResource;
+import org.iterx.miru.io.stream.UriStreamResource;
 import org.iterx.miru.context.ApplicationContextAware;
 import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.support.servlet.context.ServletApplicationContext;
@@ -93,7 +93,7 @@ public class ServletContextResourceResolver
                 path = path.substring(this.path.length() - 1);
             if((url = servletContext.getResource(path)) != null) {
                 try {
-                    resource = new UriResource(url.toURI());
+                    resource = new UriStreamResource(url.toURI());
                 }
                 catch(URISyntaxException e){}
             }

@@ -27,9 +27,9 @@ import java.io.IOException;
 import org.iterx.miru.bean.BeanProvider;
 
 import org.iterx.miru.io.Resource;
-import org.iterx.miru.io.StreamSource;
+import org.iterx.miru.io.stream.StreamSource;
 import org.iterx.miru.io.Loadable;
-import org.iterx.miru.io.resource.UriResource;
+import org.iterx.miru.io.stream.UriStreamResource;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
 
@@ -47,7 +47,7 @@ public class XmlHandlerChainFactory<S extends RequestContext, T extends Response
         assert (getBeanProvider() != null) : "beanProvider == null";
         Resource resource;
 
-        if((resource = new UriResource(uri)).exists()) load(resource);
+        if((resource = new UriStreamResource(uri)).exists()) load(resource);
         else throw new IllegalArgumentException
                        ("Resource [" + uri + "] does not exist.");
     }
@@ -58,9 +58,9 @@ public class XmlHandlerChainFactory<S extends RequestContext, T extends Response
         XmlHandlerChainParser<S, T> parser;
 
         if(resource == null)
-            throw new IllegalArgumentException("resource == null");
+            throw new IllegalArgumentException("stream == null");
         if(!(resource instanceof StreamSource))
-            throw new IllegalArgumentException("resource is not a 'StreamSource'");
+            throw new IllegalArgumentException("stream is not a 'StreamSource'");
 
 
         parser = new XmlHandlerChainParser<S, T>(this);

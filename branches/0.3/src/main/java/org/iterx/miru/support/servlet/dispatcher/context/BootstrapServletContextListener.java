@@ -31,7 +31,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContext;
 
 import org.iterx.miru.io.Loadable;
-import org.iterx.miru.io.resource.UriResource;
+import org.iterx.miru.io.stream.UriStreamResource;
 import org.iterx.miru.dispatcher.context.DispatcherApplicationContext;
 import org.iterx.miru.context.ApplicationContext;
 
@@ -88,8 +88,8 @@ public class BootstrapServletContextListener implements ServletContextListener {
                 URL url;
 
                 if((url = (servletContext.getResource(parameter))) != null)
-                    ((Loadable) applicationContext).load(new UriResource(url.toURI()));
-                else throw new IOException("Invalid resource ["+  parameter + "]");
+                    ((Loadable) applicationContext).load(new UriStreamResource(url.toURI()));
+                else throw new IOException("Invalid stream ["+  parameter + "]");
 
             }
             if(inheritable) {

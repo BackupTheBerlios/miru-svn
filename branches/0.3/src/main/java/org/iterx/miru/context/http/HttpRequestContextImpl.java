@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.context.http.HttpRequestContextImpl
+  org.iterx.miru.context.context.HttpRequestContextImpl
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -21,76 +21,33 @@
 
 package org.iterx.miru.context.http;
 
-import java.io.Reader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.io.Closeable;
-
 import java.net.URI;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.iterx.util.CaseInsensitiveKey;
+import org.iterx.miru.context.stream.StreamRequestContextImpl;
+import org.iterx.miru.io.stream.StreamSource;
 
 
-public class HttpRequestContextImpl implements HttpRequestContext, Closeable {
+public class HttpRequestContextImpl extends StreamRequestContextImpl
+    implements HttpRequestContext {
 
     protected Map<CaseInsensitiveKey, String> headers;
-    protected Map<String, String[]> parameters;
-    protected URI uri;
-
-    protected boolean _mutable = true;
-
-    private InputStream inputStream;
-    private Reader reader;
-
-    private String encoding, type;
+    protected Map<String, Object> parameters;
 
     protected HttpRequestContextImpl() {}
 
-    public HttpRequestContextImpl(InputStream in) {
+    public HttpRequestContextImpl(URI uri, StreamSource streamSource) {
 
-        this(in, null);
-    }
-
-    public HttpRequestContextImpl(Reader reader) {
-
-        this(reader, null);
-    }
-
-    public HttpRequestContextImpl(InputStream in, String encoding) {
-
+        super(uri, streamSource);
         headers = new HashMap<CaseInsensitiveKey, String>(8);
-        parameters = new HashMap<String, String[]>(2);
-        this.encoding = encoding;
-        this.inputStream = in;
-
-    }
-
-    public HttpRequestContextImpl(Reader reader, String encoding) {
-
-        if (encoding == null &&
-            reader instanceof InputStreamReader)
-            encoding = ((InputStreamReader) reader).getEncoding();
-
-        headers = new HashMap<CaseInsensitiveKey, String>(8);
-        parameters = new HashMap<String, String[]>(2);
-        this.encoding = encoding;
-        this.reader = reader;
-    }
-
-    public URI getURI() {
-
-        return uri;
-    }
-
-    public void setURI(URI uri) {
-        assert (_mutable) : "Immutable object.";
-
-        this.uri = uri;
+        parameters = new HashMap<String, Object>(2);
     }
 
     public String getHeader(String name) {
@@ -107,8 +64,7 @@ public class HttpRequestContextImpl implements HttpRequestContext, Closeable {
     public String getParameter(String name) {
         String[] values;
 
-        return (((values = parameters.get(name)) != null) ?
-                values[0] : null);
+        return (((values = getParameterValues(name)) != null) ? values[0] : null);
     }
 
     public void setParameter(String name, String value) {
@@ -118,17 +74,50 @@ public class HttpRequestContextImpl implements HttpRequestContext, Closeable {
     }
 
     public String[] getParameterValues(String name) {
+        Object object;
+        String[] values;
 
-        return parameters.get(name);
+        object = parameters.get(name);
+        if(object instanceof String[]) values = (String[]) object;
+        else if(object == null) values = null;
+        else {
+            List<String> list;
+
+            values = (list = (List<String>) object).toArray(new String[list.size()]);
+            parameters.put(name, values);
+        }
+        return values;
     }
 
-    public void setParameterValues(String name, String[] value) {
-        assert (_mutable) : "Immutable object.";
 
-        if (value == null) parameters.remove(name);
-        else parameters.put(name, value);
+    public void setParameterValues(String name, List<String> values) {
+
+        if(values == null) parameters.remove(name);
+        else parameters.put(name, values);
     }
 
+    public void addParameterValue(String name, String value) {
+        Object object;
+        List<String> list;
+
+        if((object = parameters.get(name)) != null)
+            list = (object instanceof List)? (List<String>) object : Arrays.asList((String[]) object);
+        else parameters.put(name, list = new ArrayList<String>(2));
+        list.add(value);
+    }
+
+
+    public void removeParameterValue(String name, String value) {
+        Object object;
+
+        if((object = parameters.get(name)) != null) {
+            ArrayList<String> list;
+
+            list = (object instanceof List)? (ArrayList<String>) object : new ArrayList<String>(Arrays.asList((String[]) object));
+            list.remove(value);
+            if(list.size() == 0) parameters.remove(name);
+        }
+    }
 
     public String[] getParameterNames() {
         Set<String> names;
@@ -136,58 +125,7 @@ public class HttpRequestContextImpl implements HttpRequestContext, Closeable {
         return  ((names = parameters.keySet()).toArray(new String[names.size()]));
     }
 
-    public int getContentLength() {
-
-        return -1;
-    }
-
-    public String getContentType() {
-
-        return type;
-    }
-
-    public void setContentType(String type) {
-        assert (_mutable) : "Immutable object.";
-
-        this.type = type;
-    }
-
-    public String getCharacterEncoding() {
-
-        return encoding;
-    }
-
-    public InputStream getInputStream() throws IOException {
-
-        if (_mutable && inputStream != null) {
-            _mutable = false;
-            reader = null;
-        }
-
-        return inputStream;
-    }
-
-    public Reader getReader() throws IOException {
-
-        if(_mutable) {
-            if(inputStream != null)
-                reader = ((encoding != null) ?
-                          new InputStreamReader(inputStream, encoding) :
-                          new InputStreamReader(inputStream));
-            _mutable = false;
-            inputStream = null;
-        }
-
-        return reader;
-    }
-
-    public void close() throws IOException {
-
-        if(inputStream != null)
-            try { inputStream.close(); } catch(IOException e) {}
-        if(reader != null)
-            try { reader.close(); } catch(IOException e) {}
-    }
 
 }
+
     

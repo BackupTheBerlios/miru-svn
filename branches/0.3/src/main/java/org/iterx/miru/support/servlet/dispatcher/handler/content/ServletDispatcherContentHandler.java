@@ -31,7 +31,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.iterx.miru.dispatcher.handler.ContentHandler;
-import org.iterx.miru.dispatcher.Dispatcher;
 import org.iterx.miru.dispatcher.Status;
 import org.iterx.miru.dispatcher.event.http.HttpErrorEvent;
 import org.iterx.miru.context.ProcessingContext;
@@ -75,31 +74,36 @@ public class ServletDispatcherContentHandler<S extends HttpServletRequestContext
 
         HttpServletRequestContext requestContext;
         HttpServletResponseContext responseContext;
+        HttpServletRequest request;
+        HttpServletResponse response;
         RequestDispatcher dispatcher;
         URI uri;
 
         requestContext =  processingContext.getRequestContext();
         responseContext =  processingContext.getResponseContext();
 
-        //TODO: sort out webapp path
+        request = requestContext.getHttpServletRequest();
+        response = responseContext.getHttpServletResponse();
+
         uri = MiruUtils.resolve((this.uri != null)? this.uri : (requestContext.getURI()).getPath(),
                                 null,
                                 (Matches) processingContext.getAttribute(ProcessingContext.MATCHES_ATTRIBUTE));
 
+        if("servlet".equals(uri.getScheme()))
+            dispatcher = servletContext.getNamedDispatcher(uri.getSchemeSpecificPart());
+        else {
+            String path, context;
 
-        dispatcher = (("servlet".equals(uri.getScheme()))?
-                      servletContext.getNamedDispatcher(uri.getSchemeSpecificPart()) :
-                      servletContext.getRequestDispatcher(uri.toString()));
+            path = uri.getPath();
+            context = request.getContextPath();
+            dispatcher = servletContext.getRequestDispatcher((path.startsWith(context))? path.substring(context.length()) : path);
+        }
+
 
         if(dispatcher != null) {
             try {
-                HttpServletRequest request;
-                HttpServletResponse response;
-                String[] attributes;
 
-                //TODO: should wrap
-                request = requestContext.getHttpServletRequest();
-                response = responseContext.getHttpServletResponse();
+                String[] attributes;
 
                 attributes = processingContext.getAttributeNames();
                 for(int i = attributes.length; i-- > 0; ) {
@@ -109,13 +113,13 @@ public class ServletDispatcherContentHandler<S extends HttpServletRequestContext
                     request.setAttribute(attribute, processingContext.getAttribute(attribute));
                 }
 
+                //TODO: should wrap request/response
                 //TODO: set original URI for passthrough
-
                 dispatcher.forward(request, response);
                 return Status.OK;
             }
             catch(Exception e) {
-                LOGGER.error("Processing failure for '"+uri+"'.", e);
+                LOGGER.error("Processing failure for '" + uri + "'", e);
                 return Status.ERROR;
             }
         }

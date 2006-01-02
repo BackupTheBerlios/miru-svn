@@ -26,9 +26,6 @@ import java.io.Writer;
 
 import com.sun.org.apache.xml.internal.serializer.ToXMLStream;
 
-
-import org.iterx.miru.io.StreamTarget;
-import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.context.ProcessingContext;
 import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.stream.StreamResponseContext;

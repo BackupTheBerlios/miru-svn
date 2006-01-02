@@ -28,7 +28,7 @@ import org.iterx.miru.cache.factory.CacheFactory;
 import org.iterx.miru.cache.Cache;
 import org.iterx.miru.io.Loadable;
 import org.iterx.miru.io.Resource;
-import org.iterx.miru.io.StreamSource;
+import org.iterx.miru.io.stream.StreamSource;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.CacheException;
@@ -52,9 +52,9 @@ public class EhCacheFactory<K extends Serializable, V extends Serializable>  ext
     public void load(Resource resource) throws IOException {
 
         if(resource == null)
-            throw new IllegalArgumentException("resource == null");
+            throw new IllegalArgumentException("stream == null");
         if(!(resource instanceof StreamSource))
-            throw new IllegalArgumentException("resource is not a StreamSource.");
+            throw new IllegalArgumentException("stream is not a StreamSource.");
 
         try {
             cacheManager = new CacheManager(((StreamSource) resource).getInputStream());

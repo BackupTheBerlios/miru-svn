@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.support.servlet.context.http.HttpServletRequestContext
+  org.iterx.miru.support.servlet.context.context.HttpServletRequestContext
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -64,7 +64,7 @@ public final class HttpServletRequestContext
                               null,
                               httpServletRequest.getLocalName(),
                               ((((port = httpServletRequest.getLocalPort()) == 80 &&
-                                 "http".equals(scheme)) ||
+                                 "context".equals(scheme)) ||
                                                         ((port == 443) &&
                                                          "https".equals(scheme)))? -1 : port),
                               httpServletRequest.getRequestURI(),

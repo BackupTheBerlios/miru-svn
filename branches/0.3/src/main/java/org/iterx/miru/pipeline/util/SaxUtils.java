@@ -28,8 +28,8 @@ import java.io.Writer;
 
 import org.iterx.sax.InputSource;
 import org.iterx.sax.OutputTarget;
-import org.iterx.miru.io.StreamSource;
-import org.iterx.miru.io.StreamTarget;
+import org.iterx.miru.io.stream.StreamSource;
+import org.iterx.miru.io.stream.StreamTarget;
 
 public class SaxUtils {
 

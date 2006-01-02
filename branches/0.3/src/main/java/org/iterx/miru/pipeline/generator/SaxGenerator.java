@@ -34,7 +34,7 @@ import org.iterx.miru.pipeline.util.SaxUtils;
 public class SaxGenerator<S extends StreamRequestContext, T extends ResponseContext> extends GeneratorImpl<S, T> {
 
     private static final String LEXICAL_HANDLER =
-          "http://xml.org/sax/properties/lexical-handler";
+          "context://xml.org/sax/properties/lexical-handler";
 
     protected XMLReader xmlReader;
 

@@ -36,7 +36,7 @@ import org.xml.sax.Attributes;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.iterx.miru.io.StreamSource;
+import org.iterx.miru.io.stream.StreamSource;
 
 import org.iterx.miru.bean.BeanProvider;
 import org.iterx.miru.bean.BeanWrapperAware;
@@ -50,7 +50,7 @@ import org.iterx.miru.context.ResponseContext;
 
 public class XmlHandlerChainParser<S extends RequestContext, T extends ResponseContext> extends DefaultHandler {
 
-    public static final String MIRU_CHAINS_NS       = "http://iterx.org/miru/1.0/chains";
+    public static final String MIRU_CHAINS_NS       = "context://iterx.org/miru/1.0/chains";
 
     private static final String TAG_CHAINS          = "chains";
     private static final String TAG_CHAIN           = "chain";

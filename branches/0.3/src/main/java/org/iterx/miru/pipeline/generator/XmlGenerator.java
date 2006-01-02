@@ -29,7 +29,6 @@ import javax.xml.parsers.SAXParser;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.iterx.miru.context.ProcessingContext;
-import org.iterx.miru.context.RequestContext;
 import org.iterx.miru.context.ResponseContext;
 import org.iterx.miru.context.stream.StreamRequestContext;
 import org.iterx.miru.pipeline.util.SaxUtils;
@@ -38,7 +37,7 @@ import org.iterx.miru.pipeline.PipelineChainException;
 public class XmlGenerator<S extends StreamRequestContext, T extends ResponseContext> extends GeneratorImpl<S, T> {
 
     private static final String LEXICAL_HANDLER =
-          "http://xml.org/sax/properties/lexical-handler";
+        "http://xml.org/sax/properties/lexical-handler";
 
     private static final String VALIDATION =
         "http://xml.org/sax/features/validation";

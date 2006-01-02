@@ -38,7 +38,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.iterx.miru.io.StreamSource;
+import org.iterx.miru.io.stream.StreamSource;
 
 import org.iterx.miru.bean.Bean;
 import org.iterx.miru.bean.BeanWrapper;
@@ -48,7 +48,7 @@ import org.iterx.util.KeyValue;
 
 public class XmlBeanParser extends DefaultHandler {
 
-    public static final String MIRU_BEANS_NS        = "http://iterx.org/miru/1.0/beans";
+    public static final String MIRU_BEANS_NS        = "context://iterx.org/miru/1.0/beans";
 
     private static final String TAG_BEANS           = "beans";
     private static final String TAG_BEAN            = "bean";
