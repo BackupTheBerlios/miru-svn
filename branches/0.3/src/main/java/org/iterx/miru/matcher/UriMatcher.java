@@ -103,9 +103,9 @@ public class UriMatcher<S extends RequestContext, T extends ResponseContext>
             StringBuilder builder;
 
             builder = new StringBuilder();
-            if(!pattern.startsWith("$")) builder.append(".*");
+            if(!pattern.startsWith("^")) builder.append(".*?");
             builder.append(pattern);
-            if(!pattern.endsWith("^")) builder.append(".*");
+            if(!pattern.endsWith("$")) builder.append(".*");
 
             regex = Pattern.compile(builder.toString());
             this.pattern = pattern;

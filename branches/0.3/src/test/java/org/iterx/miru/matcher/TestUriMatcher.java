@@ -42,7 +42,7 @@ public class TestUriMatcher extends TestCase {
           { MASK_URI, "does-not-exist", null},
           { MASK_URI, ".*", new String[]{ URI }},
           { MASK_URI, "^context://", new String[]{ URI }},
-          { MASK_URI, "?query_string$", new String[]{ URI }},
+          { MASK_URI, "\\?query_string$", new String[]{ URI }},
           { MASK_URI, "/a/path", new String[]{ URI }},
           { MASK_URI, "//(\\w*):(\\d*)/", new String[]{ URI, "localhost", "8000" }},
           { MASK_PATH, "localhost", null},

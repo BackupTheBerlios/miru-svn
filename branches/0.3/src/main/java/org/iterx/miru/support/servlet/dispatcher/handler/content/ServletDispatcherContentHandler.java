@@ -39,15 +39,16 @@ import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.support.servlet.context.http.HttpServletRequestContext;
 import org.iterx.miru.support.servlet.context.http.HttpServletResponseContext;
 import org.iterx.miru.support.servlet.context.ServletApplicationContext;
+import org.iterx.miru.support.servlet.util.ServletDispatcher;
 import org.iterx.miru.matcher.Matches;
 import org.iterx.miru.util.MiruUtils;
 
 
-public class ServletDispatcherContentHandler<S extends HttpServletRequestContext, T extends HttpServletResponseContext> implements ContentHandler<S, T>, ApplicationContextAware {
+public class ServletDispatcherContentHandler<S extends HttpServletRequestContext, T extends HttpServletResponseContext> implements ContentHandler<S, T> {
 
     private static final Log LOGGER = LogFactory.getLog(ServletDispatcherContentHandler.class);
- 
-    private ServletContext servletContext;
+
+    private ServletDispatcher servletDispatcher;
     private String uri;
 
     public String getUri() {
@@ -62,71 +63,26 @@ public class ServletDispatcherContentHandler<S extends HttpServletRequestContext
         this.uri = uri;
     }
 
-    public void setApplicationContext(ApplicationContext applicationContext) {
+    public ServletDispatcher getServletDispatcher() {
 
-        if(applicationContext == null)
-            throw new IllegalArgumentException("applicationContext == null");
-        servletContext = ((ServletApplicationContext) applicationContext).getServletContext();
+        return servletDispatcher;
+    }
+    public void setServletDispatcher(ServletDispatcher servletDispatcher) {
+
+        this.servletDispatcher = servletDispatcher;
     }
 
     public Status execute(ProcessingContext<? extends S, ? extends T>  processingContext) {
-        assert (servletContext != null) : "servletContext == null";
-
+        assert (servletDispatcher != null) : "servletDispatcher == null";
         HttpServletRequestContext requestContext;
-        HttpServletResponseContext responseContext;
-        HttpServletRequest request;
-        HttpServletResponse response;
-        RequestDispatcher dispatcher;
         URI uri;
 
         requestContext =  processingContext.getRequestContext();
-        responseContext =  processingContext.getResponseContext();
-
-        request = requestContext.getHttpServletRequest();
-        response = responseContext.getHttpServletResponse();
-
         uri = MiruUtils.resolve((this.uri != null)? this.uri : (requestContext.getURI()).getPath(),
                                 null,
                                 (Matches) processingContext.getAttribute(ProcessingContext.MATCHES_ATTRIBUTE));
 
-        if("servlet".equals(uri.getScheme()))
-            dispatcher = servletContext.getNamedDispatcher(uri.getSchemeSpecificPart());
-        else {
-            String path, context;
-
-            path = uri.getPath();
-            context = request.getContextPath();
-            dispatcher = servletContext.getRequestDispatcher((path.startsWith(context))? path.substring(context.length()) : path);
-        }
-
-
-        if(dispatcher != null) {
-            try {
-
-                String[] attributes;
-
-                attributes = processingContext.getAttributeNames();
-                for(int i = attributes.length; i-- > 0; ) {
-                    String attribute;
-
-                    attribute = attributes[i];
-                    request.setAttribute(attribute, processingContext.getAttribute(attribute));
-                }
-
-                //TODO: should wrap request/response
-                //TODO: set original URI for passthrough
-                dispatcher.forward(request, response);
-                return Status.OK;
-            }
-            catch(Exception e) {
-                LOGGER.error("Processing failure for '" + uri + "'", e);
-                return Status.ERROR;
-            }
-        }
-        throw new HttpErrorEvent(HttpErrorEvent.NOT_FOUND);
+        return servletDispatcher.include(uri, processingContext);
     }
-
-
-
 
 }

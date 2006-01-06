@@ -1,5 +1,5 @@
 /*
-  org.iterx.miru.support.servlet.resolver.stream.ServletContextResourceResolver
+  org.iterx.miru.support.servlet.resolver.stream.ServletContextStreamResourceResolver
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -36,15 +36,15 @@ import org.iterx.miru.context.ApplicationContextAware;
 import org.iterx.miru.context.ApplicationContext;
 import org.iterx.miru.support.servlet.context.ServletApplicationContext;
 
-public class ServletContextResourceResolver
+public class ServletContextStreamResourceResolver
     implements ResourceResolver, ApplicationContextAware {
 
     private ServletContext servletContext;
     private String path;
 
-    public ServletContextResourceResolver() {}
+    public ServletContextStreamResourceResolver() {}
 
-    public ServletContextResourceResolver(ServletContext servletContext) {
+    public ServletContextStreamResourceResolver(ServletContext servletContext) {
 
         if(servletContext == null)
             throw new IllegalArgumentException("servletContext== null");
